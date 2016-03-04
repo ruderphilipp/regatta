@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Event</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Name</th>
+                <td>{{ event.name }}</td>
+            </tr>
+            <tr>
+                <th>Start</th>
+                <td>{% if event.start %}{{ event.start|date('d.m.Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Ende</th>
+                <td>{% if event.end %}{{ event.end|date('d.m.Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Anmeldezeitraum</th>
+                <td>{% if event.registrationStart %}{{ event.registrationStart|date('d.m.Y H:i:s') }}{% endif %}
+                    {% if event.registrationEnd %} - {{ event.registrationEnd|date('d.m.Y H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Obleutebesprechung</th>
+                <td>{% if event.representativesMeetingStart %}{{ event.representativesMeetingStart|date('H:i:s') }}{% endif %}
+                    {% if event.representativesMeetingEnd %} - {{ event.representativesMeetingEnd|date('H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Website für mehr</th>
+                <td>{{ event.moreInfoWebsite }}</td>
+            </tr>
+            <tr>
+                <th>Beschreibung</th>
+                <td>{{ event.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('event_index') }}">Zurück zur Liste</a>
+        </li>
+        <li>
+            <a href="{{ path('event_edit', { 'id': event.id }) }}">Bearbeiten</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Löschen">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

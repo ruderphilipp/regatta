@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Eventliste</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Start</th>
+                <th>Ende</th>
+                <th>Anmeldung</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events %}
+            <tr>
+                <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.name }}</a></td>
+                <td>{% if event.start %}{{ event.start|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>{% if event.end %}{{ event.end|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>{% if event.registrationStart %}{{ event.registrationStart|date('d.m.Y H:i:s') }}{% endif %}
+                    {% if event.registrationEnd %} - {{ event.registrationEnd|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('event_show', { 'id': event.id }) }}">mehr</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('event_edit', { 'id': event.id }) }}">bearbeiten</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('event_new') }}">Neue Veranstaltung erstellen</a>
+        </li>
+    </ul>
+{% endblock %}

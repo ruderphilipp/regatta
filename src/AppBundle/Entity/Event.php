@@ -98,6 +98,30 @@ class Event
         $this->races = new ArrayCollection();
     }
 
+    public function getRegistrationTimePercentage() {
+        $now = new \DateTime();
+        if ($now > $this->registrationEnd) {
+            return 100;
+        } elseif ($now < $this->registrationStart) {
+            return -1;
+        } else {
+            $total_timespan = $this->registrationEnd->diff($this->registrationStart);
+            $total = $total_timespan->i + $total_timespan->h * 60 + $total_timespan->d * 24 * 60;
+
+            $rest_timespan = $now->diff($this->registrationEnd);
+            $rest = $rest_timespan->i + $rest_timespan->h * 60 + $rest_timespan->d * 24 * 60;
+
+            return round(100 * ($total - $rest) / $total);
+        }
+    }
+
+    public function getRemainingRegistrationTime() {
+        $format = '%d Tage und %h Stunden';
+        $now = new \DateTime();
+        $rest = $now->diff($this->registrationEnd)->format($format);
+        return $rest;
+    }
+
     /**
      * Get id
      *

@@ -19,8 +19,24 @@
                 <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.name }}</a></td>
                 <td>{% if event.start %}{{ event.start|date('d.m.Y H:i:s') }}{% endif %}</td>
                 <td>{% if event.end %}{{ event.end|date('d.m.Y H:i:s') }}{% endif %}</td>
-                <td>{% if event.registrationStart %}{{ event.registrationStart|date('d.m.Y H:i:s') }}{% endif %}
-                    {% if event.registrationEnd %} - {{ event.registrationEnd|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>{% if event.registrationStart > date() %}
+                        Möglich ab {{ event.registrationStart|date('d.m.Y H:i:s') }}.
+                    {% else %}
+                        {% set perc = event.getRegistrationTimePercentage() %}
+                        {% if event.registrationEnd > date() %}
+                            {% if perc < 60 %}
+                                {% set css = '' %}
+                            {% elseif perc > 60 and perc < 85 %}
+                                {% set css = ' progress-bar-warning' %}
+                            {% else %}
+                                {% set css = ' progress-bar-danger' %}
+                            {% endif %}
+                    <div class="progress"><div class="progress-bar{{ css }}" role="progressbar" aria-valuenow="{{ perc }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ perc }}%">noch {{ event.getRemainingRegistrationTime }}</div></div>
+                        {% else %}
+                        <span class="label label-default">nicht mehr möglich</span>
+                        {% endif %}
+                    {% endif %}
+                </td>
                 <td>
                     <ul>
                         <li>

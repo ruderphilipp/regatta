@@ -2,7 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use AppBundle\Entity\Race;
 
 /**
  * Event
@@ -84,6 +88,15 @@ class Event
      */
     private $description;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Race", mappedBy="event")
+     */
+    private $races;
+
+    public function __construct()
+    {
+        $this->races = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -309,6 +322,15 @@ class Event
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Get races
+     *
+     * @return ArrayCollection[Races]
+     */
+    public function getRaces() {
+        return $this->races;
     }
 }
 

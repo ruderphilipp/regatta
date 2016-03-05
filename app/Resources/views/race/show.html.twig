@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Race</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ race.id }}</td>
+            </tr>
+            <tr>
+                <th>Sex</th>
+                <td>{{ race.sex }}</td>
+            </tr>
+            <tr>
+                <th>Ageclass</th>
+                <td>{{ race.ageClass }}</td>
+            </tr>
+            <tr>
+                <th>Agemin</th>
+                <td>{{ race.ageMin }}</td>
+            </tr>
+            <tr>
+                <th>Agemax</th>
+                <td>{{ race.ageMax }}</td>
+            </tr>
+            <tr>
+                <th>Level</th>
+                <td>{{ race.level }}</td>
+            </tr>
+            <tr>
+                <th>Startermin</th>
+                <td>{{ race.starterMin }}</td>
+            </tr>
+            <tr>
+                <th>Startermax</th>
+                <td>{{ race.starterMax }}</td>
+            </tr>
+            <tr>
+                <th>Priceperstarter</th>
+                <td>{{ race.pricePerStarter }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('race_index', { 'id': race.event.id }) }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

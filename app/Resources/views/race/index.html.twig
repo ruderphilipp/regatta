@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Race list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rennen</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for race in races %}
+            <tr>
+                <td><a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">{{ rr.getOfficialName(race) }}</a></td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('event_show', { 'id': id }) }}">Zurück zum Event</a>
+        </li>
+        <li>
+            <a href="{{ path('race_new', { 'id': id }) }}">Neues Rennen erstellen</a>
+        </li>
+    </ul>
+{% endblock %}

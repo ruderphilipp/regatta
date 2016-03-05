@@ -19,7 +19,7 @@ class EventController extends Controller
     /**
      * Lists all Event entities.
      *
-     * @Route("/", name="event_index")
+     * @Route("s/", name="event_index")
      * @Method("GET")
      */
     public function indexAction()

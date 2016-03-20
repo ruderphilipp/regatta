@@ -3,28 +3,48 @@
 {% block body %}
     <h1>{{ club.name }}</h1>
 
+    <dl class="dl-horizontal">
+    {% if null != club.abbreviation %}
+        <dt>Abkürzung</dt>
+        <dd>{{ club.abbreviation }}</dd>
+    {% endif %}
+        <dt>Stadt</dt>
+        <dd>{{ club.city }}{% if null != club.state %} ({{ club.state }}){% endif %}</dd>
+        <dt>Anschrift</dt>
+        <dd>{{ club.street }} {{ club.streetNumber }}</dd>
+        <dt>Postleitzahl</dt>
+        <dd>{{ club.zip }}</dd>
+    </dl>
+
+    <hr>
+
+    <p><strong>Mitgliedschaften</strong> <span class="badge">{{ club.memberships | count }}</span> </p>
+
     <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nachname</th>
+            <th>Vorname</th>
+            <th>Zeitraum</th>
+        </tr>
+        </thead>
         <tbody>
-            {% if null != club.abbreviation %}
+        {% for membership in club.memberships %}
+            {% if null == membership.until or membership.until < now %}
+            {% set p = membership.person %}
             <tr>
-                <th>Abkürzung</th>
-                <td>{{ club.abbreviation }}</td>
+                <td>{{ p.lastName }}</td>
+                <td>{{ p.firstName }}</td>
+                <td>{{ membership.since | date("d.m.Y")}} -
+                    {% if null != membership.until %}{{ membership.until | date("d.m.Y")}}
+                    {% else %}∞{% endif %}</td>
             </tr>
             {% endif %}
-            <tr>
-                <th>Stadt</th>
-                <td>{{ club.city }}{% if null != club.state %} ({{ club.state }}){% endif %}</td>
-            </tr>
-            <tr>
-                <th>Anschrift</th>
-                <td>{{ club.street }} {{ club.streetNumber }}</td>
-            </tr>
-            <tr>
-                <th>Postleitzahl</th>
-                <td>{{ club.zip }}</td>
-            </tr>
+        {% endfor %}
         </tbody>
     </table>
+
+    <hr>
 
     <ul>
         <li>

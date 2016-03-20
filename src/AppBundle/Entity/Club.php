@@ -75,11 +75,11 @@ class Club
     /**
      * @ORM\OneToMany(targetEntity="Membership", mappedBy="club")
      */
-    private $members;
+    private $memberships;
 
     public function __construct()
     {
-        $this->members = new ArrayCollection();
+        $this->memberships = new ArrayCollection();
     }
 
     /**
@@ -258,6 +258,16 @@ class Club
     public function getStreetNumber()
     {
         return $this->streetNumber;
+    }
+
+    /**
+     * Get memberships
+     *
+     * @return ArrayCollection[Membership]
+     */
+    public function getMemberships()
+    {
+        return $this->memberships;
     }
 
     public function __toString() {

@@ -37,7 +37,7 @@ class Membership
     private $until;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Club", inversedBy="members")
+     * @ORM\ManyToOne(targetEntity="Club", inversedBy="memberships")
      * @ORM\JoinColumn(name="club_id", referencedColumnName="id")
      */
     private $club;

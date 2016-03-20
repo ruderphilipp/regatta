@@ -20,7 +20,7 @@ class RaceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('sex', ChoiceType::class, array(
+            ->add('gender', ChoiceType::class, array(
                 'label' => 'Geschlecht',
                 'choices' => array(
                     'weiblic' => 'w',

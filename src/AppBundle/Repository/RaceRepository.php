@@ -21,9 +21,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
         switch($race->getAgeClass()) {
             case 'Kind':
-                if ($race->getSex() == 'w') {
+                if ($race->getGender() == 'w') {
                     $name = 'Mädchen';
-                } elseif($race->getSex() == 'm') {
+                } elseif($race->getGender() == 'm') {
                     $name = 'Jungen';
                 } else {
                     $name = 'JuM';
@@ -31,7 +31,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
             break;
             case 'Junior':
-                if ($race->getSex() == 'w') {
+                if ($race->getGender() == 'w') {
                     $name = 'Juniorinnen';
                 } else {
                     $name = 'Junioren';
@@ -44,9 +44,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 }
             break;
             case 'Senior':
-                if ($race->getSex() == 'w') {
+                if ($race->getGender() == 'w') {
                     $name = 'Frauen';
-                } elseif($race->getSex() == 'm') {
+                } elseif($race->getGender() == 'm') {
                     $name = 'Männer';
                 } else {
                     $name = 'Senioren';
@@ -61,9 +61,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 }
             break;
             case 'Master':
-                if ($race->getSex() == 'w') {
+                if ($race->getGender() == 'w') {
                     $name = 'Frauen (Masters)';
-                } elseif($race->getSex() == 'm') {
+                } elseif($race->getGender() == 'm') {
                     $name = 'Männer (Masters)';
                 } else {
                     $name = 'Masters';

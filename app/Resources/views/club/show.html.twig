@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ club.name }}</h1>
+
+    <table class="table table-striped">
+        <tbody>
+            {% if null != club.abbreviation %}
+            <tr>
+                <th>Abkürzung</th>
+                <td>{{ club.abbreviation }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>Stadt</th>
+                <td>{{ club.city }}{% if null != club.state %} ({{ club.state }}){% endif %}</td>
+            </tr>
+            <tr>
+                <th>Anschrift</th>
+                <td>{{ club.street }} {{ club.streetNumber }}</td>
+            </tr>
+            <tr>
+                <th>Postleitzahl</th>
+                <td>{{ club.zip }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('club_index') }}">Zurück zur Übersicht</a>
+        </li>
+        <li>
+            <a href="{{ path('club_edit', { 'id': club.id }) }}">Bearbeiten</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Löschen">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

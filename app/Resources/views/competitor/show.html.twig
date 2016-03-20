@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ competitor.lastName | upper }}, {{ competitor.firstName }} {{ competitor.getGenderSymbol }}</h1>
+
+    <dl class="dl-horizontal">
+        <dt>Geburtsjahr</dt>
+        <dd>{{ competitor.yearOfBirth }}</dd>
+    </dl>
+
+    <hr>
+
+    <p><strong>Mitgliedschaften</strong> <span class="badge">{{ competitor.memberships | count }}</span> </p>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Verein</th>
+            <th>Von</th>
+            <th>Bis</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for membership in competitor.memberships %}
+        <tr>
+            <td>{{ membership.club.name }}</td>
+            <td>{{ membership.since | date("d.m.Y")}}</td>
+            <td>{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <ul>
+        <li>
+            <a href="{{ path('competitor_index') }}">Zurück zur Übersicht</a>
+        </li>
+        <li>
+            <a href="{{ path('competitor_edit', { 'id': competitor.id }) }}">Bearbeiten</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+            <input type="submit" value="Löschen">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

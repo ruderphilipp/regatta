@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Neuen Verein erfassen</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="Erstellen" />
+    {{ form_end(form) }}
+
+    <ul>
+        <li>
+            <a href="{{ path('club_index') }}">Zurück zur Übersicht</a>
+        </li>
+    </ul>
+{% endblock %}

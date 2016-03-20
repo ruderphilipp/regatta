@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% set isAdmin = true %}
+    <h1>Vereine</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Stadt</th>
+                <th>Bundesland</th>
+                {% if isAdmin %}<th>&nbsp;</th>{% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for club in clubs %}
+            <tr>
+                <td><a href="{{ path('club_show', { 'id': club.id }) }}">{{ club.name }}</a></td>
+                <td>{{ club.city }}</td>
+                <td>{{ club.state }}</td>
+                {% if isAdmin %}<td>
+                    <a class="btn btn-default" role="button" href="{{ path('club_edit', { 'id': club.id }) }}">ändern</a>
+                </td>{% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% if isAdmin %}
+    <p>
+        <a class="btn btn-default" role="button" href="{{ path('club_new') }}">Neu</a>
+    </p>
+{% endif %}
+{% endblock %}

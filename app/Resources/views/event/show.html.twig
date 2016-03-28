@@ -1,42 +1,38 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Event</h1>
+    <h1>{{ event.name }}</h1>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Name</th>
-                <td>{{ event.name }}</td>
-            </tr>
-            <tr>
-                <th>Start</th>
-                <td>{% if event.start %}{{ event.start|date('d.m.Y H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Ende</th>
-                <td>{% if event.end %}{{ event.end|date('d.m.Y H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Anmeldezeitraum</th>
-                <td>{% if event.registrationStart %}{{ event.registrationStart|date('d.m.Y H:i:s') }}{% endif %}
-                    {% if event.registrationEnd %} - {{ event.registrationEnd|date('d.m.Y H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Obleutebesprechung</th>
-                <td>{% if event.representativesMeetingStart %}{{ event.representativesMeetingStart|date('H:i:s') }}{% endif %}
-                    {% if event.representativesMeetingEnd %} - {{ event.representativesMeetingEnd|date('H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Website für mehr</th>
-                <td>{{ event.moreInfoWebsite }}</td>
-            </tr>
-            <tr>
-                <th>Beschreibung</th>
-                <td>{{ event.description }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <dl class="dl-horizontal">
+        <dt>von/bis</dt>
+        <dd>{% if event.start %}{{ event.start|date('d.m.Y H:i') }}{% endif %}
+            {% if event.end %} -
+                {% if sameDay(event.start, event.end) %}
+                    {{ event.end|date('H:i') }}
+                {% else %}
+                    {{ event.end|date('d.m.Y H:i') }}
+                {% endif %}
+            {% endif %}</dd>
+        <dt>Obleutebesprechung</dt>
+        <dd>{% if event.representativesMeetingStart %}{{ event.representativesMeetingStart|date('H:i') }}{% endif %}
+            {% if event.representativesMeetingEnd %} - {{ event.representativesMeetingEnd|date('H:i') }}{% endif %}</dd>
+        <dt>Anmeldezeitraum</dt>
+        <dd>{% if event.registrationStart %}{{ event.registrationStart|date('d.m.Y H:i') }}{% endif %}
+        {% if event.registrationEnd %} - {{ event.registrationEnd|date('d.m.Y H:i') }}{% endif %}</dd>
+        <dt>Website für mehr</dt>
+        <dd><a href="#" target="_blank">{{ event.moreInfoWebsite }}</a></dd>
+    </dl>
+    <p>
+        {{ event.description }}
+    </p>
+
+    <hr />
+
+    {% if event.registrationStart < date() and event.registrationEnd > date() %}
+        <a class="btn btn-default" role="button" href="#">anmelden</a>
+
+        <hr />
+    {% endif %}
 
     <ul>
         <li>

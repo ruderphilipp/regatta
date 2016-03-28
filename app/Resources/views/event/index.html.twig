@@ -3,6 +3,14 @@
 {% block body %}
     <h1>Eventliste</h1>
 
+    <ul>
+        <li>
+            <a href="{{ path('event_new') }}">Neue Veranstaltung erstellen</a>
+        </li>
+    </ul>
+
+{% if count(upcomming_events) > 0 %}
+    <h2>zukünftige Veranstaltungen</h2>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -14,7 +22,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for event in events %}
+        {% for event in upcomming_events %}
             <tr>
                 <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.name }}</a></td>
                 <td>{% if event.start %}{{ event.start|date('d.m.Y H:i:s') }}{% endif %}</td>
@@ -51,10 +59,36 @@
         {% endfor %}
         </tbody>
     </table>
+{% endif %}
 
-    <ul>
-        <li>
-            <a href="{{ path('event_new') }}">Neue Veranstaltung erstellen</a>
-        </li>
-    </ul>
+    <h2>vergangene Veranstaltungen</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>Ende</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for event in former_events %}
+            <tr>
+                <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.name }}</a></td>
+                <td>{% if event.start %}{{ event.start|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>{% if event.end %}{{ event.end|date('d.m.Y H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('event_show', { 'id': event.id }) }}">mehr</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('event_edit', { 'id': event.id }) }}">bearbeiten</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

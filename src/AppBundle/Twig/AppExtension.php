@@ -19,6 +19,7 @@ class AppExtension extends \Twig_Extension
      */
     public function getFunctions() {
         return array(
+            new \Twig_SimpleFunction('count', array($this, 'countFilter')),
             new \Twig_SimpleFunction('sameDay', array($this, 'isSameDay')),
         );
     }

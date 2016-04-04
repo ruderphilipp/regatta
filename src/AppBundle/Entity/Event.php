@@ -11,7 +11,7 @@ use AppBundle\Entity\Race;
 /**
  * Event
  *
- * @ORM\Table(name="event")
+ * @ORM\Table(name="events")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\EventRepository")
  */
 class Event

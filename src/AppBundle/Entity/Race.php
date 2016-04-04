@@ -10,7 +10,7 @@ use AppBundle\Entity\Event;
 /**
  * Race
  *
- * @ORM\Table(name="race")
+ * @ORM\Table(name="races")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RaceRepository")
  */
 class Race

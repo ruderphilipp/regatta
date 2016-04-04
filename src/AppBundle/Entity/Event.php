@@ -105,21 +105,30 @@ class Event
         } elseif ($now < $this->registrationStart) {
             return -1;
         } else {
-            $total_timespan = $this->registrationEnd->diff($this->registrationStart);
-            $total = $total_timespan->i + $total_timespan->h * 60 + $total_timespan->d * 24 * 60;
+            $total_timespan_in_sec = $this->registrationEnd->getTimestamp() - $this->registrationStart->getTimestamp();
+            $rest_timespan_in_sec = $this->registrationEnd->getTimestamp() - $now->getTimestamp();
 
-            $rest_timespan = $now->diff($this->registrationEnd);
-            $rest = $rest_timespan->i + $rest_timespan->h * 60 + $rest_timespan->d * 24 * 60;
-
-            return round(100 * ($total - $rest) / $total);
+            return round(100 * ($total_timespan_in_sec - $rest_timespan_in_sec) / $total_timespan_in_sec);
         }
     }
 
     public function getRemainingRegistrationTime() {
-        $format = '%d Tage und %h Stunden';
         $now = new \DateTime();
-        $rest = $now->diff($this->registrationEnd)->format($format);
-        return $rest;
+        $rest = $now->diff($this->registrationEnd);
+
+        if ($rest->y > 0) {
+            $format = '%y Jahre';
+        } elseif ($rest->m > 0) {
+            $format = '%m Monate';
+        } elseif ($rest->d > 0) {
+            $format = '%d Tage und %h Stunden';
+        } elseif ($rest->h > 0) {
+            $format = '%h Stunden und %i Minuten';
+        } else {
+            $format = '%i Minuten';
+        }
+
+        return $rest->format($format);
     }
 
     /**

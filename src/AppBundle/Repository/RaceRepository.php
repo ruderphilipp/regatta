@@ -11,8 +11,7 @@ use AppBundle\Entity\Race;
  */
 class RaceRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findAllForEvent($id)
-    {
+    public function findAllForEvent($id) {
         return $this->findBy(array('event' => $id));
     }
 

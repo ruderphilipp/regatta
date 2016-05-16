@@ -93,4 +93,8 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return "(".$min." - ".$max.")";
     }
 
+    public function getNumberOfRegistrations(Race $race) {
+        // FIXME: implementation missing
+        return 0;
+    }
 }

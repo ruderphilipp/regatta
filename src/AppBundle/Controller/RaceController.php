@@ -9,7 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Event;
-use AppBundle\Form\RaceType;
 
 /**
  * Race controller.

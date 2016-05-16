@@ -94,6 +94,12 @@ class RaceType extends AbstractType
                     'pattern' => '^(\d+)*(\,\d+|)$',
                 ),
             ))
+            ->add('competitorsPerGroup', IntegerType::class, array(
+                'label' => 'Anzahl Sportler pro Boot/Gruppe',
+                'attr' => array(
+                    'min' => 1,
+                )
+            ))
             ->add('extraText', TextType::class, array(
                 'label' => 'Zusatztext'
             ))

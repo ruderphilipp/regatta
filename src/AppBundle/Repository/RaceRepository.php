@@ -82,6 +82,10 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             break;
         }
 
+        if ($race->getCompetitorsPerGroup() > 1) {
+            $name .= ' ['.$race->getCompetitorsPerGroup().' Pers.]';
+        }
+
         return $name;
     }
 

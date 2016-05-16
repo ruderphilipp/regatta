@@ -99,6 +99,13 @@ class Race
     private $pricePerStarter;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="starter_per_group", type="smallint")
+     */
+    private $competitorsPerGroup;
+
+    /**
      * Get id
      *
      * @return int
@@ -322,6 +329,31 @@ class Race
     public function getPricePerStarter()
     {
         return $this->pricePerStarter;
+    }
+
+
+    /**
+     * Set number of competitors per group/boat
+     *
+     * @param int $competitorsPerGroup
+     *
+     * @return Race
+     */
+    public function setCompetitorsPerGroup($competitorsPerGroup)
+    {
+        $this->competitorsPerGroup = $competitorsPerGroup;
+
+        return $this;
+    }
+
+    /**
+     * Get number of competitors per group/boat
+     *
+     * @return int
+     */
+    public function getCompetitorsPerGroup()
+    {
+        return $this->competitorsPerGroup;
     }
 
     /**

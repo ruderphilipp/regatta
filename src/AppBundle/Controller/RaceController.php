@@ -136,9 +136,14 @@ class RaceController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($race);
             $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Rennen wurde gelöscht!'
+            );
         }
 
-        return $this->redirectToRoute('race_index');
+        return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
     }
 
     /**

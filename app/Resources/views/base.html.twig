@@ -25,6 +25,7 @@
     <![endif]-->
 
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/bootstrap-sortable.css') }}" rel="stylesheet">
     {% block stylesheets %}{% endblock %}
 </head>
 
@@ -78,6 +79,13 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo= sha512-2e8qq0ETcfWRI4HJBzQiA3UoyFk6tbNyG+qSaIBZLyW9Xf3sWZHN/lxe9fTh1U45DpPf07yj94KsUHHWe4Yk1A==" crossorigin="anonymous"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="{{ asset('js/ie10-viewport-bug-workaround.js') }}"></script>
+<!-- library for sorting dates -->
+<script src="{{ asset('js/moment-with-locales.js') }}"></script>
+<script>
+    moment.locale('fr');
+</script>
+<!-- library for sorting tables -->
+<script src="{{ asset('js/bootstrap-sortable.js') }}"></script>
 
 {% block javascripts %}{% endblock %}
 </body>

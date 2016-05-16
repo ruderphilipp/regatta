@@ -23,7 +23,7 @@ class RaceType extends AbstractType
             ->add('gender', ChoiceType::class, array(
                 'label' => 'Geschlecht',
                 'choices' => array(
-                    'weiblic' => 'w',
+                    'weiblich' => 'w',
                     'männlich' => 'm',
                     'mixed' => 'a',
                 ),

@@ -37,7 +37,7 @@ class RaceType extends AbstractType
                 // see <http://www.rudern.de/wettkampf/altersklassen/>
                 'choices' => array(
                     'Kinder (<15)' => 'Kind',
-                    'Junioren (16-18)' => 'Junior',
+                    'Junioren (15-18)' => 'Junior',
                     'Junioren B (15/16)' => 'Junior',
                     'Junioren A (17/18)' => 'Junior',
                     'Senioren (19-27)' => 'Senior',

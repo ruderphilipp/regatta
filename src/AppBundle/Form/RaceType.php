@@ -76,14 +76,12 @@ class RaceType extends AbstractType
                 'label' => 'Mindestanzahl an Startern',
                 'attr' => array(
                     'min' => 1,
-                    'value' => 2,
                 ),
             ))
             ->add('starterMax', IntegerType::class, array(
                 'label' => 'Maximalanzahl an Startern',
                 'attr' => array(
                     'min' => 1,
-                    'value' => 10000,
                 ),
             ))
             ->add('pricePerStarter', NumberType::class, array(

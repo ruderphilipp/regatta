@@ -34,14 +34,15 @@ class RaceType extends AbstractType
             // TODO: kann abgeleitet werden und kann somit hier entfallen
             ->add('ageClass', ChoiceType::class, array(
                 'label' => 'Altersklasse',
+                // see <http://www.rudern.de/wettkampf/altersklassen/>
                 'choices' => array(
                     'Kinder (<15)' => 'Kind',
                     'Junioren (16-18)' => 'Junior',
-                    'Junioren A (15/16)' => 'Junior',
-                    'Junioren B (17/18)' => 'Junior',
+                    'Junioren B (15/16)' => 'Junior',
+                    'Junioren A (17/18)' => 'Junior',
                     'Senioren (19-27)' => 'Senior',
-                    'Senioren A (19-22)' => 'Senior',
-                    'Senioren B (23-27)' => 'Senior',
+                    'Senioren B (19-22)' => 'Senior',
+                    'Senioren A (23-27)' => 'Senior',
                     'Masters (27+)' => 'Master',
                 ),
                 'expanded' => false,

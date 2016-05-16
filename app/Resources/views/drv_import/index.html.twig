@@ -1,0 +1,30 @@
+{% extends 'form.new.base.html.twig' %}
+
+{% block body %}
+    <h1>Importiere DRV-Daten</h1>
+    <p>
+        Diese Seite dient dazu, die Meldedaten aus dem <a href="https://verwaltung.rudern.de" target="_blank">Portal
+        des deutschen Ruderverbands (DRV)</a> zu importieren. Hierzu kann man als Ersteller einer Veranstaltung eine
+        XML-Datei von dort exportieren, die dann hier eingelesen werden kann.
+    </p>
+
+    <div>
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+        {# render any "global" errors #}
+        {{ form_errors(form) }}
+
+        {{ form_widget(form) }}
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10"> <button type="submit" class="btn btn-default">Importieren</button> </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    <ul>
+        <li>
+            <a href="{{ path('race_index', { 'id': event.id }) }}">Zurück zur Rennübersicht</a>
+        </li>
+    </ul>
+{% endblock %}

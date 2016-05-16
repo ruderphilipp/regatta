@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"  
+  targetNamespace="http://schemas.rudern.de/service/meldungen/2010/"
+  xmlns:drvrm="http://schemas.rudern.de/service/meldungen/2010/" 
+  xmlns:drvra="http://schemas.rudern.de/service/ausschreibung/2010/">
+
+  <import namespace="http://schemas.rudern.de/service/ausschreibung/2010/" schemaLocation="http://schemas.rudern.de/service/ausschreibung_2010.xsd"/>
+
+  <annotation>
+    <documentation>rm - Regattameldungen</documentation>
+  </annotation>
+
+  <complexType name="tVerein">
+    <sequence>
+      <element name="ort" type="string"/>
+      <element name="name" type="string"/>
+      <element name="kurzform" type="string"/>
+      <element name="lettern" type="string"/>
+    </sequence>
+    <attribute name="id" type="drvrm:tVereinsID"/>
+  </complexType>
+
+  <complexType name="tObmann">
+    <annotation>
+      <documentation>repräsentiert eine Person, die eine Meldung abgegeben hat.</documentation>
+    </annotation>
+    <sequence>
+    	<element name="name" type="string" minOccurs="1"
+    		maxOccurs="1">
+    		<annotation>
+    			<documentation>vollständiger Name</documentation>
+    		</annotation>
+    	</element>
+    	<element name="email" type="string" minOccurs="1" maxOccurs="1" />
+    	<element name="phone" type="string" minOccurs="0" maxOccurs="1"></element>
+    </sequence>
+    <attribute name="id" type="int" use="required"/>
+  </complexType>
+
+  <simpleType name="tVereinsID">
+    <restriction base="int">
+      <minExclusive value="10000"/>
+      <maxExclusive value="100000"/>
+    </restriction>
+  </simpleType>
+
+
+  <simpleType name="tPassID">
+    <restriction base="string">
+      <minLength value="10"/>
+      <maxLength value="11"/>
+      <whiteSpace value="collapse"/>
+      <pattern value="DE-\d{5,6}-\d"/>
+    </restriction>
+  </simpleType>
+
+  <complexType name="tMeldung">
+  	<sequence>
+  		<element name="mannschaft" minOccurs="1" maxOccurs="1">
+  			<complexType>
+  				<sequence>
+  					<element name="position"
+  						type="drvrm:tBootsPosition" maxOccurs="unbounded" minOccurs="1" />
+  				</sequence>
+  			</complexType>
+  		</element>
+  		<element name="titel" type="string" minOccurs="1" maxOccurs="1">
+  			<annotation>
+  				<documentation>
+  					textuelle Bezeichnung des Bootes, also Namen des
+  					Vereins bzw. der Rgm.
+  				</documentation>
+  			</annotation>
+  		</element>
+  		<element name="parameters" maxOccurs="1" minOccurs="0">
+  			<complexType>
+  				<sequence>
+  					<element name="parameter" maxOccurs="unbounded"
+  						minOccurs="0">
+  						<complexType>
+  							<simpleContent>
+  								<extension base="string">
+  									<attribute name="typ"
+  										type="string" />
+  								</extension>
+  							</simpleContent>
+  						</complexType>
+  					</element>
+  				</sequence>
+  			</complexType>
+  		</element>
+  		<element name="remark" type="string" maxOccurs="1"
+  			minOccurs="0">
+  		</element>
+  	</sequence>
+  	<attribute name="id" type="int" use="required"/>
+  	<attribute name="alternative-zu" type="drvra:tRennNummer" use="optional"></attribute>
+  	<attribute name="verein" type="drvrm:tVereinsID" use="required"/>
+  	<attribute name="obmann" type="int" use="required">
+  		<annotation>
+  			<documentation>
+  				Verweis auf Obmann aus der Obleute-Liste
+  			</documentation>
+  		</annotation>
+  	</attribute>
+  </complexType>
+
+  <complexType name="tRennen">
+    <sequence>
+      <element name="meldung" type="drvrm:tMeldung" maxOccurs="unbounded" minOccurs="0"/>
+    </sequence>
+    <attribute name="nummer" type="drvra:tRennNummer" use="required"/>
+    <attribute name="spezifikation" type="drvra:tRennSpezifikation" use="required"/>
+    <attribute name="zusatz" type="drvra:tRennZusatz"/>
+  </complexType>
+
+  <complexType name="tBootsPosition">
+  	<sequence>
+  		<element name="athlet" type="drvrm:tAthlet" maxOccurs="1" minOccurs="0"/>
+  	</sequence>
+    <attribute name="nr" type="int" use="required"/>
+    <attribute name="st" type="boolean" default="false" use="optional">
+      <annotation>
+        <documentation>Indikator für einen Steuermann</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+
+  <element name="regatta-meldungen">
+    <complexType>
+      <sequence>
+        <element name="obleute" maxOccurs="1" minOccurs="1">
+          <complexType>
+            <sequence>
+              <element name="obmann" type="drvrm:tObmann" maxOccurs="unbounded" minOccurs="0"/>
+            </sequence>
+          </complexType>
+        </element>
+        <element name="meldungen" maxOccurs="1" minOccurs="1">
+          <complexType>
+            <sequence>
+              <element name="rennen" type="drvrm:tRennen" maxOccurs="unbounded" minOccurs="0"/>
+            </sequence>
+          </complexType>
+        </element>
+        <element name="vereine" maxOccurs="1" minOccurs="1">
+          <complexType>
+            <sequence>
+              <element name="verein" type="drvrm:tVerein" maxOccurs="unbounded" minOccurs="0"/>
+            </sequence>
+          </complexType>
+        </element>
+      </sequence>
+      <attribute name="stand" type="dateTime"></attribute>
+    </complexType>
+  </element>
+
+
+    <complexType name="tAthlet">
+    	<sequence>
+	      <element name="name" type="string"/>
+	      <element name="vorname" type="string"/>
+	      <element name="jahrgang">
+	        <simpleType>
+	          <restriction base="int">
+	            <minExclusive value="1920"/>
+	          </restriction>
+	        </simpleType>
+	      </element>
+	      <element name="geschlecht">
+	        <simpleType>
+	          <restriction base="string">
+	            <enumeration value="m"/>
+	            <enumeration value="w"/>
+	          </restriction>
+	        </simpleType>
+	      </element>
+	    </sequence>
+	    <attribute name="id" type="drvrm:tPassID" use="required">
+	      <annotation>
+	        <documentation>Aktivenpass-ID</documentation>
+	      </annotation>
+	    </attribute>
+	    <attribute name="verein" type="drvrm:tVereinsID" use="required"/>
+    </complexType>
+</schema>

@@ -76,6 +76,10 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 }
                 $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
             break;
+            case 'Offen':
+                $name = 'Offen';
+                $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
+            break;
         }
 
         return $name;

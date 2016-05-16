@@ -44,6 +44,7 @@ class RaceType extends AbstractType
                     'Senioren B (19-22)' => 'Senior',
                     'Senioren A (23-27)' => 'Senior',
                     'Masters (27+)' => 'Master',
+                    'Offen' => 'Offen',
                 ),
                 'expanded' => false,
                 'multiple' => false,

@@ -87,6 +87,13 @@ class Race
     /**
      * @var string
      *
+     * @ORM\Column(name="extra_text", type="string", length=255, nullable=true)
+     */
+    private $extraText;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="price_per_starter", type="decimal", precision=5, scale=2)
      */
     private $pricePerStarter;
@@ -267,6 +274,30 @@ class Race
     public function getStarterMax()
     {
         return $this->starterMax;
+    }
+
+    /**
+     * Get explanatory text for this race
+     *
+     * @return string
+     */
+    public function getExtraText()
+    {
+        return $this->extraText;
+    }
+
+    /**
+     * Set explanatory text for this race
+     *
+     * @param string text
+     *
+     * @return Race
+     */
+    public function setExtraText($extraText)
+    {
+        $this->extraText = $extraText;
+
+        return $this;
     }
 
     /**

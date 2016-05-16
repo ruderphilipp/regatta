@@ -28,8 +28,14 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 } else {
                     $name = 'JuM';
                 }
-                $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
-            break;
+                $name .= ' (';
+                if ($race->getAgeMin() == $race->getAgeMax()) {
+                    $name .= $race->getAgeMin();
+                } else {
+                    $name .= $race->getAgeMin().' bis '.$race->getAgeMax();
+                }
+                $name .= ' Jahre)';
+                break;
             case 'Junior':
                 if ($race->getGender() == 'w') {
                     $name = 'Juniorinnen';

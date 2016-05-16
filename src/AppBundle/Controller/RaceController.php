@@ -56,7 +56,7 @@ class RaceController extends Controller
             $em->persist($race);
             $em->flush();
 
-            return $this->redirectToRoute('race_show', array('race' => $race->getId(), 'event' => $event->getId()));
+            return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
         }
 
         //exit(\Doctrine\Common\Util\Debug::dump($form));

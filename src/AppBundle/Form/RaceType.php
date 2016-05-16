@@ -31,6 +31,7 @@ class RaceType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
                 ))
+            // TODO: kann abgeleitet werden und kann somit hier entfallen
             ->add('ageClass', ChoiceType::class, array(
                 'label' => 'Altersklasse',
                 'choices' => array(

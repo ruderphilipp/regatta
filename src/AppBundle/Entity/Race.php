@@ -36,6 +36,13 @@ class Race
     private $event;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="number_in_event", type="smallint")
+     */
+    private $numberInEvent;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="gender", type="string", length=1, nullable=true)
@@ -113,6 +120,30 @@ class Race
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set number of this race in the context of the inspected event
+     *
+     * @param int $number
+     *
+     * @return Race
+     */
+    public function setNumberInEvent($number)
+    {
+        $this->numberInEvent = $number;
+
+        return $this;
+    }
+
+    /**
+     * Get number of this race in the context of the inspected event
+     *
+     * @return int
+     */
+    public function getNumberInEvent()
+    {
+        return $this->numberInEvent;
     }
 
     /**

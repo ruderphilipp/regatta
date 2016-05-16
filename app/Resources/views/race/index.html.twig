@@ -5,12 +5,16 @@
 
     <table class="table table-striped sortable">
         <thead>
+            <th data-defaultsign="_19" data-defaultsort="asc">Nr.</th>
             <th data-defaultsign="az">Name</th>
             <th data-defaultsort='disabled'></th>
         </thead>
         <tbody>
         {% for race in races %}
             <tr>
+                <td>
+                    {{ race.numberInEvent }}
+                </td>
                 <td>
                     <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">{{ rr.getOfficialName(race) }}</a>
                     {% if rr.getNumberOfRegistrations(race) > 0 %} <span class="badge">{{ rr.getNumberOfRegistrations(race) }}</span>{% endif %}

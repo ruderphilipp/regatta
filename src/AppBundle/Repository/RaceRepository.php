@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
 
 /**
@@ -95,5 +96,16 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
     public function getNumberOfRegistrations(Race $race) {
         // FIXME: implementation missing
         return 0;
+    }
+
+    public function getLastNumberForEvent(Event $event) {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('MAX(r.numberInEvent) maxNum')
+            ->from('AppBundle:Race', 'r')
+            ->orderBy('r.numberInEvent', 'DESC')
+            ->where($qb->expr()->eq('r.event', '?1'))
+            ->setParameter(1, $event->getId());
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

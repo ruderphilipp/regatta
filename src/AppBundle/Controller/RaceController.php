@@ -44,9 +44,14 @@ class RaceController extends Controller
      */
     public function newAction(Request $request, Event $event)
     {
-        $race = new Race();
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:Race');
+        $number = $repo->getLastNumberForEvent($event) + 1;
 
-        $form = $this->createForm('AppBundle\Form\RaceType', $race);
+        $race = new Race();
+        $form = $this->createForm('AppBundle\Form\RaceType', $race, array(
+            'number' => $number
+        ));
 
         $form->handleRequest($request);
 

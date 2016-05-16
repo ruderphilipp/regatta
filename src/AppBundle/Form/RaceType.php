@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,7 +21,16 @@ class RaceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // set default values
+        $default_number = $options['number'];
+        if (isset($options['data']) && !empty($options['data']->getNumberInEvent())) {
+            $default_number = $options['data']->getNumberInEvent();
+        }
+
         $builder
+            ->add('numberInEvent', HiddenType::class, array(
+                'data' => $default_number,
+            ))
             ->add('gender', ChoiceType::class, array(
                 'label' => 'Geschlecht',
                 'choices' => array(
@@ -110,7 +120,8 @@ class RaceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Race'
+            'data_class' => 'AppBundle\Entity\Race',
+            'number' => -1,
         ));
     }
 }

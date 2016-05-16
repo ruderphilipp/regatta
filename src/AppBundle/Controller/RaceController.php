@@ -56,6 +56,11 @@ class RaceController extends Controller
             $em->persist($race);
             $em->flush();
 
+            $this->addFlash(
+                'notice',
+                'Rennen wurde angelegt!'
+            );
+
             return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
         }
 
@@ -100,6 +105,11 @@ class RaceController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($race);
             $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Rennen wurde geändert!'
+            );
 
             return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
         }

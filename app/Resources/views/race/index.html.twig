@@ -3,7 +3,11 @@
 {% block body %}
     <h1>Rennen</h1>
 
-    <table class="table table-striped">
+    <table class="table table-striped sortable">
+        <thead>
+            <th data-defaultsign="az">Name</th>
+            <th data-defaultsort='disabled'></th>
+        </thead>
         <tbody>
         {% for race in races %}
             <tr>

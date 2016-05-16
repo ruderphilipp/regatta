@@ -22,6 +22,14 @@ class RaceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // set default values
+        $default_starter_min = 2;
+        if (isset($options['data']) && !empty($options['data']->getStarterMin())) {
+            $default_starter_min = $options['data']->getStarterMin();
+        }
+        $default_starter_max = 1000;
+        if (isset($options['data']) && !empty($options['data']->getStarterMax())) {
+            $default_starter_max = $options['data']->getStarterMax();
+        }
         $default_number = $options['number'];
         if (isset($options['data']) && !empty($options['data']->getNumberInEvent())) {
             $default_number = $options['data']->getNumberInEvent();
@@ -86,12 +94,14 @@ class RaceType extends AbstractType
                 'label' => 'Mindestanzahl an Startern',
                 'attr' => array(
                     'min' => 1,
+                    'value' => $default_starter_min,
                 ),
             ))
             ->add('starterMax', IntegerType::class, array(
                 'label' => 'Maximalanzahl an Startern',
                 'attr' => array(
                     'min' => 1,
+                    'value' => $default_starter_max,
                 ),
             ))
             ->add('pricePerStarter', NumberType::class, array(

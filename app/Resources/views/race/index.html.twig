@@ -7,7 +7,10 @@
         <tbody>
         {% for race in races %}
             <tr>
-                <td><a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">{{ rr.getOfficialName(race) }}</a></td>
+                <td>
+                    <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">{{ rr.getOfficialName(race) }}</a>
+                    {% if race.extraText != "" %}<br /><em>{{ race.extraText }}</em>{% endif %}
+                </td>
                 <td>
                     <ul>
                         <li>

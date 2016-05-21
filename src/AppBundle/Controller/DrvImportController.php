@@ -63,70 +63,7 @@ class DrvImportController extends Controller
                 $err = $this->is_valid_drv_file($data2->getPathname());
             }
             if (!$err) {
-//                echo 'reading file...' . "<br>\n";
-
-                $xml = simplexml_load_file($data2->getPathname());
-
-                $representatives = array();
-                $clubs = array();
-                $races = array();
-                $boats = array();
-                $athletes = array();
-
-                echo 'parsing representatives...'."<br>\n";
-                foreach ($xml->obleute->obmann as $rep) {
-                    $x = new Representative($rep);
-                    $representatives[$x->id] = $x;
-                }
-
-                echo 'parsing clubs...'."<br>\n";
-                foreach ($xml->vereine->verein as $club) {
-                    $x = new Club($club);
-                    $clubs[$x->drv_id] = $x;
-                }
-
-                echo 'parsing races...'."<br>\n";
-                echo '<pre>';
-                foreach ($xml->meldungen->rennen as $r) {
-                    $race = new Race($r);
-                    $races[$race->number] = $race;
-
-//                    echo '--------------------------------------'."\n";
-//                    echo '['.$race->number.'] ';
-//                    echo $race->specification."\n";
-
-                    foreach ($r->meldung as $registration) {
-                        $boat = new Boat($registration);
-                        $boats[$boat->id] = $boat;
-
-//                        echo "\t".$boat->id." - ".$boat->name."\n";
-
-                        foreach($registration->mannschaft->position as $crewmember) {
-                            $position = (int)(string)$crewmember['nr'];
-                            $is_cox = ('true' == (string)$crewmember['st']);
-
-                            foreach($crewmember->athlet as $athlete) {
-                                $a = new Athlete($athlete);
-                                $athletes[$a->drv_id] = $a;
-                                $boat->add($a, $position, $is_cox);
-                            }
-                        }
-
-                        $race->add($boat);
-                    }
-                }
-
-//                echo '===== representatives =========================='."\n";
-//                var_dump($representatives);
-                echo '===== clubs ===================================='."\n";
-                var_dump($clubs);
-//                echo '===== races ===================================='."\n";
-//                var_dump($races);
-//                echo '===== boats ===================================='."\n";
-//                var_dump($boats);
-//                echo '===== athletes ================================='."\n";
-//                var_dump($athletes);
-                echo '</pre>';
+                $this->importData($data2->getPathname());
 
                 $this->addFlash(
                     'notice',
@@ -211,5 +148,78 @@ class DrvImportController extends Controller
         $return .= " on line <b>$error->line</b>\n";
 
         return $return;
+    }
+
+    /**
+     * @param $filename file from where to import the data
+     */
+    private function importData($filename)
+    {
+        // echo 'reading file...' . "<br>\n";
+
+        $xml = simplexml_load_file($filename);
+
+        $representatives = array();
+        $clubs = array();
+        $races = array();
+        $boats = array();
+        $athletes = array();
+
+        echo 'parsing representatives...'."<br>\n";
+        foreach ($xml->obleute->obmann as $rep) {
+            $x = new Representative($rep);
+            $representatives[$x->id] = $x;
+        }
+
+        echo 'parsing clubs...'."<br>\n";
+        foreach ($xml->vereine->verein as $club) {
+            $x = new Club($club);
+            $clubs[$x->drv_id] = $x;
+        }
+
+        echo 'parsing races...'."<br>\n";
+        echo '<pre>';
+        foreach ($xml->meldungen->rennen as $r) {
+            $race = new Race($r);
+            $races[$race->number] = $race;
+
+//                    echo '--------------------------------------'."\n";
+//                    echo '['.$race->number.'] ';
+//                    echo $race->specification."\n";
+
+            foreach ($r->meldung as $registration) {
+                $boat = new Boat($registration);
+                $boats[$boat->id] = $boat;
+
+//                        echo "\t".$boat->id." - ".$boat->name."\n";
+
+                foreach($registration->mannschaft->position as $crewmember) {
+                    $position = (int)(string)$crewmember['nr'];
+                    $is_cox = ('true' == (string)$crewmember['st']);
+
+                    foreach($crewmember->athlet as $athlete) {
+                        $a = new Athlete($athlete);
+                        $athletes[$a->drv_id] = $a;
+                        $boat->add($a, $position, $is_cox);
+                    }
+                }
+
+                $race->add($boat);
+            }
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        echo '===== representatives =========================='."\n";
+        var_dump($representatives);
+        echo '===== clubs ===================================='."\n";
+        var_dump($clubs);
+        echo '===== races ===================================='."\n";
+        var_dump($races);
+        echo '===== boats ===================================='."\n";
+        var_dump($boats);
+        echo '===== athletes ================================='."\n";
+        var_dump($athletes);
+        echo '</pre>';
     }
 }

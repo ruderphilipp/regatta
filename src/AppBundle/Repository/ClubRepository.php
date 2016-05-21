@@ -2,12 +2,18 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Club;
 use Psr\Log\LoggerInterface;
-use AppBundle\DRV_Import\Club;
 
 class ClubRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function createOrUpdate(Club $club, LoggerInterface $logger)
+    /**
+     * @param \AppBundle\DRV_Import\Club $club the reference for updating
+     * @param LoggerInterface $logger for debugging messages
+     * @return \AppBundle\Entity\Club the created or updated club entity
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function createOrUpdate(\AppBundle\DRV_Import\Club $club, LoggerInterface $logger)
     {
         /**
          * @var \AppBundle\Entity\Club $dbItem
@@ -60,7 +66,7 @@ class ClubRepository extends \Doctrine\ORM\EntityRepository
         } else {
             $logger->debug("Found nothing. Create a new club.");
             // create
-            $dbItem = new \AppBundle\Entity\Club();
+            $dbItem = new Club();
             $dbItem->setName($club->name);
             $dbItem->setShortname($club->shortname);
             $dbItem->setAbbreviation($club->abbreviation);
@@ -68,5 +74,7 @@ class ClubRepository extends \Doctrine\ORM\EntityRepository
             $dbItem->setCity($club->location);
             $this->getEntityManager()->persist($dbItem);
         }
+
+        return $dbItem;
     }
 }

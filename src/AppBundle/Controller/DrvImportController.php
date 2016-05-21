@@ -165,11 +165,11 @@ class DrvImportController extends Controller
         $boats = array();
         $athletes = array();
 
-        echo 'parsing representatives...'."<br>\n";
-        foreach ($xml->obleute->obmann as $rep) {
-            $x = new Representative($rep);
-            $representatives[$x->id] = $x;
-        }
+//        echo 'parsing representatives...'."<br>\n";
+//        foreach ($xml->obleute->obmann as $rep) {
+//            $x = new Representative($rep);
+//            $representatives[$x->id] = $x;
+//        }
 
         echo 'parsing clubs...'."<br>\n";
         foreach ($xml->vereine->verein as $club) {
@@ -210,8 +210,8 @@ class DrvImportController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        echo '===== representatives =========================='."\n";
-        var_dump($representatives);
+//        echo '===== representatives =========================='."\n";
+//        var_dump($representatives);
 //        echo '===== clubs ===================================='."\n";
 //        var_dump($clubs);
         $clubRepo = $em->getRepository('AppBundle:Club');

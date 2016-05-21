@@ -2,6 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Competitor;
+use Psr\Log\LoggerInterface;
+
 /**
  * CompetitorRepository
  *
@@ -13,5 +16,74 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
     public function findAll()
     {
         return $this->findBy(array(), array('lastName' => 'ASC', 'firstName' => 'ASC'));
+    }
+
+    public function createOrUpdate(\AppBundle\DRV_Import\Athlete $athlete, LoggerInterface $logger)
+    {
+        /**
+         * @var \AppBundle\Entity\Competitor $dbItem
+         */
+        $dbItem = null;
+        // first try to find by ID
+        if ($athlete->drv_id > 0) {
+            $dbItem = $this->findOneByDrvId($athlete->drv_id);
+        }
+        // if this does not help, do a fuzzy search
+        if (null == $dbItem) {
+            $dbItem = $this->createQueryBuilder('c')
+                ->where('c.lastName LIKE :lname')
+                ->andWhere('c.firstName LIKE :fname')
+                ->andWhere('c.yearOfBirth = :yob')
+                ->setParameter('lname', $athlete->lastname)
+                ->setParameter('fname', $athlete->firstname)
+                ->setParameter('yob', $athlete->yearofbirth)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+
+        if (null != $dbItem) {
+            $logger->debug("Found competitor with id [{$dbItem->getId()}] for DRV-ID [{$athlete->drv_id}]");
+
+            // check and update if necessary
+            $updates = false;
+            if ($dbItem->getLastName() != $athlete->lastname) {
+                $dbItem->setLastName($athlete->lastname);
+                $updates = true;
+            }
+            if ($dbItem->getFirstName() != $athlete->firstname) {
+                $dbItem->setFirstName($athlete->firstname);
+                $updates = true;
+            }
+            if ($dbItem->getYearOfBirth() != $athlete->yearofbirth) {
+                $dbItem->setYearOfBirth($athlete->yearofbirth);
+                $updates = true;
+            }
+            if ($athlete->is_female && $dbItem->getGender() != 'w') {
+                $dbItem->setGender('w');
+            } elseif (!$athlete->is_female && $dbItem->getGender() != 'm') {
+                $dbItem->setGender('m');
+            }
+            if ($dbItem->getDrvId() != $athlete->drv_id) {
+                $dbItem->setDrvId($athlete->drv_id);
+            }
+
+            if ($updates) {
+                $logger->debug("Updating competitor with id [{$dbItem->getId()}]");
+                $this->getEntityManager()->persist($dbItem);
+            }
+        } else {
+            $logger->debug("Found nothing. Create a new competitor.");
+            // create competitor
+            $dbItem = new Competitor();
+            $dbItem->setLastName($athlete->lastname)
+                ->setFirstName($athlete->firstname)
+                ->setYearOfBirth($athlete->yearofbirth)
+                ->setGender(($athlete->is_female) ? 'w' : 'm')
+                ->setDrvId($athlete->drv_id);
+
+            $this->getEntityManager()->persist($dbItem);
+        }
+
+        return $dbItem;
     }
 }

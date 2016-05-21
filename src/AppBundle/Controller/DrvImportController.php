@@ -222,8 +222,12 @@ class DrvImportController extends Controller
         var_dump($races);
         echo '===== boats ===================================='."\n";
         var_dump($boats);
-        echo '===== athletes ================================='."\n";
-        var_dump($athletes);
+//        echo '===== athletes ================================='."\n";
+//        var_dump($athletes);
+        $athleteRepo = $em->getRepository('AppBundle:Competitor');
+        foreach ($athletes as $athlete) {
+            $a = $athleteRepo->createOrUpdate($athlete, $this->get('logger'));
+        }
         echo '</pre>';
 
         // saving

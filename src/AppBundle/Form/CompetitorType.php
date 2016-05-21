@@ -43,6 +43,10 @@ class CompetitorType extends AbstractType
                 'expanded' => true,
                 'multiple' => false,
             ))
+            ->add('drvId', TextType::class, array(
+                'label' => 'DRV-ID',
+                'required' => false,
+            ))
         ;
     }
     

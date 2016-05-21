@@ -26,6 +26,13 @@ class Competitor
     /**
      * @var string
      *
+     * @ORM\Column(name="drv_id", type="string", length=12, nullable=true)
+     */
+    private $drvId;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="first_name", type="string", length=255)
      */
     private $firstName;
@@ -69,6 +76,32 @@ class Competitor
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id of a competitor at the German Rowing Association
+     *
+     * @param string $id
+     *
+     * @return Competitor
+     */
+    public function setDrvId($id)
+    {
+        $this->drvId = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get id of a competitor at the German Rowing Association
+     *
+     * CAUTION: it is a string like DE-12345-6
+     *
+     * @return string
+     */
+    public function getDrvId()
+    {
+        return $this->drvId;
     }
 
     /**

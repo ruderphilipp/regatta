@@ -6,6 +6,8 @@
     <dl class="dl-horizontal">
         <dt>Geburtsjahr</dt>
         <dd>{{ competitor.yearOfBirth }}</dd>
+        <dt>DRV-ID</dt>
+        <dd>{% if null != competitor.drvId %}{{ competitor.drvId }}{% else %}nicht verfügbar{% endif %}</dd>
     </dl>
 
     <hr>

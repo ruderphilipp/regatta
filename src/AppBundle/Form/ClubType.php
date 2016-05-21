@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
 class ClubType extends AbstractType
@@ -19,7 +20,13 @@ class ClubType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('abbreviation')
+            ->add('shortname', TextType::class, array(
+                'required' => false,
+            ))
+            ->add('abbreviation', TextType::class, array(
+                'required' => false,
+            ))
+            ->add('drvId')
             ->add('city')
             ->add('state', ChoiceType::class, array(
                 'label' => 'Bundesland',

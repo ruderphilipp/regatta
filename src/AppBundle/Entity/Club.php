@@ -24,11 +24,25 @@ class Club
     private $id;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="drv_id", type="integer", nullable=true)
+     */
+    private $drvId;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      */
     private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="shortname", type="string", length=255, unique=false)
+     */
+    private $shortname;
 
     /**
      * @var string
@@ -93,6 +107,30 @@ class Club
     }
 
     /**
+     * Set id of a club at the German Rowing Association
+     *
+     * @param int $id
+     *
+     * @return Club
+     */
+    public function setDrvId($id)
+    {
+        $this->drvId = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get id of a club at the German Rowing Association
+     *
+     * @return int
+     */
+    public function getDrvId()
+    {
+        return $this->drvId;
+    }
+
+    /**
      * Set name
      *
      * @param string $name
@@ -114,6 +152,30 @@ class Club
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set short name of a club
+     *
+     * @param string $name
+     *
+     * @return Club
+     */
+    public function setShortname($shortname)
+    {
+        $this->shortname = $shortname;
+
+        return $this;
+    }
+
+    /**
+     * Get short name of a club
+     *
+     * @return string
+     */
+    public function getShortname()
+    {
+        return $this->shortname;
     }
 
     /**

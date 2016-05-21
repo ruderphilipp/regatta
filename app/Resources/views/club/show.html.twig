@@ -4,6 +4,10 @@
     <h1>{{ club.name }}</h1>
 
     <dl class="dl-horizontal">
+    {% if null != club.shortname %}
+        <dt>Kurzname</dt>
+        <dd>{{ club.shortname }}</dd>
+    {% endif %}
     {% if null != club.abbreviation %}
         <dt>Abkürzung</dt>
         <dd>{{ club.abbreviation }}</dd>
@@ -14,6 +18,8 @@
         <dd>{{ club.street }} {{ club.streetNumber }}</dd>
         <dt>Postleitzahl</dt>
         <dd>{{ club.zip }}</dd>
+        <dt>DRV-ID</dt>
+        <dd>{% if null != club.drvId %}{{ club.drvId }}{% else %}nicht verfügbar{% endif %}</dd>
     </dl>
 
     <hr>

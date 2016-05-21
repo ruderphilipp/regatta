@@ -212,8 +212,12 @@ class DrvImportController extends Controller
 
         echo '===== representatives =========================='."\n";
         var_dump($representatives);
-        echo '===== clubs ===================================='."\n";
-        var_dump($clubs);
+//        echo '===== clubs ===================================='."\n";
+//        var_dump($clubs);
+        $clubRepo = $em->getRepository('AppBundle:Club');
+        foreach ($clubs as $club) {
+            $clubRepo->createOrUpdate($club, $this->get('logger'));
+        }
         echo '===== races ===================================='."\n";
         var_dump($races);
         echo '===== boats ===================================='."\n";
@@ -221,5 +225,8 @@ class DrvImportController extends Controller
         echo '===== athletes ================================='."\n";
         var_dump($athletes);
         echo '</pre>';
+
+        // saving
+        $em->flush();
     }
 }

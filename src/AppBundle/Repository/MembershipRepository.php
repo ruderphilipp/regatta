@@ -1,6 +1,9 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Membership;
+use Psr\Log\LoggerInterface;
 
 /**
  * MembershipRepository
@@ -10,4 +13,45 @@ namespace AppBundle\Repository;
  */
 class MembershipRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function createOrUpdate(Competitor $competitor, $drvClubId, \DateTime $dateTime,
+                                   LoggerInterface $logger)
+    {
+        /** @var Membership $dbItem */
+        $dbItem = null;
+
+        /** @var Membership $m */
+        foreach($competitor->getMemberships() as $m) {
+            if ($m->getClub()->getDrvId() == $drvClubId) {
+                if (null != $m->getSince() && $m->getSince() < $dateTime) {
+                    if (null != $m->getUntil() && $m->getUntil() > $dateTime) {
+                        // The membership has an end, but this import falls into the active period.
+                        $dbItem = $m;
+                    } elseif (null == $m->getUntil()) {
+                        // no ending
+                        $dbItem = $m;
+                    }
+                }
+            }
+        }
+
+        // If no matching membership was found, create one
+        if (null == $dbItem) {
+            $club = $this->getEntityManager()->getRepository('AppBundle:Club')->findOneByDrvId($drvClubId);
+            if (null != $club) {
+                $dbItem = new Membership();
+                $dbItem->setPerson($competitor)
+                    ->setClub($club)
+                    ->setSince($dateTime);
+                $this->getEntityManager()->persist($dbItem);
+                $logger->info("Created new membership for "
+                    . "[{$competitor->getLastName()}, {$competitor->getFirstName()}, {$competitor->getId()}]");
+            } else {
+                $message = "Found no club with DRV-ID {$drvClubId}! No membership created for "
+                    . "[{$competitor->getLastName()}, {$competitor->getFirstName()}, {$competitor->getId()}]";
+                $logger->warning($message);
+                throw new \Exception($message);
+            }
+        }
+        return $dbItem;
+    }
 }

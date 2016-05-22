@@ -159,6 +159,9 @@ class DrvImportController extends Controller
 
         $xml = simplexml_load_file($filename);
 
+        // see <http://stackoverflow.com/questions/4411340/>
+        $date = \DateTime::createFromFormat('Y-m-d\TH:i:sP', $xml["stand"]);
+
         $representatives = array();
         $clubs = array();
         $races = array();
@@ -219,6 +222,9 @@ class DrvImportController extends Controller
         foreach ($clubs as $club) {
             $clubRepo->createOrUpdate($club, $this->get('logger'));
         }
+        // save into DB
+        $em->flush();
+
         echo '===== races ===================================='."\n";
         var_dump($races);
         echo '===== boats ===================================='."\n";
@@ -227,9 +233,12 @@ class DrvImportController extends Controller
 //        var_dump($athletes);
         /** @var \AppBundle\Repository\CompetitorRepository $athleteRepo */
         $athleteRepo = $em->getRepository('AppBundle:Competitor');
+        /** @var \AppBundle\Repository\MembershipRepository $membershipRepo */
+        $membershipRepo = $em->getRepository('AppBundle:Membership');
         foreach ($athletes as $athlete) {
             try {
                 $a = $athleteRepo->createOrUpdate($athlete, $this->get('logger'));
+                $m = $membershipRepo->createOrUpdate($a, $athlete->club_id, $date, $this->get('logger'));
             } catch (\Exception $e) {
                 $this->addFlash(
                     'error',
@@ -239,7 +248,7 @@ class DrvImportController extends Controller
         }
         echo '</pre>';
 
-        // saving
+        // save into DB
         $em->flush();
     }
 }

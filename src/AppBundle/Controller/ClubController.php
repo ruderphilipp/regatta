@@ -71,6 +71,7 @@ class ClubController extends Controller
         return $this->render('club/show.html.twig', array(
             'club' => $club,
             'delete_form' => $deleteForm->createView(),
+            'now' => new \DateTime(),
         ));
     }
 

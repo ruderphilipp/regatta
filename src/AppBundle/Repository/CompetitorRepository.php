@@ -21,9 +21,7 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
 
     public function createOrUpdate(\AppBundle\DRV_Import\Athlete $athlete, LoggerInterface $logger)
     {
-        /**
-         * @var \AppBundle\Entity\Competitor $dbItem
-         */
+        /** @var \AppBundle\Entity\Competitor $dbItem */
         $dbItem = null;
         $gotError = false;
         // first try to find by ID (string!)

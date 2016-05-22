@@ -151,7 +151,7 @@ class DrvImportController extends Controller
     }
 
     /**
-     * @param $filename file from where to import the data
+     * @param $filename string file from where to import the data
      */
     private function importData($filename)
     {
@@ -214,6 +214,7 @@ class DrvImportController extends Controller
 //        var_dump($representatives);
 //        echo '===== clubs ===================================='."\n";
 //        var_dump($clubs);
+        /** @var \AppBundle\Repository\ClubRepository $clubRepo */
         $clubRepo = $em->getRepository('AppBundle:Club');
         foreach ($clubs as $club) {
             $clubRepo->createOrUpdate($club, $this->get('logger'));
@@ -224,6 +225,7 @@ class DrvImportController extends Controller
         var_dump($boats);
 //        echo '===== athletes ================================='."\n";
 //        var_dump($athletes);
+        /** @var \AppBundle\Repository\CompetitorRepository $athleteRepo */
         $athleteRepo = $em->getRepository('AppBundle:Competitor');
         foreach ($athletes as $athlete) {
             try {

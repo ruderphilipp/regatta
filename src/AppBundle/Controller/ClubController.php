@@ -68,8 +68,16 @@ class ClubController extends Controller
     {
         $deleteForm = $this->createDeleteForm($club);
 
+        $em = $this->getDoctrine()->getManager();
+        /** @var \AppBundle\Repository\ClubRepository $clubRepo */
+        $clubRepo = $em->getRepository('AppBundle:Club');
+        $actives = $clubRepo->findAllActiveCompetitors($club);
+        $formers = $clubRepo->findAllFormerCompetitors($club);
+
         return $this->render('club/show.html.twig', array(
             'club' => $club,
+            'activeMemberships' => $actives,
+            'formerMemberships' => $formers,
             'delete_form' => $deleteForm->createView(),
             'now' => new \DateTime(),
         ));

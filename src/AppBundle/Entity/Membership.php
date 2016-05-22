@@ -155,5 +155,10 @@ class Membership
         return $this->person;
     }
 
+    public function isValidAt(\DateTime $date)
+    {
+        return ($this->since < $date && (null == $this->until || $date < $this->until));
+    }
+
 }
 

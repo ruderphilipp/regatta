@@ -2,11 +2,48 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\AppBundle;
 use AppBundle\Entity\Club;
 use Psr\Log\LoggerInterface;
 
 class ClubRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * Find all competitors that are (still) members of this club.
+     *
+     * @param Club $club The club that should be inspected.
+     * @return array all current club memberships
+     */
+    public function findAllActiveCompetitors(Club $club) {
+        $result = array();
+        $now = new \DateTime();
+        /** @var \AppBundle\Entity\Membership $membership */
+        foreach ($club->getMemberships() as $membership) {
+            if ($membership->isValidAt($now)) {
+                $result[] = $membership;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Find all competitors of a club that are no longer members.
+     *
+     * @param Club $club The club that should be inspected.
+     * @return array all former club memberships
+     */
+    public function findAllFormerCompetitors(Club $club) {
+        $result = array();
+        $now = new \DateTime();
+        /** @var \AppBundle\Entity\Membership $membership */
+        foreach ($club->getMemberships() as $membership) {
+            if (!$membership->isValidAt($now)) {
+                $result[] = $membership;
+            }
+        }
+        return $result;
+    }
+
     /**
      * @param \AppBundle\DRV_Import\Club $club the reference for updating
      * @param LoggerInterface $logger for debugging messages

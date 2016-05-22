@@ -24,7 +24,32 @@
 
     <hr>
 
-    <p><strong>Mitgliedschaften</strong> <span class="badge">{{ club.memberships | count }}</span> </p>
+    <p><strong>Mitgliedschaften</strong> <span class="badge">{{ activeMemberships | count }}</span> </p>
+{% if count(activeMemberships) > 0 %}
+    <table class="table table-striped sortable">
+        <thead>
+        <tr>
+            <th data-defaultsign="az" data-defaultsort="asc">Nachname</th>
+            <th data-defaultsign="az">Vorname</th>
+            <th>Zeitraum</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for membership in activeMemberships %}
+            {% set p = membership.person %}
+            <tr>
+                <td>{{ p.lastName }}</td>
+                <td>{{ p.firstName }}</td>
+                <td>{{ membership.since | date("d.m.Y")}} -
+                    {% if null != membership.until %}{{ membership.until | date("d.m.Y")}}
+                    {% else %}∞{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% if count(formerMemberships) > 0 %}
+    <p><strong>ehemalige Mitgliedschaften</strong> <span class="badge">{{ formerMemberships | count }}</span> </p>
 
     <table class="table table-striped sortable">
         <thead>
@@ -35,20 +60,17 @@
         </tr>
         </thead>
         <tbody>
-        {% for membership in club.memberships %}
-            {% if null == membership.until or membership.until < now %}
+        {% for membership in formerMemberships %}
             {% set p = membership.person %}
             <tr>
                 <td>{{ p.lastName }}</td>
                 <td>{{ p.firstName }}</td>
-                <td>{{ membership.since | date("d.m.Y")}} -
-                    {% if null != membership.until %}{{ membership.until | date("d.m.Y")}}
-                    {% else %}∞{% endif %}</td>
+                <td>{{ membership.since | date("d.m.Y")}} - {{ membership.until | date("d.m.Y") }}</td>
             </tr>
-            {% endif %}
         {% endfor %}
         </tbody>
     </table>
+{% endif %}
 
     <hr>
 

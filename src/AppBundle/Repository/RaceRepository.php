@@ -1,8 +1,11 @@
 <?php
 
 namespace AppBundle\Repository;
+
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceSection;
+use Psr\Log\LoggerInterface;
 
 /**
  * RaceRepository
@@ -107,5 +110,35 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             ->where($qb->expr()->eq('r.event', '?1'))
             ->setParameter(1, $event->getId());
         return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function createOrUpdate(\AppBundle\DRV_Import\Race $race, Event $event, LoggerInterface $logger)
+    {
+        /** @var Race $dbItem */
+        $dbItem = null;
+        $em = $this->getEntityManager();
+
+        $dbItem = $this->findOneBy(array('event' => $event, 'numberInEvent' => $race->number));
+        if (null != $dbItem) {
+            // TODO update
+            // $extraText
+            $logger->warning("Implementation missing for updating of races in RaceRepository::createOrUpdate");
+
+            if ($dbItem->getSections()->isEmpty()) {
+                // create initial section
+                $section = new RaceSection();
+                $section->setRace($dbItem)
+                    ->setNumber(1);
+                $em->persist($section);
+                $logger->info("Create initial section for race {$dbItem->getId()}");
+                $em->flush();
+                $em->refresh($dbItem);
+            }
+        } else {
+            // TODO create
+            $logger->warning("Implementation missing for creation of new races in RaceRepository::createOrUpdate");
+        }
+
+        return $dbItem;
     }
 }

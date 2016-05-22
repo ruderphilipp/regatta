@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use AppBundle\Entity\Event;
@@ -25,7 +26,7 @@ class Race
     private $id;
 
     /**
-     * @var int
+     * @var Event
      *
      * @Assert\Type(type="AppBundle\Entity\Event")
      * @Assert\Valid()
@@ -111,6 +112,13 @@ class Race
      * @ORM\Column(name="starter_per_group", type="smallint")
      */
     private $competitorsPerGroup;
+
+    /**
+     * @var ArrayCollection[RaceSection]
+     *
+     * @ORM\OneToMany(targetEntity="RaceSection", mappedBy="race")
+     */
+    private $sections;
 
     /**
      * Get id
@@ -394,7 +402,8 @@ class Race
      *
      * @return Race
      */
-    public function setEvent($event) {
+    public function setEvent($event)
+    {
         $this->event = $event;
 
         return $this;
@@ -405,8 +414,18 @@ class Race
      *
      * @return Event
      */
-    public function getEvent() {
+    public function getEvent()
+    {
         return $this->event;
+    }
+
+    /**
+     * Get all sections of this race
+     * @return
+     */
+    public function getSections()
+    {
+        return $this->sections;
     }
 }
 

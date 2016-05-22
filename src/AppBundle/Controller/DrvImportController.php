@@ -63,7 +63,7 @@ class DrvImportController extends Controller
                 $err = $this->is_valid_drv_file($data2->getPathname());
             }
             if (!$err) {
-                $this->importData($data2->getPathname());
+                $this->importData($data2->getPathname(), $event);
 
                 $this->addFlash(
                     'notice',
@@ -153,7 +153,7 @@ class DrvImportController extends Controller
     /**
      * @param $filename string file from where to import the data
      */
-    private function importData($filename)
+    private function importData($filename, Event $event)
     {
         // echo 'reading file...' . "<br>\n";
 
@@ -246,9 +246,32 @@ class DrvImportController extends Controller
                 );
             }
         }
-        echo '</pre>';
-
         // save into DB
         $em->flush();
+
+        /** @var \AppBundle\Repository\RaceRepository $raceRepo */
+        $raceRepo = $em->getRepository('AppBundle:Race');
+        /** @var \AppBundle\Repository\RacingGroupRepository $groupRepo */
+        $groupRepo = $em->getRepository('AppBundle:RacingGroup');
+        /** @var \AppBundle\DRV_Import\Race $race */
+        foreach($races as $race) {
+            $r = $raceRepo->createOrUpdate($race, $event, $this->get('logger'));
+
+            if (null != $r) {
+                /** @var \AppBundle\DRV_Import\Boat $boat */
+                foreach($race->getBoats() as $boat) {
+                    $b = $groupRepo->createOrUpdate($boat, $r, $this->get('logger'));
+                    // TODO map athletes->boat
+                }
+            } else {
+                $this->addFlash(
+                    'error',
+                    "Could not find race for [{$race->specification}, {$race->number}]"
+                );
+            }
+        }
+
+        echo '</pre>';
+
     }
 }

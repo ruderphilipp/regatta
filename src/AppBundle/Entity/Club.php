@@ -91,6 +91,11 @@ class Club
      */
     private $memberships;
 
+    /**
+     * @ORM\OneToMany(targetEntity="RacingGroup", mappedBy="club")
+     */
+    private $groups;
+
     public function __construct()
     {
         $this->memberships = new ArrayCollection();

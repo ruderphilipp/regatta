@@ -48,6 +48,10 @@ class Membership
      */
     private $person;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="RacingGroupMembership", inversedBy="membership")
+     */
+    private $groups;
 
     /**
      * Get id

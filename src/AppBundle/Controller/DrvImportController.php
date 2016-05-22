@@ -112,7 +112,7 @@ class DrvImportController extends Controller
                 libxml_clear_errors();
                 foreach ($errors as $error) {
                     print '<<<<<<<<<<<<<<<<<<<<<<<<<' . "\n";
-                    print libxml_display_error($error);
+                    print $this->libxml_display_error($error);
                     print_r($error);
                     print '>>>>>>>>>>>>>>>>>>>>>>>>>' . "\n";
                 }

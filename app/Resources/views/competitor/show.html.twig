@@ -14,10 +14,10 @@
 
     <p><strong>Mitgliedschaften</strong> <span class="badge">{{ competitor.memberships | count }}</span> </p>
 
-    <table class="table table-striped">
+    <table class="table table-striped sortable">
         <thead>
         <tr>
-            <th>Verein</th>
+            <th data-defaultsign="az" data-defaultsort="asc">Verein</th>
             <th>Von</th>
             <th>Bis</th>
         </tr>
@@ -26,8 +26,8 @@
         {% for membership in competitor.memberships %}
         <tr>
             <td>{{ membership.club.name }}</td>
-            <td>{{ membership.since | date("d.m.Y")}}</td>
-            <td>{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
+            <td data-dateformat="DD.MM.YYYY">{{ membership.since | date("d.m.Y")}}</td>
+            <td data-dateformat="DD.MM.YYYY">{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
         </tr>
         {% endfor %}
         </tbody>

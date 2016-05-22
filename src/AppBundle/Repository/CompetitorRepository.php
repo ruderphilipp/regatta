@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Competitor;
+use Doctrine\ORM\NonUniqueResultException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -24,21 +25,32 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
          * @var \AppBundle\Entity\Competitor $dbItem
          */
         $dbItem = null;
-        // first try to find by ID
-        if ($athlete->drv_id > 0) {
+        $gotError = false;
+        // first try to find by ID (string!)
+        if (!empty($athlete->drv_id)) {
             $dbItem = $this->findOneByDrvId($athlete->drv_id);
         }
         // if this does not help, do a fuzzy search
         if (null == $dbItem) {
-            $dbItem = $this->createQueryBuilder('c')
+            $query = $this->createQueryBuilder('c')
                 ->where('c.lastName LIKE :lname')
                 ->andWhere('c.firstName LIKE :fname')
                 ->andWhere('c.yearOfBirth = :yob')
                 ->setParameter('lname', $athlete->lastname)
                 ->setParameter('fname', $athlete->firstname)
                 ->setParameter('yob', $athlete->yearofbirth)
-                ->getQuery()
-                ->getOneOrNullResult();
+                ->getQuery();
+            try {
+                $dbItem = $query->getOneOrNullResult();
+            } catch (NonUniqueResultException $e) {
+                $multi = $query->getResult();
+                $logger->warning("got multiple results for competitor: [{$athlete->lastname}, {$athlete->firstname}, {$athlete->yearofbirth}]");
+                foreach ($multi as $m) {
+                    $logger->warning("  ".$m->getId());
+                }
+                // TODO try harder to find the correct one
+                $gotError = true;
+            }
         }
 
         if (null != $dbItem) {
@@ -72,16 +84,20 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
                 $this->getEntityManager()->persist($dbItem);
             }
         } else {
-            $logger->debug("Found nothing. Create a new competitor.");
-            // create competitor
-            $dbItem = new Competitor();
-            $dbItem->setLastName($athlete->lastname)
-                ->setFirstName($athlete->firstname)
-                ->setYearOfBirth($athlete->yearofbirth)
-                ->setGender(($athlete->is_female) ? 'w' : 'm')
-                ->setDrvId($athlete->drv_id);
+            if (!$gotError) {
+                $logger->debug("Found nothing. Create a new competitor.");
+                // create competitor
+                $dbItem = new Competitor();
+                $dbItem->setLastName($athlete->lastname)
+                    ->setFirstName($athlete->firstname)
+                    ->setYearOfBirth($athlete->yearofbirth)
+                    ->setGender(($athlete->is_female) ? 'w' : 'm')
+                    ->setDrvId($athlete->drv_id);
 
-            $this->getEntityManager()->persist($dbItem);
+                $this->getEntityManager()->persist($dbItem);
+            } else {
+                throw new NonUniqueResultException("got multiple results for competitor: [{$athlete->lastname}, {$athlete->firstname}, {$athlete->yearofbirth}]");
+            }
         }
 
         return $dbItem;

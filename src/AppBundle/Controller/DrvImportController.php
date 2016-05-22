@@ -226,7 +226,14 @@ class DrvImportController extends Controller
 //        var_dump($athletes);
         $athleteRepo = $em->getRepository('AppBundle:Competitor');
         foreach ($athletes as $athlete) {
-            $a = $athleteRepo->createOrUpdate($athlete, $this->get('logger'));
+            try {
+                $a = $athleteRepo->createOrUpdate($athlete, $this->get('logger'));
+            } catch (\Exception $e) {
+                $this->addFlash(
+                    'error',
+                    $e->getMessage()
+                );
+            }
         }
         echo '</pre>';
 

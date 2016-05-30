@@ -98,8 +98,12 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
     }
 
     public function getNumberOfRegistrations(Race $race) {
-        // FIXME: implementation missing
-        return 0;
+        $result = 0;
+        /** @var RaceSection $section */
+        foreach($race->getSections() as $section) {
+            $result += $section->getGroups()->count();
+        }
+        return $result;
     }
 
     public function getLastNumberForEvent(Event $event) {

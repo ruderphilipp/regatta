@@ -99,10 +99,12 @@ class DrvImportController extends Controller
         $pathToSchema = realpath($this->get('kernel')->getRootDir() . '/Resources/drv_import/meldungen_2010.xsd');
 
         if (!file_exists($pathToSchema)) {
+            $message = 'Konnte DRV-Schema auf Server nicht finden!';
             $this->addFlash(
                 'error',
-                'Konnte DRV-Schema auf Server nicht finden!'
+                $message
             );
+            $this->get('logger')->warning($message . ' Gesuchter Pfad: ' . $pathToSchema);
             $hasErrors = true;
         }
 

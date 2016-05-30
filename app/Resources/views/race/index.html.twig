@@ -15,7 +15,7 @@
                 <td>
                     {{ race.numberInEvent }}
                 </td>
-                <td>
+                <td  data-value="{{ rr.getOfficialName(race) }}">
                     {% set counter = rr.getNumberOfRegistrations(race) %}
                     {% if counter > 0 %} <span class="label {% if counter < race.getStarterMin or counter > race.getStarterMax %}label-danger{% else %}label-success{% endif %}">{{ rr.getNumberOfRegistrations(race) }}</span>{% endif %}
                     <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">{{ rr.getOfficialName(race) }}</a>

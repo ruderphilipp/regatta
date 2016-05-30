@@ -87,8 +87,12 @@ class RaceController extends Controller
     {
         $deleteForm = $this->createDeleteForm($race);
 
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository('AppBundle:Race');
+
         return $this->render('race/show.html.twig', array(
             'race' => $race,
+            'rr' => $repo,
             'delete_form' => $deleteForm->createView(),
         ));
     }

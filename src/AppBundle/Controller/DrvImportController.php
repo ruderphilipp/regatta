@@ -106,7 +106,7 @@ class DrvImportController extends Controller
             $hasErrors = true;
         }
 
-        if (!$xml->schemaValidate($pathToSchema)) {
+        if (!$hasErrors && !$xml->schemaValidate($pathToSchema)) {
             if (self::DRV_DEBUG) {
                 print '<b>DOMDocument::schemaValidate() generated Errors!</b>' . "\n";
                 $errors = libxml_get_errors();

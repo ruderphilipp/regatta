@@ -76,14 +76,14 @@
 
     <ul>
         <li>
-            <a href="{{ path('race_index', { 'id': race.event.id }) }}">Back to the list</a>
+            <a href="{{ path('race_index', { 'id': race.event.id }) }}">Zurück zur Übersicht</a>
         </li>
         <li>
-            <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}">Edit</a>
+            <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}">Rennen ändern</a>
         </li>
         <li>
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <input type="submit" value="Löschen">
             {{ form_end(delete_form) }}
         </li>
     </ul>

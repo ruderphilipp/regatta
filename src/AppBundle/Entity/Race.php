@@ -93,6 +93,13 @@ class Race
     private $starterMax;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="starter_per_section", type="smallint")
+     */
+    private $maxStarterPerSection;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="extra_text", type="string", length=255, nullable=true)
@@ -320,6 +327,29 @@ class Race
     public function getStarterMax()
     {
         return $this->starterMax;
+    }
+
+    /**
+     * Set maximum number of groups per section
+     *
+     * @param integer $maxStarterPerSection
+     * @return Race
+     */
+    public function setMaxStarterPerSection($maxStarterPerSection)
+    {
+        $this->maxStarterPerSection = $maxStarterPerSection;
+
+        return $this;
+    }
+
+    /**
+     * Get maximum number of groups per section
+     *
+     * @return integer
+     */
+    public function getMaxStarterPerSection()
+    {
+        return $this->maxStarterPerSection;
     }
 
     /**

@@ -30,6 +30,10 @@ class RaceType extends AbstractType
         if (isset($options['data']) && !empty($options['data']->getStarterMax())) {
             $default_starter_max = $options['data']->getStarterMax();
         }
+        $default_max_starter_per_section = 4;
+        if (isset($options['data']) && !empty($options['data']->getMaxStarterPerSection())) {
+            $default_max_starter_per_section = $options['data']->getMaxStarterPerSection();
+        }
         $default_number = $options['number'];
         if (isset($options['data']) && !empty($options['data']->getNumberInEvent())) {
             $default_number = $options['data']->getNumberInEvent();
@@ -102,6 +106,13 @@ class RaceType extends AbstractType
                 'attr' => array(
                     'min' => 1,
                     'value' => $default_starter_max,
+                ),
+            ))
+            ->add('maxStarterPerSection', IntegerType::class, array(
+                'label' => 'max. Anzahl Starter pro Gruppe',
+                'attr' => array(
+                    'min' => 1,
+                    'value' => $default_max_starter_per_section,
                 ),
             ))
             ->add('pricePerStarter', NumberType::class, array(

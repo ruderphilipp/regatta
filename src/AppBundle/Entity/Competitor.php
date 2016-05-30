@@ -177,6 +177,17 @@ class Competitor
     }
 
     /**
+     * Get age of this person at the current date in years
+     *
+     * @return int age
+     */
+    public function getAge()
+    {
+        $now = (int)(new \DateTime())->format('Y');
+        return $now - $this->getYearOfBirth();
+    }
+
+    /**
      * Set gender
      *
      * @param string $gender

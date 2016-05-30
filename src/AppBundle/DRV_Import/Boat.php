@@ -24,4 +24,8 @@ class Boat
     public function add(Athlete $a, $pos, $is_cox) {
         $this->positions[$pos] = array('athlete' => $a->drv_id, 'is_cox' => $is_cox);
     }
+
+    public function getPositions() {
+        return $this->positions;
+    }
 }

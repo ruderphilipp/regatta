@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 use AppBundle\Entity\Event;
+use AppBundle\Entity\RacingGroupMembership;
 
 use AppBundle\DRV_Import\Athlete;
 use AppBundle\DRV_Import\Boat;
@@ -235,10 +236,13 @@ class DrvImportController extends Controller
         $athleteRepo = $em->getRepository('AppBundle:Competitor');
         /** @var \AppBundle\Repository\MembershipRepository $membershipRepo */
         $membershipRepo = $em->getRepository('AppBundle:Membership');
+        // cache
+        $membershipPerAthlete = array("_" => "");
         foreach ($athletes as $athlete) {
             try {
                 $a = $athleteRepo->createOrUpdate($athlete, $this->get('logger'));
                 $m = $membershipRepo->createOrUpdate($a, $athlete->club_id, $date, $this->get('logger'));
+                $membershipPerAthlete[$athlete->drv_id] = $m;
             } catch (\Exception $e) {
                 $this->addFlash(
                     'error',
@@ -261,8 +265,33 @@ class DrvImportController extends Controller
                 /** @var \AppBundle\DRV_Import\Boat $boat */
                 foreach($race->getBoats() as $boat) {
                     $b = $groupRepo->createOrUpdate($boat, $r, $this->get('logger'));
-                    // TODO map athletes->boat
+                    // map athletes->boat
+                    $positions = $boat->getPositions();
+                    foreach (array_keys($positions) as $i) {
+                        $a_id = $positions[$i]['athlete'];
+                        if (null == $a_id) {
+                            $message = "No athlete at position {$i} in group {$b->getName()}";
+                            $this->get('logger')->warning($message);
+                            echo $message . "\n";
+                        } else {
+                            if (!array_key_exists($a_id, $membershipPerAthlete)) {
+                                $message = "No membership for athlete {$a_id}";
+                                $this->get('logger')->warning($message);
+                                echo $message . "\n";
+                            } else {
+                                $m = $membershipPerAthlete[$a_id];
+                                // FIXME use createOrUpdate to avoid duplicates
+                                $rgm = new RacingGroupMembership();
+                                $rgm->setGroup($b)
+                                    ->setPosition($i)
+                                    ->setIsCox($positions[$i]['is_cox'])
+                                    ->setMembership($m);
+                                $em->persist($rgm);
+                            }
+                        }
+                    }
                 }
+                $em->flush();
             } else {
                 $this->addFlash(
                     'error',

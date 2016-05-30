@@ -92,6 +92,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $name;
     }
 
+    // FIXME not used
     private function getAgeClassSuffix($min, $max) {
         return "(".$min." - ".$max.")";
     }

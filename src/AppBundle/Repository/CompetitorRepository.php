@@ -24,31 +24,10 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
         /** @var \AppBundle\Entity\Competitor $dbItem */
         $dbItem = null;
         $gotError = false;
-        // first try to find by ID (string!)
-        if (!empty($athlete->drv_id)) {
-            $dbItem = $this->findOneByDrvId($athlete->drv_id);
-        }
-        // if this does not help, do a fuzzy search
-        if (null == $dbItem) {
-            $query = $this->createQueryBuilder('c')
-                ->where('c.lastName LIKE :lname')
-                ->andWhere('c.firstName LIKE :fname')
-                ->andWhere('c.yearOfBirth = :yob')
-                ->setParameter('lname', $athlete->lastname)
-                ->setParameter('fname', $athlete->firstname)
-                ->setParameter('yob', $athlete->yearofbirth)
-                ->getQuery();
-            try {
-                $dbItem = $query->getOneOrNullResult();
-            } catch (NonUniqueResultException $e) {
-                $multi = $query->getResult();
-                $logger->warning("got multiple results for competitor: [{$athlete->lastname}, {$athlete->firstname}, {$athlete->yearofbirth}]");
-                foreach ($multi as $m) {
-                    $logger->warning("  ".$m->getId());
-                }
-                // TODO try harder to find the correct one
-                $gotError = true;
-            }
+        try {
+            $this->findByAthlete($athlete, $logger);
+        } catch (NonUniqueResultException $e) {
+            $gotError = true;
         }
 
         if (null != $dbItem) {
@@ -98,6 +77,39 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
             }
         }
 
+        return $dbItem;
+    }
+
+    public function findByAthlete(\AppBundle\DRV_Import\Athlete $athlete, LoggerInterface $logger)
+    {
+        // first try to find by ID (string!)
+        if (!empty($athlete->drv_id)) {
+            $dbItem = $this->findOneByDrvId($athlete->drv_id);
+        }
+        // if this does not help, do a fuzzy search
+        if (null == $dbItem) {
+            $query = $this->createQueryBuilder('c')
+                ->where('c.lastName LIKE :lname')
+                ->andWhere('c.firstName LIKE :fname')
+                ->andWhere('c.yearOfBirth = :yob')
+                ->setParameter('lname', $athlete->lastname)
+                ->setParameter('fname', $athlete->firstname)
+                ->setParameter('yob', $athlete->yearofbirth)
+                ->getQuery();
+            try {
+                $dbItem = $query->getOneOrNullResult();
+            } catch (NonUniqueResultException $e) {
+                $multi = $query->getResult();
+                $message = "got multiple results for competitor: [{$athlete->lastname}, {$athlete->firstname}, {$athlete->yearofbirth}]";
+                $logger->warning($message);
+                foreach ($multi as $m) {
+                    $logger->warning("  ".$m->getId());
+                }
+                // TODO try harder to find the correct one
+                $gotError = true;
+                throw new NonUniqueResultException($message);
+            }
+        }
         return $dbItem;
     }
 }

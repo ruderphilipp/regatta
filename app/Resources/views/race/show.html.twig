@@ -80,17 +80,17 @@
         </tbody>
     </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('race_index', { 'id': race.event.id }) }}">Zurück zur Übersicht</a>
-        </li>
-        <li>
-            <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}">Rennen ändern</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Löschen">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-md-8">
+            <a href="{{ path('race_index', { 'id': race.event.id }) }}" class="btn btn-default">Zurück zur Übersicht</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-8">
+        <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
+        {{ form_start(delete_form) }}
+            <input type="submit" value="Rennen löschen" class="btn btn-danger">
+        {{ form_end(delete_form) }}
+        </div>
+    </div>
 {% endblock %}

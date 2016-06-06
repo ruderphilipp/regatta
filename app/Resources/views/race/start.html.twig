@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ race.getEvent.getName }} - Rennen {{ race.numberInEvent }}: {{ race_name }}
+{% endblock %}
+
+{% block body %}
+    <h1>#{{ race.numberInEvent }}: {{ race_name }}<br>
+        {% if race.extraText != "" %}<small>{{ race.extraText }}</small>{% endif %}
+    </h1>
+
+    {% for section in race.getSections() %}
+        <h2>Abteilung {{ section.getNumber() }}</h2>
+        <!-- if isStarted : show "started at <time>" else: -->
+
+        {% if section.isReadyToStart %}
+        <div class="row">
+            <div class="col" align="center">
+                <a href="#" class="btn btn-lg btn-default">Starten</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <table class="table table-striped">
+            <tbody>
+                {% for group in section.getGroups() %}
+                    {% for rg in group.getRacingGroups() %}
+                        <tr>
+                            <td>
+                                {{ group.getLane() }}
+                            </td>
+                            <td>
+                                {{ rg.getName() }} ({{ rg.getClub().getShortName() }})<br>
+                            </td>
+                            <td>
+                            {% if group.isCheckedIn %}
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">checked in</span>
+                            {% elseif group.isCancelled %}
+                                <!-- not at start -->
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">not at start</span>
+                                <a href="{{ path('race_start_reset', { 'group': group.id }) }}">
+                                    zurücksetzen
+                                </a>
+                            {% else %}
+                                <!-- TODO: maybe as (modal) popup? -->
+                                <a href="{{ path('race_start_checkin', { 'group': group.id }) }}" class="btn btn-success">
+                                    <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+                                    Einchecken
+                                </a>
+
+                                <a href="{{ path('race_start_nas', { 'group': group.id }) }}" class="btn btn-danger" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Nicht am Start
+                                </a>
+                            {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endblock %}

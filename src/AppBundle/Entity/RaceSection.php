@@ -113,5 +113,27 @@ class RaceSection
     {
         return $this->groups;
     }
+
+    /**
+     * Are all competitors checked in or marked as <i>not at start</i> so that the race can start?
+     *
+     * @return bool <code>false</code> if all starters are marked as absent or not all of them checked in
+     */
+    public function isReadyToStart()
+    {
+        $counter = 0;
+        $cancelled = 0;
+        /** @var \AppBundle\Entity\RacingGroupsPerSection $g */
+        foreach($this->getGroups() as $g) {
+            if ($g->isCheckedIn()) {
+                $counter += 1;
+            } elseif ($g->isCancelled()) {
+                $counter += 1;
+                $cancelled += 1;
+            }
+        }
+
+        return ($this->getGroups()->count() == $counter && $cancelled != $counter);
+    }
 }
 

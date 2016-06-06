@@ -93,4 +93,11 @@
         {{ form_end(delete_form) }}
         </div>
     </div>
+    {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin %}
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <a href="{{ path('race_start', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-lg btn-primary">Rennen starten</a>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}

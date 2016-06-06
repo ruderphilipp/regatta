@@ -1,0 +1,52 @@
+{% extends 'form.new.base.html.twig' %}
+
+{% block title %}
+    Einchecken: Rennen {{ group.getSection.getRace.getNumberInEvent }} Abteilung {{ group.getSection.getNumber }} Bahn {{ group.getLane() }}
+{% endblock %}
+
+{% block body %}
+    <h1>Einchecken</h1>
+    <h2>Abteilung {{ group.getSection.getNumber }} Bahn {{ group.getLane() }}</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Club</td>
+            <td>Mannschaft</td>
+            <td>Gruppenname</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rg in group.getRacingGroups() %}
+            <tr>
+                <td>{{ rg.getClub().getShortName() }}</td>
+                <td>
+                    <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                            {{ m.getMembership.getPerson.getLastName | upper }}
+                            ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
+                </td>
+                <td>{{ rg.getName() }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="row">
+        <div class="col-md-6">
+            <input type="submit" class="btn btn-primary" value="Speichern" />
+        </div>
+        <div class="col-md-6">
+            <a href="#" class="btn btn-danger">Abbruch</a>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+{% endblock %}
+
+{% block javascripts %}
+$(document).ready(function() {
+    $("#form_token").focus();
+});
+{% endblock %}

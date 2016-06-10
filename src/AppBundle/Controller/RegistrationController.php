@@ -39,20 +39,40 @@ class RegistrationController extends Controller
     public function deleteAction(RacingGroup $rg, Race $race)
     {
         // sanity check
-        if ($rg->getSections()->getSection()->getRace() != $race) {
+        $races = array();
+        /** @var \AppBundle\Entity\RacingGroupsPerSection $section */
+        foreach($rg->getSections() as $section) {
+            array_push($races, $section->getSection()->getRace());
+        }
+        if (!in_array($race, $races)) {
             $this->addFlash(
                 'error',
                 'Falsche Inputdaten!'
             );
         } else {
-            // mark the "lane" of the section as cancelled
-            $rg->getSections()->setDeregistered();
-            $this->getDoctrine()->getManager()->flush();
+            /** @var \AppBundle\Entity\RacingGroupsPerSection $mySection */
+            $mySection = null;
+            // find the "lane"
+            foreach($rg->getSections() as $section) {
+                if ($section->getSection()->getRace() == $race) {
+                    $mySection = $section;
+                }
+            }
+            if (is_null($mySection)) {
+                $this->addFlash(
+                    'error',
+                    'Falsche Inputdaten! Konnte Startbahn nicht ermitteln...'
+                );
+            } else {
+                // mark the "lane" of the section as cancelled
+                $mySection->setDeregistered();
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash(
-                'notice',
-                'Mannschaft abgemeldet!'
-            );
+                $this->addFlash(
+                    'notice',
+                    'Mannschaft abgemeldet!'
+                );
+            }
         }
         return $this->redirectToRoute('registration_edit', array(
             'event' => $race->getEvent()->getId(),

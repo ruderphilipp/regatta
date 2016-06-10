@@ -171,8 +171,10 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         $result = null;
         /** @var RaceSection $last */
         $last = $race->getSections()->last();
+        /** @var \AppBundle\Repository\RacingGroupsPerSectionRepository $sectionRepo */
+        $sectionRepo = $this->getEntityManager()->getRepository('AppBundle:RacingGroupsPerSection');
         // open a new one if the max number of starters is already assigned)
-        if ($race->getMaxStarterPerSection() <= count($last->getRegisteredGroups())) {
+        if ($race->getMaxStarterPerSection() < $sectionRepo->getNextLaneForSection($last)) {
             // create new section
             $result = $this->createSection($race, $last->getNumber() + 1, $logger);
         } else {

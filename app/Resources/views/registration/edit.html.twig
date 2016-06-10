@@ -34,7 +34,7 @@
                             {{ m.getMembership.getPerson.getLastName | upper }}
                             ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
                     {% if group.isDeregistered or group.hasChangedToNewRace %}</s>{% endif %}
-                    {% if group.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': group.getChangedRace.id }) }}">#{{ group.getChangedRace.id }}</a>){% endif %}
+                    {% if group.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': group.getChangedRace.id }) }}">#{{ group.getChangedRace.getNumberInEvent }}</a>){% endif %}
                 </td>
                 <td>
                     {% if not group.hasChangedToNewRace and not group.isDeregistered %}
@@ -110,7 +110,7 @@
                     {% elseif group.isDeregistered %}
                         abgemeldet
                     {% elseif group.hasChangedToNewRace %}
-                        umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': group.getChangedRace.id }) }}">#{{ group.getChangedRace.id }}</a>
+                        umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': group.getChangedRace.id }) }}">#{{ group.getChangedRace.getNumberInEvent }}</a>
                     {% endif %}
                 </td>
             </tr>

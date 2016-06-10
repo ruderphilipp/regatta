@@ -17,7 +17,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for rg in group.getRacingGroups() %}
+        {% set rg = group.getRacingGroup() %}
             <tr>
                 <td>{{ rg.getClub().getShortName() }}</td>
                 <td>
@@ -27,7 +27,6 @@
                 </td>
                 <td>{{ rg.getName() }}</td>
             </tr>
-        {% endfor %}
         </tbody>
     </table>
 

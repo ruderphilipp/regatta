@@ -37,11 +37,11 @@ class RacingGroupsPerSection
     private $token;
 
     /**
-     * @var ArrayCollection[RacingGroup]
-     * @fixme correct mapping?
-     * @ORM\OneToMany(targetEntity="RacingGroup", mappedBy="section")
+     * @var RacingGroup
+     *
+     * @ORM\ManyToOne(targetEntity="RacingGroup", inversedBy="sections")
      */
-    private $racingGroups;
+    private $racingGroup;
 
     /**
      * @var RaceSection
@@ -87,13 +87,26 @@ class RacingGroupsPerSection
     }
 
     /**
+     * Set racingGroup
+     *
+     * @param RacingGroup $group
+     * @return RacingGroupsPerSection
+     */
+    public function setRacingGroup($group)
+    {
+        $this->racingGroup = $group;
+
+        return $this;
+    }
+
+    /**
      * Get racingGroups
      *
-     * @return ArrayCollection[RacingGroup]
+     * @return RacingGroup
      */
-    public function getRacingGroups()
+    public function getRacingGroup()
     {
-        return $this->racingGroups;
+        return $this->racingGroup;
     }
 
     /**

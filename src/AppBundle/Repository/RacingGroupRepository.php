@@ -56,21 +56,21 @@ class RacingGroupRepository extends \Doctrine\ORM\EntityRepository
             // save to DB - bugfix: lane for section is always 1 (because section does not exist yet)
             $em->flush();
 
+            $dbItem->setClub($club)
+                ->setDrvId($boat->id)
+                ->setName($boat->name)
+            ;
+            $em->persist($dbItem);
+
             /** @var \AppBundle\Repository\RacingGroupsPerSectionRepository $sectionRepo */
             $sectionRepo = $this->getEntityManager()->getRepository('AppBundle:RacingGroupsPerSection');
             $section = new RacingGroupsPerSection();
             $section
                 ->setSection($raceSection)
                 ->setLane($sectionRepo->getNextLaneForSection($raceSection))
+                ->setRacingGroup($dbItem)
             ;
             $em->persist($section);
-
-            $dbItem->setClub($club)
-                ->setDrvId($boat->id)
-                ->setName($boat->name)
-                ->setSection($section)
-            ;
-            $em->persist($dbItem);
         }
 
         return $dbItem;

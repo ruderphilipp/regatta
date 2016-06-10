@@ -51,9 +51,9 @@ class RacingGroup
     /**
      * @var RacingGroupsPerSection
      *
-     * @ORM\ManyToOne(targetEntity="RacingGroupsPerSection", inversedBy="groups")
+     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="group")
      */
-    private $section;
+    private $sections;
 
     /**
      * Get id
@@ -141,22 +141,11 @@ class RacingGroup
     }
 
     /**
-     * @param RacingGroupsPerSection $section
-     * @return RacingGroup
+     * @return ArrayCollection[RacingGroupsPerSection]
      */
-    public function setSection($section)
+    public function getSections()
     {
-        $this->section = $section;
-
-        return $this;
-    }
-
-    /**
-     * @return RacingGroupsPerSection
-     */
-    public function getSection()
-    {
-        return $this->section;
+        return $this->sections;
     }
 }
 

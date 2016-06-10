@@ -24,7 +24,7 @@
         <table class="table table-striped">
             <tbody>
                 {% for group in section.getGroups() %}
-                    {% for rg in group.getRacingGroups() %}
+                    {% set rg = group.getRacingGroup() %}
                         <tr>
                             <td>
                                 {{ group.getLane() }}
@@ -54,7 +54,6 @@
                             {% endif %}
                             </td>
                         </tr>
-                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>

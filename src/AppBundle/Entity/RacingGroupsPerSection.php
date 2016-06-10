@@ -165,6 +165,11 @@ class RacingGroupsPerSection
         } elseif('' == trim($token)) {
             throw new \InvalidArgumentException('Token must not be empty!');
         }
+        if ($this->isDeregistered()) {
+            throw new \InvalidArgumentException('Group is already de-registered!');
+        } elseif ($this->isCancelled()) {
+            throw new \InvalidArgumentException('Group did not show up on start');
+        }
 
         $this->token = $token;
 

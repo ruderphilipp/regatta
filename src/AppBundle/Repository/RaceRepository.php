@@ -117,6 +117,46 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function getNextAvailableSection(Race $race, LoggerInterface $logger = null)
+    {
+        if ($race->getSections()->isEmpty()) {
+            // create initial section
+            $this->createSection($race, 1, $logger);
+        }
+
+        /** @var RaceSection $last */
+        $result = null;
+        /** @var RaceSection $last */
+        $last = $race->getSections()->last();
+        // open a new one if the max number of starters is already assigned)
+        if ($race->getMaxStarterPerSection() <= count($last->getRegisteredGroups())) {
+            // create new section
+            $result = $this->createSection($race, $last->getNumber() + 1, $logger);
+        } else {
+            $result = $last;
+        }
+
+        return $result;
+    }
+
+    private function createSection(Race $race, $number, LoggerInterface $logger = null)
+    {
+        $em = $this->getEntityManager();
+
+        $section = new RaceSection();
+        $section->setRace($race)
+            ->setNumber($number);
+        $em->persist($section);
+        if (!is_null($logger)) {
+            $logger->info("Create section #{$number} for race {$race->getId()}");
+        }
+        $em->flush();
+        $em->refresh($race);
+        $em->refresh($section);
+
+        return $section;
+    }
+
     public function createOrUpdate(\AppBundle\DRV_Import\Race $race, Event $event, LoggerInterface $logger)
     {
         /** @var Race $dbItem */
@@ -128,17 +168,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             // TODO update
             // $extraText
             $logger->warning("Implementation missing for updating of races in RaceRepository::createOrUpdate");
-
-            if ($dbItem->getSections()->isEmpty()) {
-                // create initial section
-                $section = new RaceSection();
-                $section->setRace($dbItem)
-                    ->setNumber(1);
-                $em->persist($section);
-                $logger->info("Create initial section for race {$dbItem->getId()}");
-                $em->flush();
-                $em->refresh($dbItem);
-            }
         } else {
             // TODO create
             $logger->warning("Implementation missing for creation of new races in RaceRepository::createOrUpdate");

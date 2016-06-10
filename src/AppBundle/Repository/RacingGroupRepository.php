@@ -45,8 +45,10 @@ class RacingGroupRepository extends \Doctrine\ORM\EntityRepository
                 $logger->warning($message);
                 throw new \Exception($message);
             }
+            /** @var \AppBundle\Repository\RaceRepository $raceRepo */
+            $raceRepo = $this->getEntityManager()->getRepository('AppBundle:Race');
             /** @var \AppBundle\Entity\RaceSection $raceSection */
-            $raceSection = $race->getSections()->get(0);
+            $raceSection = $raceRepo->getNextAvailableSection($race, $logger);
             if (null == $raceSection) {
                 $message = "Found no section for race {$race->getId()}! No group created for "
                     . "[{$boat->name}, {$boat->id}]";

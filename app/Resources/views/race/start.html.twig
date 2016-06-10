@@ -30,9 +30,10 @@
                                 {{ group.getLane() }}
                             </td>
                             <td>
-                                {% if group.isDeregistered %}<s>{% endif %}
+                                {% if group.isDeregistered or group.hasChangedToNewRace %}<s>{% endif %}
                                 {{ rg.getName() }} ({{ rg.getClub().getShortName() }})<br>
                                 {% if group.isDeregistered %}</s> <strong>abgemeldet</strong>{% endif %}
+                                {% if group.hasChangedToNewRace %}</s> <strong>umgemeldet</strong>{% endif %}
                             </td>
                             <td>
                             {% if group.isCheckedIn %}
@@ -47,6 +48,8 @@
                                 {% endif %}
                             {% elseif group.isDeregistered %}
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">de-registered</span>
+                            {% elseif group.hasChangedToNewRace %}
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">re-registered for race {{ group.getChangedRace.getNumberInEvent }}</span>
                             {% else %}
                                 <!-- TODO: maybe as (modal) popup? -->
                                 <a href="{{ path('race_start_checkin', { 'group': group.id }) }}" class="btn btn-success">

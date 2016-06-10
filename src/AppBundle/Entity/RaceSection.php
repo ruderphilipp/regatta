@@ -115,6 +115,23 @@ class RaceSection
     }
 
     /**
+     * Get all groups that are not de-registered
+     *
+     * @return ArrayCollection[RacingGroupsPerSection]
+     */
+    public function getRegisteredGroups()
+    {
+        $result = new ArrayCollection();
+        /** @var RacingGroupsPerSection $group */
+        foreach($this->groups as $group) {
+            if (!$group->isDeregistered()) {
+                $result->add($group);
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Are all competitors checked in or marked as <i>not at start</i> so that the race can start?
      *
      * @return bool <code>false</code> if all starters are marked as absent or not all of them checked in

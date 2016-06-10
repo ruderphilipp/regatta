@@ -101,7 +101,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         $result = 0;
         /** @var RaceSection $section */
         foreach($race->getSections() as $section) {
-            $result += $section->getGroups()->count();
+            $result += $section->getRegisteredGroups()->count();
         }
         return $result;
     }

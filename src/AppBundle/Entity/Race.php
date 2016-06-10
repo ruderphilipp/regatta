@@ -451,7 +451,7 @@ class Race
 
     /**
      * Get all sections of this race
-     * @return
+     * @return ArrayCollection[RaceSection]
      */
     public function getSections()
     {

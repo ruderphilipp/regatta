@@ -100,7 +100,7 @@ class RacingGroupsPerSection
      * @param RacingGroup $group
      * @return RacingGroupsPerSection
      */
-    public function setRacingGroup($group)
+    public function setRacingGroup(RacingGroup $group)
     {
         $this->racingGroup = $group;
 

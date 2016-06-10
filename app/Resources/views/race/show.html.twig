@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+    {{ race.getEvent.getName }} - Rennen {{ race.numberInEvent }}
+{% endblock %}
+
 {% block body %}
     <h1>#{{ race.numberInEvent }}: {{ rr.getOfficialName(race) }}<br>
         {% if race.extraText != "" %}<small>{{ race.extraText }}</small>{% endif %}

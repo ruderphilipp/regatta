@@ -45,6 +45,8 @@
                                     zurücksetzen
                                 </a>
                                 {% endif %}
+                            {% elseif group.isDeregistered %}
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">de-registered</span>
                             {% else %}
                                 <!-- TODO: maybe as (modal) popup? -->
                                 <a href="{{ path('race_start_checkin', { 'group': group.id }) }}" class="btn btn-success">

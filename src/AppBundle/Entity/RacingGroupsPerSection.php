@@ -141,7 +141,7 @@ class RacingGroupsPerSection
      */
     public function isCheckedIn()
     {
-        return (!is_null($this->token) && !$this->isCancelled());
+        return (!is_null($this->token) && !$this->isCancelled() && !$this->isDeregistered());
     }
 
     /**

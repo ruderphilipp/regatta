@@ -51,6 +51,7 @@ class RacingGroupsPerSection
     private $section;
 
     const NOT_AT_START = 'not_at_start';
+    const DE_REGISTERED = 'de-registered';
 
     /**
      * Get id
@@ -197,6 +198,27 @@ class RacingGroupsPerSection
 
         $this->token = null;
         return $this;
+    }
+
+    /**
+     * Mark a group as not any longer in the entire race.
+     *
+     * @return RacingGroupsPerSection
+     */
+    public function setDeregistered()
+    {
+        $this->setCheckedIn(self::DE_REGISTERED);
+        return $this;
+    }
+
+    /**
+     * Check if the group cancelled their whole registration for this race.
+     *
+     * @return bool
+     */
+    public function isDeregistered()
+    {
+        return (!is_null($this->token) && self::DE_REGISTERED == $this->token);
     }
 }
 

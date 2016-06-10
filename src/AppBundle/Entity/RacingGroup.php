@@ -51,7 +51,7 @@ class RacingGroup
     /**
      * @var RacingGroupsPerSection
      *
-     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="group")
+     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="racingGroup")
      */
     private $sections;
 

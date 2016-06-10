@@ -38,7 +38,7 @@
                 <td>
                     {% if not group.isDeregistered %}
                     <!-- TODO <a href="#" class="btn btn-default hidden-print"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> <span class="hidden-xs">ummelden</span></a> -->
-                    <div id="myModal-{{ rg.getId }}" class="modal fade" tabindex="-1" role="dialog">
+                    <div id="cancelModal-{{ rg.getId }}" class="modal fade" tabindex="-1" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-danger hidden-print" data-toggle="modal" data-target="#myModal-{{ rg.getId }}">
+                    <button type="button" class="btn btn-danger hidden-print" data-toggle="modal" data-target="#cancelModal-{{ rg.getId }}">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> <span class="hidden-xs">abmelden</span>
                     </button>
                     {% elseif group.isDeregistered %}

@@ -37,6 +37,13 @@ class RacingGroupsPerSection
     private $token;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", nullable=true)
+     */
+    private $registrationStatus;
+
+    /**
      * @var RacingGroup
      *
      * @ORM\ManyToOne(targetEntity="RacingGroup", inversedBy="sections")
@@ -207,7 +214,7 @@ class RacingGroupsPerSection
      */
     public function setDeregistered()
     {
-        $this->setCheckedIn(self::DE_REGISTERED);
+        $this->registrationStatus = self::DE_REGISTERED;
         return $this;
     }
 
@@ -218,7 +225,7 @@ class RacingGroupsPerSection
      */
     public function isDeregistered()
     {
-        return (!is_null($this->token) && self::DE_REGISTERED == $this->token);
+        return (self::DE_REGISTERED == $this->registrationStatus);
     }
 }
 

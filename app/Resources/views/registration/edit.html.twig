@@ -28,16 +28,59 @@
                     {{ group.getLane() }}
                 </td>
                 <td>
-                    {% if group.isDeregistered %}<s>{% endif %}
+                    {% if group.isDeregistered or group.hasChangedToNewRace %}<s>{% endif %}
                     {{ rg.getName() }} ({{ rg.getClub().getShortName() }})<br>
                     <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
                             {{ m.getMembership.getPerson.getLastName | upper }}
                             ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
-                    {% if group.isDeregistered %}</s>{% endif %}
+                    {% if group.isDeregistered or group.hasChangedToNewRace %}</s>{% endif %}
+                    {% if group.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': group.getChangedRace.id }) }}">#{{ group.getChangedRace.id }}</a>){% endif %}
                 </td>
                 <td>
-                    {% if not group.isDeregistered %}
-                    <!-- TODO <a href="#" class="btn btn-default hidden-print"><span class="glyphicon glyphicon-random" aria-hidden="true"></span> <span class="hidden-xs">ummelden</span></a> -->
+                    {% if not group.hasChangedToNewRace and not group.isDeregistered %}
+                    <div id="changeModal-{{ rg.getId }}" class="modal fade" tabindex="-1" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">In welches Rennen ummelden?</h4>
+                                </div>
+                                <form name="form" method="post" class="form-horizontal">
+                                    <div class="modal-body">
+                                        <p><strong>{{ rg.getName() }} ({{ rg.getClub().getShortName() }})</strong><br>
+                                            <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                                                    {{ m.getMembership.getPerson.getLastName | upper }}
+                                                    ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }})
+                                                {% endfor %}</em></p>
+
+                                        <!-- show form with dropdown of all possible races (except this one) -->
+                                        <div id="form">
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label required" for="form_race">Rennen</label>
+                                                <div class="col-sm-10">
+                                                    <select id="form_race" name="form[race]" class="form-control">
+{% for r in all_races %}
+                                                    <option value="{{ r.getId }}" >{{ r.getId }}: {{ rr.getOfficialName(r) }}</option>
+{% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="form[group]" value="{{ group.id }}" />
+                                        <input type="hidden" id="form__token" name="form[_token]" class="form-control" value="{{ token }}" />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Abbruch</button>
+                                        <button type="submit" class="btn btn-primary">Ummelden</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-default hidden-print" data-toggle="modal" data-target="#changeModal-{{ rg.getId }}">
+                        <span class="glyphicon glyphicon-random" aria-hidden="true"></span> <span class="hidden-xs">ummelden</span>
+                    </button>
+
                     <div id="cancelModal-{{ rg.getId }}" class="modal fade" tabindex="-1" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -66,6 +109,8 @@
                     </button>
                     {% elseif group.isDeregistered %}
                         abgemeldet
+                    {% elseif group.hasChangedToNewRace %}
+                        umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': group.getChangedRace.id }) }}">#{{ group.getChangedRace.id }}</a>
                     {% endif %}
                 </td>
             </tr>

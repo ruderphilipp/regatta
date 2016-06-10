@@ -19,6 +19,49 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $this->findBy(array('event' => $id));
     }
 
+    public function findAllByEventForChanges($event_id, Race $race)
+    {
+        $all = $this->findAllForEvent($event_id);
+
+        $checkGender = !$this->isMixedGender($race);
+
+        foreach(array_keys($all) as $key) {
+            if ($all[$key]->getId() == $race->getId()) {
+                // remove the given race from result set
+                unset($all[$key]);
+            } elseif ($race->getCompetitorsPerGroup() < $all[$key]->getCompetitorsPerGroup()) {
+                // number of max starters per group has to be same or
+                // greater so that the moved one fits into
+                unset($all[$key]);
+            } elseif ($race->getAgeMin() > $all[$key]->getAgeMax()) {
+                // competitors allowed to start in older groups but not in younger
+                unset($all[$key]);
+            } elseif (($race->getAgeMax() * 1.3) < $all[$key]->getAgeMin()) {
+                // it does not make sence to let people start in classes with much older ones
+                unset($all[$key]);
+            } elseif ($checkGender && !$this->isMixedGender($all[$key])) {
+                // gender has to match
+                if ($race->getGender() != $all[$key]->getGender()) {
+                    unset($all[$key]);
+                }
+            }
+        }
+
+        // convert change array key values so that they match the ID in the database
+        $result = array();
+        /** @var Race $r */
+        foreach($all as $r) {
+            $result[$r->getId()] = $r;
+        }
+
+        return $result;
+    }
+
+    private function isMixedGender(Race $race)
+    {
+        return ('a' == $race->getGender());
+    }
+
     public function getOfficialName(Race $race) {
         $name = '';
 

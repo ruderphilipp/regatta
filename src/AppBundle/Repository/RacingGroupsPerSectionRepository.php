@@ -1,7 +1,12 @@
 <?php
 
 namespace AppBundle\Repository;
+
+use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceSection;
+use AppBundle\Entity\RacingGroupsPerSection;
+
+use Doctrine\ORM\EntityManager;
 
 /**
  * RacingGroupsPerSectionRepository
@@ -20,5 +25,38 @@ class RacingGroupsPerSectionRepository extends \Doctrine\ORM\EntityRepository
             ->where($qb->expr()->eq('r.section', '?1'))
             ->setParameter(1, $raceSection->getId());
         return ((int) $qb->getQuery()->getSingleScalarResult()) + 1;
+    }
+
+    public function changeRace(RacingGroupsPerSection $group, Race $fromRace, Race $toRace)
+    {
+        if (is_null($group)) {
+            throw new \InvalidArgumentException('Group must not be NULL');
+        } elseif (is_null($fromRace)) {
+            throw new \InvalidArgumentException('Source race must not be NULL');
+        } elseif (is_null($toRace)) {
+            throw new \InvalidArgumentException('Target race must not be NULL');
+        }
+
+        /** @var EntityManager $em */
+        $em = $this->getEntityManager();
+        /** @var \AppBundle\Repository\RaceRepository $raceRepo */
+        $raceRepo = $em->getRepository('AppBundle:Race');
+
+        /** @var RaceSection $section */
+        $section = $raceRepo->getNextAvailableSection($toRace);
+
+        // mark current group as changed and save the new race id
+        $group->setChangedTo($toRace);
+        // create new group in target race
+        $newGroup = new RacingGroupsPerSection();
+        $newGroup->setSection($section)
+            ->setLane($this->getNextLaneForSection($section))
+            // the competitor group stays the same
+            ->setRacingGroup($group->getRacingGroup())
+            ->setChangedFrom($fromRace);
+
+        $em->persist($group);
+        $em->persist($newGroup);
+        $em->flush();
     }
 }

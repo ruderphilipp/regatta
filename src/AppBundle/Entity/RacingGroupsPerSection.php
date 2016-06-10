@@ -44,6 +44,13 @@ class RacingGroupsPerSection
     private $registrationStatus;
 
     /**
+     * @var Race
+     *
+     * @ORM\ManyToOne(targetEntity="Race")
+     */
+    private $changedRace;
+
+    /**
      * @var RacingGroup
      *
      * @ORM\ManyToOne(targetEntity="RacingGroup", inversedBy="sections")
@@ -59,6 +66,8 @@ class RacingGroupsPerSection
 
     const NOT_AT_START = 'not_at_start';
     const DE_REGISTERED = 'de-registered';
+    const CHANGED_TO = 'changed_to';
+    const CHANGED_FROM = 'changed_from';
 
     /**
      * Get id
@@ -231,6 +240,41 @@ class RacingGroupsPerSection
     public function isDeregistered()
     {
         return (self::DE_REGISTERED == $this->registrationStatus);
+    }
+
+    public function setChangedTo(Race $race)
+    {
+        return $this->setChangedRace($race, self::CHANGED_TO);
+    }
+
+    public function hasChangedToNewRace()
+    {
+        return (self::CHANGED_TO == $this->registrationStatus);
+    }
+
+    public function setChangedFrom(Race $race)
+    {
+        return $this->setChangedRace($race, self::CHANGED_FROM);
+    }
+
+    public function isFromOtherRace()
+    {
+        return (self::CHANGED_FROM == $this->registrationStatus);
+    }
+
+    private function setChangedRace(Race $race, $regStatus)
+    {
+        $this->changedRace = $race;
+        $this->registrationStatus = $regStatus;
+        return $this;
+    }
+
+    public function getChangedRace()
+    {
+        if (!$this->hasChangedToNewRace() && !$this->isFromOtherRace()) {
+            throw new \InvalidArgumentException('Cannot give race change for a non-changed registration!');
+        }
+        return $this->changedRace;
     }
 }
 

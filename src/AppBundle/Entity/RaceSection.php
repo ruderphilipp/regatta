@@ -124,7 +124,7 @@ class RaceSection
         $result = new ArrayCollection();
         /** @var RacingGroupsPerSection $group */
         foreach($this->groups as $group) {
-            if (!$group->isDeregistered()) {
+            if (!$group->isDeregistered() && !$group->hasChangedToNewRace()) {
                 $result->add($group);
             }
         }

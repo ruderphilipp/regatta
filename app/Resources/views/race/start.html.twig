@@ -32,7 +32,7 @@
                             <td>
                                 {% if group.isDeregistered %}<s>{% endif %}
                                 {{ rg.getName() }} ({{ rg.getClub().getShortName() }})<br>
-                                {% if group.isDeregistered %}</s>{% endif %}
+                                {% if group.isDeregistered %}</s> <strong>abgemeldet</strong>{% endif %}
                             </td>
                             <td>
                             {% if group.isCheckedIn %}

@@ -10,7 +10,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('race_index', { 'id': race.event.id }) }}">Zurück zur Liste</a>
+            <a href="{{ path('race_index', { 'event': race.event.id }) }}">Zurück zur Liste</a>
         </li>
         <li>
             {{ form_start(delete_form) }}

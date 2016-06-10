@@ -70,7 +70,7 @@ class DrvImportController extends Controller
                     'Daten erfolgreich importiert!'
                 );
 
-                return $this->redirectToRoute('race_index', array('id' => $event->getId()));
+                return $this->redirectToRoute('race_index', array('event' => $event->getId()));
             }
 
         }

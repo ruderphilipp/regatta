@@ -39,7 +39,7 @@
             <a href="{{ path('event_index') }}">Zurück zur Liste</a>
         </li>
         <li>
-            <a href="{{ path('race_index', { 'id': event.id }) }}">Rennen anzeigen</a>
+            <a href="{{ path('race_index', { 'event': event.id }) }}">Rennen anzeigen</a>
         </li>
         <li>
             <a href="{{ path('event_edit', { 'id': event.id }) }}">Bearbeiten</a>

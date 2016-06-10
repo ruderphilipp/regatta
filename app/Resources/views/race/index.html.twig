@@ -31,10 +31,10 @@
 
     <ul>
         <li>
-            <a href="{{ path('event_show', { 'id': id }) }}">Zurück zum Event</a>
+            <a href="{{ path('event_show', { 'id': event.id }) }}">Zurück zum Event</a>
         </li>
         <li>
-            <a href="{{ path('race_new', { 'id': id }) }}">Neues Rennen erstellen</a>
+            <a href="{{ path('race_new', { 'id': event.id }) }}">Neues Rennen erstellen</a>
         </li>
     </ul>
 {% endblock %}

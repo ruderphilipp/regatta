@@ -18,19 +18,18 @@ class RaceController extends Controller
     /**
      * Lists all Race entities.
      *
-     * @Route("/event/{id}/races", name="race_index")
+     * @Route("/event/{event}/races", name="race_index")
      * @Method("GET")
      */
-    public function indexAction($id)
+    public function indexAction(Event $event)
     {
         $em = $this->getDoctrine()->getManager();
 
         $repo = $em->getRepository('AppBundle:Race');
-        $races = $repo->findAllForEvent($id);
 
         return $this->render('race/index.html.twig', array(
-            'races' => $races,
-            'id' => $id,
+            'races' => $event->getRaces(),
+            'event' => $event,
             'rr' => $repo,
         ));
     }
@@ -65,7 +64,7 @@ class RaceController extends Controller
                 'Rennen wurde angelegt!'
             );
 
-            return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
+            return $this->redirectToRoute('race_index', array('event' => $race->getEvent()->getId()));
         }
 
         //exit(\Doctrine\Common\Util\Debug::dump($form));
@@ -119,7 +118,7 @@ class RaceController extends Controller
                 'Rennen wurde geändert!'
             );
 
-            return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
+            return $this->redirectToRoute('race_index', array('event' => $race->getEvent()->getId()));
         }
 
         return $this->render('race/edit.html.twig', array(
@@ -151,7 +150,7 @@ class RaceController extends Controller
             );
         }
 
-        return $this->redirectToRoute('race_index', array('id' => $race->getEvent()->getId()));
+        return $this->redirectToRoute('race_index', array('event' => $race->getEvent()->getId()));
     }
 
     /**

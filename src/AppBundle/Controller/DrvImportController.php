@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 use AppBundle\Entity\Event;
-use AppBundle\Entity\RacingGroupMembership;
+use AppBundle\Entity\TeamPosition;
 
 use AppBundle\DRV_Import\Athlete;
 use AppBundle\DRV_Import\Boat;
@@ -253,12 +253,12 @@ class DrvImportController extends Controller
                             } else {
                                 $m = $membershipPerAthlete[$a_id];
                                 // FIXME use createOrUpdate to avoid duplicates
-                                $rgm = new RacingGroupMembership();
-                                $rgm->setTeam($b)
+                                $posInTeam = new TeamPosition();
+                                $posInTeam->setTeam($b)
                                     ->setPosition($i)
                                     ->setIsCox($positions[$i]['is_cox'])
                                     ->setMembership($m);
-                                $em->persist($rgm);
+                                $em->persist($posInTeam);
                             }
                         }
                     }

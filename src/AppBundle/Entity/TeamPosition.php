@@ -5,12 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * RacingGroupMembership
+ * TeamPosition
  *
- * @ORM\Table(name="racing_group_membership")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\RacingGroupMembershipRepository")
+ * @ORM\Table(name="team_positions")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TeamPositionRepository")
  */
-class RacingGroupMembership
+class TeamPosition
 {
     /**
      * @var int
@@ -45,7 +45,7 @@ class RacingGroupMembership
     /**
      * @var Membership
      *
-     * @ORM\ManyToOne(targetEntity="Membership", inversedBy="groups")
+     * @ORM\ManyToOne(targetEntity="Membership", inversedBy="teampositions")
      */
     private $membership;
 
@@ -65,7 +65,7 @@ class RacingGroupMembership
      *
      * @param integer $position
      *
-     * @return RacingGroupMembership
+     * @return TeamPosition
      */
     public function setPosition($position)
     {
@@ -89,7 +89,7 @@ class RacingGroupMembership
      *
      * @param boolean $isCox
      *
-     * @return RacingGroupMembership
+     * @return TeamPosition
      */
     public function setIsCox($isCox)
     {
@@ -110,7 +110,7 @@ class RacingGroupMembership
 
     /**
      * @param Team $team
-     * @return RacingGroupMembership
+     * @return TeamPosition
      */
     public function setTeam(Team $team)
     {
@@ -129,7 +129,7 @@ class RacingGroupMembership
 
     /**
      * @param Membership $membership
-     * @return RacingGroupMembership
+     * @return TeamPosition
      */
     public function setMembership(Membership $membership)
     {

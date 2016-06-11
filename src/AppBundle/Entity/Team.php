@@ -42,9 +42,9 @@ class Team
     private $club;
 
     /**
-     * @var ArrayCollection[RacingGroupMembership]
+     * @var ArrayCollection[TeamPosition]
      *
-     * @ORM\OneToMany(targetEntity="RacingGroupMembership", mappedBy="team")
+     * @ORM\OneToMany(targetEntity="TeamPosition", mappedBy="team")
      */
     private $members;
 
@@ -133,7 +133,7 @@ class Team
     }
 
     /**
-     * @return ArrayCollection[RacingGroupMembership]
+     * @return ArrayCollection[TeamPosition]
      */
     public function getMembers()
     {

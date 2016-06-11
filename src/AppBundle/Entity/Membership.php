@@ -49,9 +49,9 @@ class Membership
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RacingGroupMembership", inversedBy="membership")
+     * @ORM\ManyToOne(targetEntity="TeamPosition", inversedBy="membership")
      */
-    private $groups;
+    private $teampositions;
 
     /**
      * Get id

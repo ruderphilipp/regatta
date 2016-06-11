@@ -59,7 +59,7 @@
         </thead>
         <tbody>
         {% for section in race.getSections() %}
-            {% for group in section.getGroups() %}
+            {% for group in section.getRegistrations() %}
             {% set team = group.getTeam() %}
             <tr>
                 <td>

@@ -49,11 +49,11 @@ class Team
     private $members;
 
     /**
-     * @var RacingGroupsPerSection
+     * @var Registration
      *
-     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="team")
+     * @ORM\OneToMany(targetEntity="Registration", mappedBy="team")
      */
-    private $sections;
+    private $registrations;
 
     /**
      * Get id
@@ -141,11 +141,11 @@ class Team
     }
 
     /**
-     * @return ArrayCollection[RacingGroupsPerSection]
+     * @return ArrayCollection[Registration]
      */
-    public function getSections()
+    public function getRegistrations()
     {
-        return $this->sections;
+        return $this->registrations;
     }
 }
 

@@ -39,11 +39,11 @@ class RaceSection
     private $race;
 
     /**
-     * @var ArrayCollection[RacingGroupsPerSection]
+     * @var ArrayCollection[Registration]
      *
-     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="section")
+     * @ORM\OneToMany(targetEntity="Registration", mappedBy="section")
      */
-    private $groups;
+    private $registrations;
 
 
     /**
@@ -105,27 +105,27 @@ class RaceSection
     }
 
     /**
-     * Get groups
+     * Get all registrations for all teams in this section
      *
-     * @return ArrayCollection[RacingGroupsPerSection]
+     * @return ArrayCollection[Registration]
      */
-    public function getGroups()
+    public function getRegistrations()
     {
-        return $this->groups;
+        return $this->registrations;
     }
 
     /**
-     * Get all groups that are not de-registered
+     * Get the registrations for all teams that are not de-registered
      *
-     * @return ArrayCollection[RacingGroupsPerSection]
+     * @return ArrayCollection[Registration]
      */
-    public function getRegisteredGroups()
+    public function getValidRegistrations()
     {
         $result = new ArrayCollection();
-        /** @var RacingGroupsPerSection $group */
-        foreach($this->groups as $group) {
-            if (!$group->isDeregistered() && !$group->hasChangedToNewRace()) {
-                $result->add($group);
+        /** @var Registration $registration */
+        foreach($this->registrations as $registration) {
+            if (!$registration->isDeregistered() && !$registration->hasChangedToNewRace()) {
+                $result->add($registration);
             }
         }
         return $result;
@@ -140,8 +140,8 @@ class RaceSection
     {
         $counter = 0;
         $cancelled = 0;
-        /** @var \AppBundle\Entity\RacingGroupsPerSection $g */
-        foreach($this->getGroups() as $g) {
+        /** @var \AppBundle\Entity\Registration $g */
+        foreach($this->getRegistrations() as $g) {
             if ($g->isCheckedIn()) {
                 $counter += 1;
             } elseif ($g->isCancelled()) {
@@ -150,7 +150,7 @@ class RaceSection
             }
         }
 
-        return ($this->getGroups()->count() == $counter && $cancelled != $counter);
+        return ($this->getRegistrations()->count() == $counter && $cancelled != $counter);
     }
 }
 

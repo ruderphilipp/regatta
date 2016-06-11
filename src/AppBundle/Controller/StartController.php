@@ -2,13 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\RacingGroupsPerSection;
+use AppBundle\Entity\Registration;
 use AppBundle\Repository\RaceRepository;
 
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Event;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Proxies\__CG__\AppBundle\Entity\RacingGroupsPerSection as RGPS;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -52,14 +51,14 @@ class StartController extends Controller
     }
 
     /**
-     * Check in a group of competitors for this specific race.
+     * Check-in a team for this specific race.
      *
-     * @Route("/rg/{group}/checkIn", name="race_start_checkin")
+     * @Route("/team/{registration}/checkIn", name="race_start_checkin")
      * @Method({"GET", "POST"})
      */
-    public function checkInAction(Request $request, RacingGroupsPerSection $group)
+    public function checkInAction(Request $request, Registration $registration)
     {
-        if ($group->isCheckedIn()) {
+        if ($registration->isCheckedIn()) {
             $this->addFlash(
                 'error',
                 'Starter ist bereits eingecheckt!'
@@ -88,50 +87,50 @@ class StartController extends Controller
             // $data is a simply array with your form fields
             // like "query" and "category" as defined above.
             $data = $form->getData();
-            $group->setCheckedIn($data["token"]);
+            $registration->setCheckedIn($data["token"]);
             $em = $this->getDoctrine()->getManager();
-            $em->persist($group);
+            $em->persist($registration);
             $em->flush();
 
             return $this->redirect($data['ref']);
         }
 
         return $this->render('race/checkin.html.twig', array(
-            'group' => $group,
+            'group' => $registration,
             'form' => $form->createView(),
         ));
     }
 
     /**
-     * Mark a racing group as not at start to be able to get an overview
+     * Mark a team (registration) as not at start to be able to get an overview
      * and begin the race start sequence if all other competitors are at start.
      *
-     * @Route("/rg/{group}/NotAtStart", name="race_start_nas")
+     * @Route("/team/{registration}/NotAtStart", name="race_start_nas")
      * @Method("GET")
      */
-    public function notAtStartAction(Request $request, RacingGroupsPerSection $group)
+    public function notAtStartAction(Request $request, Registration $registration)
     {
         $em = $this->getDoctrine()->getManager();
-        $group->setCancelled();
-        $em->persist($group);
+        $registration->setCancelled();
+        $em->persist($registration);
         $em->flush();
 
         return $this->redirect($request->headers->get('referer'));
     }
 
     /**
-     * Reset a racing group after marking it as "not at start", so that a new registration is possible.
+     * Reset a team (registration) after marking it as "not at start", so that a new registration is possible.
      *
      * @see notAtStartAction
      *
-     * @Route("/rg/{group}/resetNas", name="race_start_reset")
+     * @Route("/team/{registration}/resetNas", name="race_start_reset")
      * @Method("GET")
      */
-    public function resetNotAtStart(Request $request, RacingGroupsPerSection $group)
+    public function resetNotAtStart(Request $request, Registration $registration)
     {
         $em = $this->getDoctrine()->getManager();
-        $group->undoCancelled();
-        $em->persist($group);
+        $registration->undoCancelled();
+        $em->persist($registration);
         $em->flush();
 
         return $this->redirect($request->headers->get('referer'));

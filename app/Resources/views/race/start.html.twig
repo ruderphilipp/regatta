@@ -23,7 +23,7 @@
 
         <table class="table table-striped">
             <tbody>
-                {% for group in section.getGroups() %}
+                {% for group in section.getRegistrations() %}
                     {% set team = group.getTeam() %}
                         <tr>
                             <td>
@@ -42,7 +42,7 @@
                                 <!-- not at start -->
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">not at start</span>
                                 {% if not group.isDeregistered %}
-                                <a href="{{ path('race_start_reset', { 'group': group.id }) }}">
+                                <a href="{{ path('race_start_reset', { 'registration': group.id }) }}">
                                     zurücksetzen
                                 </a>
                                 {% endif %}
@@ -52,12 +52,12 @@
                                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">re-registered for race {{ group.getChangedRace.getNumberInEvent }}</span>
                             {% else %}
                                 <!-- TODO: maybe as (modal) popup? -->
-                                <a href="{{ path('race_start_checkin', { 'group': group.id }) }}" class="btn btn-success">
+                                <a href="{{ path('race_start_checkin', { 'registration': group.id }) }}" class="btn btn-success">
                                     <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
                                     Einchecken
                                 </a>
 
-                                <a href="{{ path('race_start_nas', { 'group': group.id }) }}" class="btn btn-danger" aria-label="Left Align">
+                                <a href="{{ path('race_start_nas', { 'registration': group.id }) }}" class="btn btn-danger" aria-label="Left Align">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Nicht am Start
                                 </a>
                             {% endif %}

@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * RacingGroupsPerSection
+ * Registration
  *
- * @ORM\Table(name="racing_groups_per_section")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\RacingGroupsPerSectionRepository")
+ * @ORM\Table(name="registrations")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RegistrationRepository")
  */
-class RacingGroupsPerSection
+class Registration
 {
     /**
      * @var int
@@ -60,7 +60,7 @@ class RacingGroupsPerSection
     /**
      * @var RaceSection
      *
-     * @ORM\ManyToOne(targetEntity="RaceSection", inversedBy="groups")
+     * @ORM\ManyToOne(targetEntity="RaceSection", inversedBy="registrations")
      */
     private $section;
 
@@ -84,7 +84,7 @@ class RacingGroupsPerSection
      *
      * @param integer $lane
      *
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function setLane($lane)
     {
@@ -107,7 +107,7 @@ class RacingGroupsPerSection
      * Set team
      *
      * @param Team $team
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function setTeam(Team $team)
     {
@@ -131,7 +131,7 @@ class RacingGroupsPerSection
      *
      * @param RaceSection $section
      *
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function setSection($section)
     {
@@ -151,7 +151,7 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Check if the group is already checked in to its race.
+     * Check if the team is already checked in to its race.
      *
      * @return bool
      */
@@ -161,11 +161,11 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Assign the token to a group when they are at the start (or before), so that
-     * it can be uniquely identified when passing the goal.
+     * Assign the token to a team registration when they are at the start (or before),
+     * so that it can be uniquely identified when passing the finish line.
      *
      * @param $token string e.g. RFID token or starting number
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function setCheckedIn($token)
     {
@@ -175,9 +175,9 @@ class RacingGroupsPerSection
             throw new \InvalidArgumentException('Token must not be empty!');
         }
         if ($this->isDeregistered()) {
-            throw new \InvalidArgumentException('Group is already de-registered!');
+            throw new \InvalidArgumentException('Team is already de-registered!');
         } elseif ($this->isCancelled()) {
-            throw new \InvalidArgumentException('Group did not show up on start');
+            throw new \InvalidArgumentException('Team did not show up on start');
         }
 
         $this->token = $token;
@@ -186,7 +186,7 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Check if the group did not show up at the start of its race.
+     * Check if the team did not show up at the start of its race.
      *
      * @return bool
      */
@@ -196,9 +196,9 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Mark a group as not shown up at the start of their race.
+     * Mark a team as not shown up at the start of their race.
      *
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function setCancelled()
     {
@@ -209,7 +209,7 @@ class RacingGroupsPerSection
     /**
      * Undo the "not at start" marker.
      *
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function undoCancelled()
     {
@@ -222,9 +222,9 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Mark a group as not any longer in the entire race.
+     * Mark a team as not any longer participating in the entire race.
      *
-     * @return RacingGroupsPerSection
+     * @return Registration
      */
     public function setDeregistered()
     {
@@ -233,7 +233,7 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Check if the group cancelled their whole registration for this race.
+     * Check if the team cancelled their whole registration for this race.
      *
      * @return bool
      */

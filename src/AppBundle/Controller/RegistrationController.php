@@ -43,7 +43,7 @@ class RegistrationController extends Controller
                     return $race->getId();
                 },
             ))
-            ->add('group', HiddenType::class)
+            ->add('registration', HiddenType::class)
             ->getForm();
 
         /** @var \Symfony\Component\Form\FormConfigInterface $c */
@@ -75,14 +75,14 @@ class RegistrationController extends Controller
             $formData = $form->getData();
             /** @var Race $newRace */
             $newRace = $formData["race"];
-            /** @var integer $groupId */
-            $groupId = (int)$formData["group"];
+            /** @var integer $regId */
+            $regId = (int)$formData["registration"];
 
-            /** @var \AppBundle\Repository\RacingGroupsPerSectionRepository $groupRepo */
-            $groupRepo = $em->getRepository('AppBundle:RacingGroupsPerSection');
-            /** @var \AppBundle\Entity\RacingGroupsPerSection $group */
-            $group = $groupRepo->find($groupId);
-            $groupRepo->changeRace($group, $race, $newRace);
+            /** @var \AppBundle\Repository\RegistrationRepository $regRepo */
+            $regRepo = $em->getRepository('AppBundle:Registration');
+            /** @var \AppBundle\Entity\Registration $registration */
+            $registration = $regRepo->find($regId);
+            $regRepo->changeRace($registration, $race, $newRace);
 
             $this->addFlash(
                 'notice',
@@ -99,7 +99,7 @@ class RegistrationController extends Controller
     }
 
     /**
-     * Mark the given competitor group as being not any longer part of the given race.
+     * Mark the given team as being not any longer part of the given race.
      *
      * @Route("/race/{race}/deregister/{team}", name="registration_delete")
      * @Method("POST")
@@ -108,9 +108,9 @@ class RegistrationController extends Controller
     {
         // sanity check
         $races = array();
-        /** @var \AppBundle\Entity\RacingGroupsPerSection $section */
-        foreach($team->getSections() as $section) {
-            array_push($races, $section->getSection()->getRace());
+        /** @var \AppBundle\Entity\Registration $registration */
+        foreach($team->getRegistrations() as $registration) {
+            array_push($races, $registration->getSection()->getRace());
         }
         if (!in_array($race, $races)) {
             $this->addFlash(
@@ -118,22 +118,22 @@ class RegistrationController extends Controller
                 'Falsche Inputdaten!'
             );
         } else {
-            /** @var \AppBundle\Entity\RacingGroupsPerSection $mySection */
-            $mySection = null;
+            /** @var \AppBundle\Entity\Registration $myRegistrationForThisRace */
+            $myRegistrationForThisRace = null;
             // find the "lane"
-            foreach($team->getSections() as $section) {
-                if ($section->getSection()->getRace() == $race) {
-                    $mySection = $section;
+            foreach($team->getRegistrations() as $registration) {
+                if ($registration->getSection()->getRace() == $race) {
+                    $myRegistrationForThisRace = $registration;
                 }
             }
-            if (is_null($mySection)) {
+            if (is_null($myRegistrationForThisRace)) {
                 $this->addFlash(
                     'error',
                     'Falsche Inputdaten! Konnte Startbahn nicht ermitteln...'
                 );
             } else {
                 // mark the "lane" of the section as cancelled
-                $mySection->setDeregistered();
+                $myRegistrationForThisRace->setDeregistered();
                 $this->getDoctrine()->getManager()->flush();
 
                 $this->addFlash(

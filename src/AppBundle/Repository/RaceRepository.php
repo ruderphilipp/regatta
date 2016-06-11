@@ -30,11 +30,11 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 // remove the given race from result set
                 unset($all[$key]);
             } elseif ($race->getCompetitorsPerGroup() < $all[$key]->getCompetitorsPerGroup()) {
-                // number of max starters per group has to be same or
+                // number of max starters per team has to be same or
                 // greater so that the moved one fits into
                 unset($all[$key]);
             } elseif ($race->getAgeMin() > $all[$key]->getAgeMax()) {
-                // competitors allowed to start in older groups but not in younger
+                // competitors allowed to start against older teams but not against younger ones
                 unset($all[$key]);
             } elseif (($race->getAgeMax() * 1.3) < $all[$key]->getAgeMin()) {
                 // it does not make sence to let people start in classes with much older ones
@@ -144,7 +144,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         $result = 0;
         /** @var RaceSection $section */
         foreach($race->getSections() as $section) {
-            $result += $section->getRegisteredGroups()->count();
+            $result += $section->getValidRegistrations()->count();
         }
         return $result;
     }
@@ -171,10 +171,10 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         $result = null;
         /** @var RaceSection $last */
         $last = $race->getSections()->last();
-        /** @var \AppBundle\Repository\RacingGroupsPerSectionRepository $sectionRepo */
-        $sectionRepo = $this->getEntityManager()->getRepository('AppBundle:RacingGroupsPerSection');
+        /** @var \AppBundle\Repository\RegistrationRepository $regRepo */
+        $regRepo = $this->getEntityManager()->getRepository('AppBundle:Registration');
         // open a new one if the max number of starters is already assigned)
-        if ($race->getMaxStarterPerSection() < $sectionRepo->getNextLaneForSection($last)) {
+        if ($race->getMaxStarterPerSection() < $regRepo->getNextLaneForSection($last)) {
             // create new section
             $result = $this->createSection($race, $last->getNumber() + 1, $logger);
         } else {

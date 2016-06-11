@@ -5,7 +5,7 @@ namespace AppBundle\Repository;
 use AppBundle\DRV_Import\Boat;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Team;
-use AppBundle\Entity\RacingGroupsPerSection;
+use AppBundle\Entity\Registration;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -31,16 +31,16 @@ class TeamRepository extends \Doctrine\ORM\EntityRepository
 
         if (null != $dbItem) {
             // TODO updating
-            $logger->warning("Implementation missing for updating of race groups in TeamRepository::createOrUpdate");
+            $logger->warning("Implementation missing for updating teams in TeamRepository::createOrUpdate");
         } else {
-            // create new group
+            // create new team
             $em = $this->getEntityManager();
             $dbItem = new Team();
 
             /** @var \AppBundle\Entity\Club $club */
             $club = $this->getEntityManager()->getRepository('AppBundle:Club')->findOneByDrvId($boat->club_id);
             if (null == $club) {
-                $message = "Found no club with DRV-ID {$boat->club_id}! No group created for "
+                $message = "Found no club with DRV-ID {$boat->club_id}! No team created for "
                     . "[{$boat->name}, {$boat->id}]";
                 $logger->warning($message);
                 throw new \Exception($message);
@@ -50,7 +50,7 @@ class TeamRepository extends \Doctrine\ORM\EntityRepository
             /** @var \AppBundle\Entity\RaceSection $raceSection */
             $raceSection = $raceRepo->getNextAvailableSection($race, $logger);
             if (null == $raceSection) {
-                $message = "Found no section for race {$race->getId()}! No group created for "
+                $message = "Found no section for race {$race->getId()}! No team created for "
                     . "[{$boat->name}, {$boat->id}]";
                 $logger->warning($message);
                 throw new \Exception($message);
@@ -64,12 +64,12 @@ class TeamRepository extends \Doctrine\ORM\EntityRepository
             ;
             $em->persist($dbItem);
 
-            /** @var \AppBundle\Repository\RacingGroupsPerSectionRepository $sectionRepo */
-            $sectionRepo = $this->getEntityManager()->getRepository('AppBundle:RacingGroupsPerSection');
-            $section = new RacingGroupsPerSection();
+            /** @var \AppBundle\Repository\RegistrationRepository $regRepo */
+            $regRepo = $this->getEntityManager()->getRepository('AppBundle:Registration');
+            $section = new Registration();
             $section
                 ->setSection($raceSection)
-                ->setLane($sectionRepo->getNextLaneForSection($raceSection))
+                ->setLane($regRepo->getNextLaneForSection($raceSection))
                 ->setTeam($dbItem)
             ;
             $em->persist($section);

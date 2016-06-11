@@ -29,7 +29,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             if ($all[$key]->getId() == $race->getId()) {
                 // remove the given race from result set
                 unset($all[$key]);
-            } elseif ($race->getCompetitorsPerGroup() < $all[$key]->getCompetitorsPerGroup()) {
+            } elseif ($race->getTeamsize() < $all[$key]->getTeamsize()) {
                 // number of max starters per team has to be same or
                 // greater so that the moved one fits into
                 unset($all[$key]);
@@ -128,8 +128,8 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             break;
         }
 
-        if ($race->getCompetitorsPerGroup() > 1) {
-            $name .= ' ['.$race->getCompetitorsPerGroup().' Pers.]';
+        if ($race->getTeamsize() > 1) {
+            $name .= ' ['.$race->getTeamsize().' Pers.]';
         }
 
         return $name;

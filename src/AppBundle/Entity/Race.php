@@ -116,9 +116,9 @@ class Race
     /**
      * @var int
      *
-     * @ORM\Column(name="starter_per_group", type="smallint")
+     * @ORM\Column(name="starter_per_team", type="smallint")
      */
-    private $competitorsPerGroup;
+    private $teamsize;
 
     /**
      * @var ArrayCollection[RaceSection]
@@ -404,13 +404,13 @@ class Race
     /**
      * Set number of competitors per group/boat
      *
-     * @param int $competitorsPerGroup
+     * @param int $teamsize
      *
      * @return Race
      */
-    public function setCompetitorsPerGroup($competitorsPerGroup)
+    public function setTeamsize($teamsize)
     {
-        $this->competitorsPerGroup = $competitorsPerGroup;
+        $this->teamsize = $teamsize;
 
         return $this;
     }
@@ -420,9 +420,9 @@ class Race
      *
      * @return int
      */
-    public function getCompetitorsPerGroup()
+    public function getTeamsize()
     {
-        return $this->competitorsPerGroup;
+        return $this->teamsize;
     }
 
     /**

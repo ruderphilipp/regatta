@@ -92,9 +92,9 @@ class Club
     private $memberships;
 
     /**
-     * @ORM\OneToMany(targetEntity="RacingGroup", mappedBy="club")
+     * @ORM\OneToMany(targetEntity="Team", mappedBy="club")
      */
-    private $groups;
+    private $teams;
 
     public function __construct()
     {

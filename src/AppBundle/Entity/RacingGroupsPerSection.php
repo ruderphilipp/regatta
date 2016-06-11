@@ -51,11 +51,11 @@ class RacingGroupsPerSection
     private $changedRace;
 
     /**
-     * @var RacingGroup
+     * @var Team
      *
-     * @ORM\ManyToOne(targetEntity="RacingGroup", inversedBy="sections")
+     * @ORM\ManyToOne(targetEntity="Team", inversedBy="sections")
      */
-    private $racingGroup;
+    private $team;
 
     /**
      * @var RaceSection
@@ -104,26 +104,26 @@ class RacingGroupsPerSection
     }
 
     /**
-     * Set racingGroup
+     * Set team
      *
-     * @param RacingGroup $group
+     * @param Team $team
      * @return RacingGroupsPerSection
      */
-    public function setRacingGroup(RacingGroup $group)
+    public function setTeam(Team $team)
     {
-        $this->racingGroup = $group;
+        $this->team = $team;
 
         return $this;
     }
 
     /**
-     * Get racingGroups
+     * Get the team
      *
-     * @return RacingGroup
+     * @return Team
      */
-    public function getRacingGroup()
+    public function getTeam()
     {
-        return $this->racingGroup;
+        return $this->team;
     }
 
     /**

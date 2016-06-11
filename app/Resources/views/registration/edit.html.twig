@@ -19,7 +19,7 @@
         <tbody>
         {% for section in race.getSections() %}
             {% for group in section.getGroups() %}
-            {% set rg = group.getRacingGroup() %}
+            {% set team = group.getTeam() %}
             <tr>
                 <td>
                     {{ section.getNumber() }}
@@ -29,8 +29,8 @@
                 </td>
                 <td>
                     {% if group.isDeregistered or group.hasChangedToNewRace %}<s>{% endif %}
-                    {{ rg.getName() }} ({{ rg.getClub().getShortName() }})<br>
-                    <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                    {{ team.getName() }} ({{ team.getClub().getShortName() }})<br>
+                    <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
                             {{ m.getMembership.getPerson.getLastName | upper }}
                             ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
                     {% if group.isDeregistered or group.hasChangedToNewRace %}</s>{% endif %}
@@ -38,7 +38,7 @@
                 </td>
                 <td>
                     {% if not group.hasChangedToNewRace and not group.isDeregistered %}
-                    <div id="changeModal-{{ rg.getId }}" class="modal fade" tabindex="-1" role="dialog">
+                    <div id="changeModal-{{ team.getId }}" class="modal fade" tabindex="-1" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -47,8 +47,8 @@
                                 </div>
                                 <form name="form" method="post" class="form-horizontal">
                                     <div class="modal-body">
-                                        <p><strong>{{ rg.getName() }} ({{ rg.getClub().getShortName() }})</strong><br>
-                                            <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                                        <p><strong>{{ team.getName() }} ({{ team.getClub().getShortName() }})</strong><br>
+                                            <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
                                                     {{ m.getMembership.getPerson.getLastName | upper }}
                                                     ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }})
                                                 {% endfor %}</em></p>
@@ -77,11 +77,11 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-default hidden-print" data-toggle="modal" data-target="#changeModal-{{ rg.getId }}">
+                    <button type="button" class="btn btn-default hidden-print" data-toggle="modal" data-target="#changeModal-{{ team.getId }}">
                         <span class="glyphicon glyphicon-random" aria-hidden="true"></span> <span class="hidden-xs">ummelden</span>
                     </button>
 
-                    <div id="cancelModal-{{ rg.getId }}" class="modal fade" tabindex="-1" role="dialog">
+                    <div id="cancelModal-{{ team.getId }}" class="modal fade" tabindex="-1" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -89,14 +89,14 @@
                                     <h4 class="modal-title">Soll folgende Mannschaft wirklich abgemeldet werden?</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <p><strong>{{ rg.getName() }} ({{ rg.getClub().getShortName() }})</strong><br>
-                                        <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                                    <p><strong>{{ team.getName() }} ({{ team.getClub().getShortName() }})</strong><br>
+                                        <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
                                                 {{ m.getMembership.getPerson.getLastName | upper }}
                                                 ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }})
                                             {% endfor %}</em></p>
                                 </div>
                                 <div class="modal-footer">
-                                    <form method="POST" action="{{ path('registration_delete', { 'rg': rg.id, 'race': race.id }) }}">
+                                    <form method="POST" action="{{ path('registration_delete', { 'team': team.id, 'race': race.id }) }}">
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Abbruch</button>
                                         <button type="submit" class="btn btn-primary">Abmelden</button>
                                     </form>
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-danger hidden-print" data-toggle="modal" data-target="#cancelModal-{{ rg.getId }}">
+                    <button type="button" class="btn btn-danger hidden-print" data-toggle="modal" data-target="#cancelModal-{{ team.getId }}">
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> <span class="hidden-xs">abmelden</span>
                     </button>
                     {% elseif group.isDeregistered %}

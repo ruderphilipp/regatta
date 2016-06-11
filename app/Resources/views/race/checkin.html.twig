@@ -17,15 +17,15 @@
         </tr>
         </thead>
         <tbody>
-        {% set rg = group.getRacingGroup() %}
+        {% set team = group.getTeam() %}
             <tr>
-                <td>{{ rg.getClub().getShortName() }}</td>
+                <td>{{ team.getClub().getShortName() }}</td>
                 <td>
-                    <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                    <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
                             {{ m.getMembership.getPerson.getLastName | upper }}
                             ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
                 </td>
-                <td>{{ rg.getName() }}</td>
+                <td>{{ team.getName() }}</td>
             </tr>
         </tbody>
     </table>

@@ -60,7 +60,7 @@
         <tbody>
         {% for section in race.getSections() %}
             {% for group in section.getGroups() %}
-            {% set rg = group.getRacingGroup() %}
+            {% set team = group.getTeam() %}
             <tr>
                 <td>
                     {{ section.getNumber() }}
@@ -70,8 +70,8 @@
                 </td>
                 <td>
                     {% if group.isDeregistered or group.hasChangedToNewRace %}<s>{% endif %}
-                    {{ rg.getName() }} ({{ rg.getClub().getShortName() }})<br>
-                    <em>{% for m in rg.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+                    {{ team.getName() }} ({{ team.getClub().getShortName() }})<br>
+                    <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
                             {{ m.getMembership.getPerson.getLastName | upper }}
                             ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
                     {% if group.isDeregistered or group.hasChangedToNewRace %}</s>{% endif %}

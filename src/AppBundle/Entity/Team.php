@@ -6,10 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Table(name="racing_group")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\RacingGroupRepository")
+ * @ORM\Table(name="teams")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TeamRepository")
  */
-class RacingGroup
+class Team
 {
     /**
      * @var int
@@ -37,21 +37,21 @@ class RacingGroup
     /**
      * @var Club
      *
-     * @ORM\ManyToOne(targetEntity="Club", inversedBy="groups")
+     * @ORM\ManyToOne(targetEntity="Club", inversedBy="teams")
      */
     private $club;
 
     /**
      * @var ArrayCollection[RacingGroupMembership]
      *
-     * @ORM\OneToMany(targetEntity="RacingGroupMembership", mappedBy="group")
+     * @ORM\OneToMany(targetEntity="RacingGroupMembership", mappedBy="team")
      */
     private $members;
 
     /**
      * @var RacingGroupsPerSection
      *
-     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="racingGroup")
+     * @ORM\OneToMany(targetEntity="RacingGroupsPerSection", mappedBy="team")
      */
     private $sections;
 
@@ -70,7 +70,7 @@ class RacingGroup
      *
      * @param integer $drvId
      *
-     * @return RacingGroup
+     * @return Team
      */
     public function setDrvId($drvId)
     {
@@ -94,7 +94,7 @@ class RacingGroup
      *
      * @param string $name
      *
-     * @return RacingGroup
+     * @return Team
      */
     public function setName($name)
     {
@@ -115,7 +115,7 @@ class RacingGroup
 
     /**
      * @param Club $club
-     * @return RacingGroup
+     * @return Team
      */
     public function setClub(Club $club)
     {

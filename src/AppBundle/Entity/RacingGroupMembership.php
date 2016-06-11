@@ -36,11 +36,11 @@ class RacingGroupMembership
     private $isCox;
 
     /**
-     * @var RacingGroup
+     * @var Team
      *
-     * @ORM\ManyToOne(targetEntity="RacingGroup", inversedBy="members")
+     * @ORM\ManyToOne(targetEntity="Team", inversedBy="members")
      */
-    private $group;
+    private $team;
 
     /**
      * @var Membership
@@ -109,22 +109,22 @@ class RacingGroupMembership
     }
 
     /**
-     * @param RacingGroup $group
+     * @param Team $team
      * @return RacingGroupMembership
      */
-    public function setGroup(RacingGroup $group)
+    public function setTeam(Team $team)
     {
-        $this->group = $group;
+        $this->team = $team;
 
         return $this;
     }
 
     /**
-     * @return RacingGroup
+     * @return Team
      */
-    public function getGroup()
+    public function getTeam()
     {
-        return $this->group;
+        return $this->team;
     }
 
     /**

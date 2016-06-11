@@ -227,8 +227,8 @@ class DrvImportController extends Controller
 
         /** @var \AppBundle\Repository\RaceRepository $raceRepo */
         $raceRepo = $em->getRepository('AppBundle:Race');
-        /** @var \AppBundle\Repository\RacingGroupRepository $groupRepo */
-        $groupRepo = $em->getRepository('AppBundle:RacingGroup');
+        /** @var \AppBundle\Repository\TeamRepository $teamRepository */
+        $teamRepository = $em->getRepository('AppBundle:Team');
         /** @var \AppBundle\DRV_Import\Race $race */
         foreach($races as $race) {
             $r = $raceRepo->createOrUpdate($race, $event, $this->get('logger'));
@@ -236,7 +236,7 @@ class DrvImportController extends Controller
             if (null != $r) {
                 /** @var \AppBundle\DRV_Import\Boat $boat */
                 foreach($race->getBoats() as $boat) {
-                    $b = $groupRepo->createOrUpdate($boat, $r, $this->get('logger'));
+                    $b = $teamRepository->createOrUpdate($boat, $r, $this->get('logger'));
                     // map athletes->boat
                     $positions = $boat->getPositions();
                     foreach (array_keys($positions) as $i) {
@@ -254,7 +254,7 @@ class DrvImportController extends Controller
                                 $m = $membershipPerAthlete[$a_id];
                                 // FIXME use createOrUpdate to avoid duplicates
                                 $rgm = new RacingGroupMembership();
-                                $rgm->setGroup($b)
+                                $rgm->setTeam($b)
                                     ->setPosition($i)
                                     ->setIsCox($positions[$i]['is_cox'])
                                     ->setMembership($m);

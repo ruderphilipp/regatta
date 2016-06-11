@@ -52,7 +52,7 @@ class RacingGroupsPerSectionRepository extends \Doctrine\ORM\EntityRepository
         $newGroup->setSection($section)
             ->setLane($this->getNextLaneForSection($section))
             // the competitor group stays the same
-            ->setRacingGroup($group->getRacingGroup())
+            ->setTeam($group->getTeam())
             ->setChangedFrom($fromRace);
 
         $em->persist($group);

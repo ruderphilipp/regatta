@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Club;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
-use AppBundle\Entity\RacingGroup;
+use AppBundle\Entity\Team;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,15 +101,15 @@ class RegistrationController extends Controller
     /**
      * Mark the given competitor group as being not any longer part of the given race.
      *
-     * @Route("/race/{race}/deregister/{rg}", name="registration_delete")
+     * @Route("/race/{race}/deregister/{team}", name="registration_delete")
      * @Method("POST")
      */
-    public function deleteAction(RacingGroup $rg, Race $race)
+    public function deleteAction(Team $team, Race $race)
     {
         // sanity check
         $races = array();
         /** @var \AppBundle\Entity\RacingGroupsPerSection $section */
-        foreach($rg->getSections() as $section) {
+        foreach($team->getSections() as $section) {
             array_push($races, $section->getSection()->getRace());
         }
         if (!in_array($race, $races)) {
@@ -121,7 +121,7 @@ class RegistrationController extends Controller
             /** @var \AppBundle\Entity\RacingGroupsPerSection $mySection */
             $mySection = null;
             // find the "lane"
-            foreach($rg->getSections() as $section) {
+            foreach($team->getSections() as $section) {
                 if ($section->getSection()->getRace() == $race) {
                     $mySection = $section;
                 }

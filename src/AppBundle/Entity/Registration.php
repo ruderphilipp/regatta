@@ -13,6 +13,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Registration
 {
+    // Constants for the checkpoints
+    const CHECKPOINT_START = 'Start';
+    const CHECKPOINT_FINISH = 'Finish';
+
     /**
      * @var int
      *
@@ -64,10 +68,19 @@ class Registration
      */
     private $section;
 
+    /**
+     * @var ArrayCollection[Timing]
+     *
+     * @ORM\OneToMany(targetEntity="Timing", mappedBy="registration")
+     */
+    private $timings;
+
     const NOT_AT_START = 'not_at_start';
     const DE_REGISTERED = 'de-registered';
     const CHANGED_TO = 'changed_to';
     const CHANGED_FROM = 'changed_from';
+    const STARTED = 'started';
+    const FINISHED = 'finished';
 
     /**
      * Get id
@@ -148,6 +161,16 @@ class Registration
     public function getSection()
     {
         return $this->section;
+    }
+
+    /**
+     * Get all timings for this registration
+     *
+     * @return ArrayCollection[Timing]
+     */
+    public function getTimings()
+    {
+        return $this->timings;
     }
 
     /**
@@ -275,6 +298,32 @@ class Registration
             throw new \InvalidArgumentException('Cannot give race change for a non-changed registration!');
         }
         return $this->changedRace;
+    }
+
+    public function setStarted()
+    {
+        $this->registrationStatus = self::STARTED;
+
+        return $this;
+    }
+
+    public function isStarted()
+    {
+        // is named *is* and not *has* because of naming convention of the other status methods
+        return (self::STARTED == $this->registrationStatus);
+    }
+    public function setFinished()
+    {
+        $this->registrationStatus = self::FINISHED;
+        // remove the token when the team passes the finishing line
+        $this->token = null;
+
+        return $this;
+    }
+
+    public function isFinished()
+    {
+        return (self::FINISHED == $this->registrationStatus);
     }
 }
 

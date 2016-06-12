@@ -16,7 +16,9 @@
         {% if section.isReadyToStart %}
         <div class="row">
             <div class="col" align="center">
-                <a href="#" class="btn btn-lg btn-default">Starten</a>
+                <form method="post" action="{{ path('timing_start', { 'section': section.id }) }}">
+                    <input type="submit" class="btn btn-lg btn-default" value="Starten">
+                </form>
             </div>
         </div>
         {% endif %}

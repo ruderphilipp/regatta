@@ -69,7 +69,10 @@ class TimingController extends Controller
         $repo = $em->getRepository('AppBundle:Registration');
         /** @var Registration $checkedIn */
         foreach($section->getValidRegistrations() as $checkedIn) {
-            $repo->setTime($checkedIn, $myTime, Registration::CHECKPOINT_START, $this->get('logger'));
+            if ($checkedIn->isCheckedIn()) {
+                $this->get('logger')->debug("try to set as started: {$checkedIn->getId()}");
+                $repo->setTime($checkedIn, $myTime, Registration::CHECKPOINT_START, $this->get('logger'));
+            }
         }
 
         return new Response(

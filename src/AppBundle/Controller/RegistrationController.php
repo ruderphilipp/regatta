@@ -5,9 +5,11 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Club;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -18,40 +20,18 @@ class RegistrationController extends Controller
     /**
      * Show page to modify participation (re-register for different race or de-register from this race)
      *
-     * @Route("/event/{event}/race/{race}/change", name="registration_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/race/{race}/change", name="registration_edit")
+     * @Method("POST")
      */
-    public function editAction(Request $request, Event $event, Race $race)
+    public function editAction(Request $request, Race $race)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var \AppBundle\Repository\RaceRepository $repo */
         $repo = $em->getRepository('AppBundle:Race');
-        $all_races = $repo->findAllByEventForChanges($event, $race);
+        $all_races = $repo->findAllByEventForChanges($race);
 
-        $data = array();
-
-        $form = $this->createFormBuilder($data)
-            ->add('race', ChoiceType::class, array(
-                'label' => 'Rennen',
-                'expanded' => false,
-                'multiple' => false,
-                'choices' => $all_races,
-                'choice_value' => function($race) {
-                    if (is_null($race)) {
-                        return "";
-                    }
-                    return $race->getId();
-                },
-            ))
-            ->add('registration', HiddenType::class)
-            ->getForm();
-
-        /** @var \Symfony\Component\Form\FormConfigInterface $c */
-        $c = $form->getConfig();
-        /** @var \Symfony\Component\Security\CSRF\CsrfTokenManager $tokMgr */
-        $tokMgr = $c->getOption("csrf_token_manager");
-        /** @var \Symfony\Component\Security\CSRF\CsrfToken $csrf_token */
-        $csrf_token = $tokMgr->getToken('form');
+        $form = $this->getEditForm($all_races);
+        $csrf_token = $this->getCsrfToken($form);
 
         $form->handleRequest($request);
         if (count($form->getErrors(true)) > 0) {
@@ -90,7 +70,65 @@ class RegistrationController extends Controller
             );
         }
 
-        return $this->render('registration/edit.html.twig', array(
+        return $this->redirectToRoute('race_show', array(
+            'event' => $race->getEvent()->getId(),
+            'race' => $race->getId()));
+    }
+
+    /**
+     * @param array[Race] $races all relevant races for this competitor
+     * @return Form
+     */
+    private function getEditForm($races)
+    {
+        // build a form without an entity
+        $data = array();
+
+        $result = $this->createFormBuilder($data)
+            ->add('race', ChoiceType::class, array(
+                'label' => 'Rennen',
+                'expanded' => false,
+                'multiple' => false,
+                'choices' => $races,
+                'choice_value' => function($race) {
+                    if (is_null($race)) {
+                        return "";
+                    }
+                    return $race->getId();
+                },
+            ))
+            ->add('registration', HiddenType::class);
+
+        return $result->getForm();
+    }
+
+    /**
+     * @param Form $form The form to inspect
+     * @return string The resulting CSRF token
+     */
+    private function getCsrfToken(Form $form)
+    {
+        /** @var \Symfony\Component\Form\FormConfigInterface $c */
+        $c = $form->getConfig();
+        /** @var \Symfony\Component\Security\CSRF\CsrfTokenManager $tokMgr */
+        $tokMgr = $c->getOption("csrf_token_manager");
+        /** @var \Symfony\Component\Security\CSRF\CsrfToken $csrf_token */
+        $token = $tokMgr->getToken('form');
+        return $token->getValue();
+    }
+
+    public function getEditContentAction(Race $race, Team $team, Registration $registration)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var \AppBundle\Repository\RaceRepository $repo */
+        $repo = $em->getRepository('AppBundle:Race');
+        $all_races = $repo->findAllByEventForChanges($race);
+
+        $csrf_token = $this->getCsrfToken($this->getEditForm($all_races));
+
+        return $this->render('race/_section.registration.html.twig', array(
+            'registration' => $registration,
+            'team' => $team,
             'race' => $race,
             'rr' => $repo,
             'all_races' => $all_races,
@@ -142,7 +180,7 @@ class RegistrationController extends Controller
                 );
             }
         }
-        return $this->redirectToRoute('registration_edit', array(
+        return $this->redirectToRoute('race_show', array(
             'event' => $race->getEvent()->getId(),
             'race' => $race->getId()));
     }

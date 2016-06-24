@@ -19,9 +19,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $this->findBy(array('event' => $id));
     }
 
-    public function findAllByEventForChanges($event_id, Race $race)
+    public function findAllByEventForChanges(Race $race)
     {
-        $all = $this->findAllForEvent($event_id);
+        $all = $this->findAllForEvent($race->getEvent()->getId());
 
         $checkGender = !$this->isMixedGender($race);
 

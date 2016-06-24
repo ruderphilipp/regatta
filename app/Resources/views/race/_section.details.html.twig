@@ -1,0 +1,34 @@
+{# registration of type Registration #}
+{# section of type RaceSection #}
+{# race of Type Race#}
+{% set team = registration.getTeam() %}
+<tr>
+    <td>
+        {{ section.getNumber() }}
+    </td>
+    <td>
+        {{ registration.getLane() }}
+    </td>
+    <td>
+        {% if registration.isDeregistered or registration.hasChangedToNewRace %}<s>{% endif %}
+        {{ team.getName() }} ({{ team.getClub().getShortName() }})<br>
+        <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
+            {{ m.getMembership.getPerson.getLastName | upper }}
+            ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
+        {% if registration.isDeregistered or registration.hasChangedToNewRace %}</s>{% endif %}
+        {% if registration.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>){% endif %}
+    </td>
+    <td>
+        {% if not registration.hasChangedToNewRace and not registration.isDeregistered %}
+            {% if false %}
+                {# TODO show only text if user is not allowed to change registrations #}
+            {% else %}
+                {{ render(controller('AppBundle:Registration:getEditContent', { 'race': registration.section.race, 'team': team })) }}
+            {% endif %}
+        {% elseif registration.isDeregistered %}
+        abgemeldet
+        {% elseif registration.hasChangedToNewRace %}
+        umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
+        {% endif %}
+    </td>
+</tr>

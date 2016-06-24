@@ -39,7 +39,7 @@ class RegistrationController extends Controller
             $logger = $this->get('logger');
             /** @var \Symfony\Component\Form\FormError $err */
             foreach($form->getErrors(true) as $err) {
-                if ("Symfony\Component\Validator\ConstraintViolation" == get_class($err->getCause())) {
+                if ('Symfony\Component\Validator\ConstraintViolation' == get_class($err->getCause())) {
                     /** @var \Symfony\Component\Validator\ConstraintViolation $cause */
                     $cause = $err->getCause();
                     $logger->warning("Error while evaluating form: ".$err->getMessage().' '.$cause->getPropertyPath().' got: '.$cause->getInvalidValue());

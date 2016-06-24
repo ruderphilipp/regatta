@@ -32,6 +32,15 @@ class RaceSection
     private $number;
 
     /**
+     * Status of this specific section
+     *
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=255, nullable=true)
+     */
+    private $status;
+
+    /**
      * @var Race
      *
      * @ORM\ManyToOne(targetEntity="Race", inversedBy="sections")
@@ -44,7 +53,6 @@ class RaceSection
      * @ORM\OneToMany(targetEntity="Registration", mappedBy="section")
      */
     private $registrations;
-
 
     /**
      * Get id
@@ -78,6 +86,43 @@ class RaceSection
     public function getNumber()
     {
         return $this->number;
+    }
+
+    /**
+     * Set the status of this section
+     *
+     * @param string $status The new status of this section
+     *
+     * @return RaceSection
+     * @see RaceSectionStatus
+     */
+    public function setStatus($status)
+    {
+        // validate the the given status is one of RaceSectionStatus constants
+        $oClass = new \ReflectionClass(RaceSectionStatus::class);
+        $found = false;
+        foreach(array_values($oClass->getConstants()) as $c) {
+            if ($c == $status) {
+                $found = true;
+            }
+        }
+        if (!$found) {
+            throw new \InvalidArgumentException('Given status is not valid!');
+        }
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get the status of this section
+     *
+     * @return string status
+     * @see RaceSectionStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
@@ -154,3 +199,9 @@ class RaceSection
     }
 }
 
+interface RaceSectionStatus
+{
+    const READY_TO_START = 'ready_to_start';
+    const STARTED = 'started';
+    const FINISHED = 'finished';
+}

@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\RaceSection;
 
+use AppBundle\Entity\RaceSectionStatus;
 use AppBundle\Entity\Registration;
 use AppBundle\Repository\RegistrationRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -75,9 +76,19 @@ class TimingController extends Controller
             }
         }
 
-        return new Response(
-            "Section {$section->getId()} of race {$section->getRace()->getNumberInEvent()} started successfully!",
-            Response::HTTP_OK);
+        $section->setStatus(RaceSectionStatus::STARTED);
+        $em->persist($section);
+
+        $em->flush();
+
+        $this->addFlash(
+            'notice',
+            "Section {$section->getId()} of race {$section->getRace()->getNumberInEvent()} started successfully!"
+        );
+
+        return $this->redirectToRoute('race_index', array(
+            'event' => $section->getRace()->getEvent()->getId(),
+        ));
     }
 
     /**

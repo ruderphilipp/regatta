@@ -37,18 +37,28 @@ class RegistrationController extends Controller
         if (count($form->getErrors(true)) > 0) {
             /** @var \Psr\Log\LoggerInterface $logger */
             $logger = $this->get('logger');
+            $errors = array();
             /** @var \Symfony\Component\Form\FormError $err */
             foreach($form->getErrors(true) as $err) {
                 if ('Symfony\Component\Validator\ConstraintViolation' == get_class($err->getCause())) {
                     /** @var \Symfony\Component\Validator\ConstraintViolation $cause */
                     $cause = $err->getCause();
                     $logger->warning("Error while evaluating form: ".$err->getMessage().' '.$cause->getPropertyPath().' got: '.$cause->getInvalidValue());
+                } elseif (get_class($this) == get_class($err->getCause())) {
+                    $errors[] = $err->getMessage();
                 }
             }
+
             $this->addFlash(
                 'error',
                 'Beim Ummelden sind Fehler aufgetreten!'
             );
+            foreach($errors as $e) {
+                $this->addFlash(
+                    'error',
+                    $e
+                );
+            }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {

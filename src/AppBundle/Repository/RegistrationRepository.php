@@ -91,8 +91,15 @@ class RegistrationRepository extends \Doctrine\ORM\EntityRepository
         }
 
         // validate if setting a checkpoint makes sense
-        if (($checkpoint == Registration::CHECKPOINT_START && !$registration->isCheckedIn()) || !$registration->isStarted()) {
-            throw new \InvalidArgumentException('Competitors are not checked in to start / on track!');
+        if ($checkpoint == Registration::CHECKPOINT_START) {
+            if (!$registration->isCheckedIn()) {
+                throw new \InvalidArgumentException($registration->getId().': '."Competitors on lane {$registration->getLane()} are not checked in for starting!");
+            }
+        } else {
+            // some other checkpoint after the starting line
+            if (!$registration->isStarted()) {
+                throw new \InvalidArgumentException('Competitors are not on track!');
+            }
         }
 
         // store time and checkpoint in database

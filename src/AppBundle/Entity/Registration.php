@@ -180,7 +180,7 @@ class Registration
      */
     public function isCheckedIn()
     {
-        return (!is_null($this->token) && !$this->isCancelled() && !$this->isDeregistered());
+        return ((!is_null($this->token) && !$this->isCancelled() && !$this->isDeregistered()) || $this->isFinished());
     }
 
     /**

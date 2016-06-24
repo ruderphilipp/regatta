@@ -71,6 +71,9 @@
             <a href="{{ path('race_index', { 'event': race.event.id }) }}" class="btn btn-default">Zurück zur Übersicht</a>
         </div>
     </div>
+
+{% if true %}
+{# TODO show this only if the user has the right to modify races #}
     <div class="row">
         <div class="col-md-4 col-md-offset-8">
         <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
@@ -79,6 +82,10 @@
         {{ form_end(delete_form) }}
         </div>
     </div>
+{% endif %}
+
+{% if true %}
+    {# TODO show this only if the user has the right to start a race #}
     {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin %}
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
@@ -86,4 +93,5 @@
         </div>
     </div>
     {% endif %}
+{% endif %}
 {% endblock %}

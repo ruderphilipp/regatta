@@ -21,7 +21,10 @@ class TimingController extends Controller
 {
     private function getCurrentTimestamp()
     {
-        return \DateTime::createFromFormat('U', $_SERVER['REQUEST_TIME'])->getTimestamp();
+        /** @var \DateTime $dt */
+        $dt = \DateTime::createFromFormat('U', $_SERVER['REQUEST_TIME']);
+        $dt->setTimezone(new \DateTimeZone('Europe/Berlin'));
+        return $dt->getTimestamp();
     }
 
     /**

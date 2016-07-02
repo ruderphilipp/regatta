@@ -75,7 +75,8 @@ class RegistrationRepository extends \Doctrine\ORM\EntityRepository
 
         $checkpoint = trim($checkpoint);
 
-        $dtime = \DateTime::createFromFormat("U", $timestamp);
+        // expected format of the timestamp is unix timestamp plus microseconds
+        $dtime = \DateTime::createFromFormat("U.u", $timestamp);
         // check validity of the given timestamp
         // if parsing did not work, the method returns false (else object)
         if ($dtime === false || false === $dtime->getTimestamp()) {

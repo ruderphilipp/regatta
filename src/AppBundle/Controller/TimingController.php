@@ -113,16 +113,18 @@ class TimingController extends Controller
      */
     public function setCheckpointTimeAction(Request $request)
     {
-        $time = $this->getCurrentTimestamp();
-
         $token = $request->get('token', null);
         $checkpoint = $request->get('checkpoint', null);
+        $time = $request->get('time', null);
 
         if (is_null($token) || false == trim($token)) { // PHP evaluates an empty string to false
             return new Response('No token!', Response::HTTP_BAD_REQUEST);
         }
         if (is_null($checkpoint) || false == trim($checkpoint)) { // PHP evaluates an empty string to false
             return new Response('Invalid checkpoint!', Response::HTTP_BAD_REQUEST);
+        }
+        if (is_null($time) || !is_float($time + 0)) { // see <http://php.net/manual/en/function.is-float.php#116960>
+            $time = $this->getCurrentTimestamp();
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -137,6 +139,7 @@ class TimingController extends Controller
         try {
             $repo->setTime($registration, $time, $checkpoint, $this->get('logger'));
         } catch (\InvalidArgumentException $e) {
+            $this->get('logger')->debug('TimingController::setCheckpointTimeAction - ' . $e->getMessage());
             return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
         }
 

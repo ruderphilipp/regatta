@@ -138,11 +138,37 @@ class TimingController extends Controller
 
         try {
             $repo->setTime($registration, $time, $checkpoint, $this->get('logger'));
+
+            if ($checkpoint == Registration::CHECKPOINT_FINISH) {
+
+                $this->checkIfFinished($registration->getSection());
+            }
         } catch (\InvalidArgumentException $e) {
             $this->get('logger')->debug('TimingController::setCheckpointTimeAction - ' . $e->getMessage());
             return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
         }
 
         return new Response('', Response::HTTP_OK);
+    }
+
+    /**
+     * Check if all participants are cancelled or finished and if so, finish the race
+     * @param RaceSection $section
+     */
+    public function checkIfFinished(RaceSection $section)
+    {
+        $done = 0;
+        /** @var Registration $reg */
+        foreach($section->getValidRegistrations() as $reg) {
+            if ($reg->isDone()) {
+                $done += 1;
+            }
+        }
+        if ($done == $section->getValidRegistrations()->count()) {
+            $section->setStatus(RaceSectionStatus::FINISHED);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($section);
+            $em->flush();
+        }
     }
 }

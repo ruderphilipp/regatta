@@ -171,4 +171,21 @@ class TimingController extends Controller
             $em->flush();
         }
     }
+
+    /**
+     * @Route("/team/{registration}/abort", name="race_abort")
+     * @Method("GET")
+     * @TODO move to StartController
+     */
+    public function abortAction(Request $request, Registration $registration)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $registration->setAborted();
+        $em->persist($registration);
+        $em->flush();
+        // TODO howto call functions of other controllers with keeping doctrine reference?
+        $this->checkIfFinished($registration->getSection());
+
+        return $this->redirect($request->headers->get('referer'));
+    }
 }

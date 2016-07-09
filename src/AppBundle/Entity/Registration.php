@@ -81,6 +81,7 @@ class Registration
     const CHANGED_FROM = 'changed_from';
     const STARTED = 'started';
     const FINISHED = 'finished';
+    const ABORTED = 'aborted';
 
     /**
      * Get id
@@ -324,6 +325,46 @@ class Registration
     public function isFinished()
     {
         return (self::FINISHED == $this->registrationStatus);
+    }
+
+    public function setAborted()
+    {
+        $this->registrationStatus = self::ABORTED;
+        // remove the token when the team passes the finishing line
+        $this->token = null;
+
+        return $this;
+    }
+
+    public function isAborted()
+    {
+        return (self::ABORTED == $this->registrationStatus);
+    }
+
+    public function isDone()
+    {
+        return $this->isFinished() || $this->isAborted() || ($this->isDeregistered() || $this->isCancelled());
+    }
+
+    public function getFinalTime()
+    {
+        if ($this->isFinished()) {
+            $startTime = null;
+            $finishTime = null;
+            /** @var Timing $timing */
+            foreach($this->getTimings() as $timing) {
+                if ($timing->getCheckpoint() == Registration::CHECKPOINT_FINISH) {
+                    $finishTime = $timing;
+                } elseif ($timing->getCheckpoint() == Registration::CHECKPOINT_START) {
+                    $startTime = $timing;
+                }
+            }
+            /** @var \DateInterval $total */
+            $total = $finishTime->getTime()->diff($startTime->getTime());
+            return $total->format("%I:%S"); //TODO Millisekunden
+        } else {
+            throw new \InvalidArgumentException("Not finished!");
+        }
     }
 }
 

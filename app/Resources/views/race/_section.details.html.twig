@@ -19,7 +19,13 @@
         {% if registration.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>){% endif %}
     </td>
     <td>
-        {% if not registration.hasChangedToNewRace and not registration.isDeregistered %}
+        {% if registration.isFinished %}
+            {{ registration.getFinalTime }}
+        {% elseif registration.isStarted %}
+            gestartet <a href="{{ path('race_abort', { 'registration' : registration.id }) }}" class="btn">abbrechen (wegen Aufgabe/Verletzung)</a>
+        {% elseif registration.isAborted %}
+            abgebrochen
+        {% elseif not registration.hasChangedToNewRace and not registration.isDeregistered %}
             {% if false %}
                 {# TODO show only text if user is not allowed to change registrations #}
             {% else %}

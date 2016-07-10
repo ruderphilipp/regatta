@@ -87,10 +87,23 @@ class StartController extends Controller
             // $data is a simply array with your form fields
             // like "query" and "category" as defined above.
             $data = $form->getData();
-            $registration->setCheckedIn($data["token"]);
+
+            // check if the token exists for another competitor
             $em = $this->getDoctrine()->getManager();
-            $em->persist($registration);
-            $em->flush();
+            /** @var RegistrationRepository $repo */
+            $repo = $em->getRepository('AppBundle:Registration');
+            if ($repo->isTokenExistent($data["token"])) {
+                $this->addFlash(
+                    'error',
+                    'Token ist bereits eingecheckt!'
+                );
+            } else {
+                // if unique, then save
+                $registration->setCheckedIn($data["token"]);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($registration);
+                $em->flush();
+            }
 
             return $this->redirect($data['ref']);
         }

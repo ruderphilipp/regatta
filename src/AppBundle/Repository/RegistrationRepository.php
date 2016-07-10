@@ -29,6 +29,13 @@ class RegistrationRepository extends \Doctrine\ORM\EntityRepository
         return ((int) $qb->getQuery()->getSingleScalarResult()) + 1;
     }
 
+    public function isTokenExistent($token)
+    {
+        // find all entries with the given token
+        $result = $this->findBy(array('token' => $token));
+        return (count($result) > 0);
+    }
+
     public function changeRace(Registration $registration, Race $fromRace, Race $toRace)
     {
         if (is_null($registration)) {

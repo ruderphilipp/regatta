@@ -89,7 +89,14 @@
 
 {% if true %}
     {# TODO show this only if the user has the right to start a race #}
-    {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin %}
+    {# only show start button if there are enough competitors and the sections are not finished yet #}
+    {% set finishedSections = 0 %}
+    {% for s in race.sections %}
+        {% if s.isFinished %}
+            {% set finishedSections = finishedSections + 1 %}
+        {% endif %}
+    {% endfor %}
+    {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}
     <div class="row">
         <div class="col-md-4 col-md-offset-4">
             <a href="{{ path('race_start', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-lg btn-primary">Rennen starten</a>

@@ -50,10 +50,12 @@
         </tbody>
     </table>
 
+{% for section in race.getSections() %}
+    <h2>Abteilung {{ section.getNumber() }}{% if section.isFinished %}*{% endif %}</h2>
+
     <table class="table table-striped sortable">
         <thead>
-            <th data-defaultsign="_19" data-defaultsort="asc">Lauf</th>
-            <th data-defaultsign="_19">Bahn</th>
+            <th data-defaultsign="_19" data-defaultsort="asc">Bahn</th>
             <th data-defaultsign="az">Name</th>
             <th data-defaultsort='disabled'></th>
         </thead>
@@ -65,6 +67,7 @@
         {% endfor %}
         </tbody>
     </table>
+{% endfor %}
 
     <div class="row">
         <div class="col-md-8">

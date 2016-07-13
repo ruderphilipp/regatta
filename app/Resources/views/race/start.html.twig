@@ -43,18 +43,20 @@
                             <td>
                             {% if group.isCheckedIn %}
                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
+                            {% elseif group.isAborted %}
+                                abgebrochen
+                            {% elseif group.isDeregistered %}
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">abgemeldet</span>
+                            {% elseif group.hasChangedToNewRace %}
+                                <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span><span class="sr-only">umgemeldet zu Rennen {{ group.getChangedRace.getNumberInEvent }}</span>
                             {% elseif group.isCancelled %}
                                 <!-- not at start -->
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">nicht am Start erschienen</span>
+                                <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span><span class="sr-only">nicht am Start erschienen</span>
                                 {% if not group.isDeregistered %}
-                                <a href="{{ path('race_start_reset', { 'registration': group.id }) }}">
-                                    zurücksetzen
-                                </a>
+                                    <a href="{{ path('race_start_reset', { 'registration': group.id }) }}">
+                                        zurücksetzen
+                                    </a>
                                 {% endif %}
-                            {% elseif group.isDeregistered %}
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">de-registered</span>
-                            {% elseif group.hasChangedToNewRace %}
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">re-registered for race {{ group.getChangedRace.getNumberInEvent }}</span>
                             {% else %}
                                 <!-- TODO: maybe as (modal) popup? -->
                                 <a href="{{ path('race_start_checkin', { 'registration': group.id }) }}" class="btn btn-success">
@@ -63,7 +65,7 @@
                                 </a>
 
                                 <a href="{{ path('race_start_nas', { 'registration': group.id }) }}" class="btn btn-danger" aria-label="Left Align">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Nicht am Start
+                                    <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Nicht am Start
                                 </a>
                             {% endif %}
                             </td>

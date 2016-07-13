@@ -23,9 +23,12 @@ class TimingController extends Controller
     private function getCurrentTimestamp()
     {
         /** @var \DateTime $dt */
-        $dt = \DateTime::createFromFormat('U', $_SERVER['REQUEST_TIME']);
-        $dt->setTimezone(new \DateTimeZone('Europe/Berlin'));
-        return $dt->getTimestamp();
+        // get the current microseconds
+        $dt = \DateTime::createFromFormat('U.u', microtime(true));
+        // replace time with the server request time
+        $dt->setTimestamp($_SERVER['REQUEST_TIME']);
+        // format as unix timestamp (always UTC!)
+        return $dt->format('U.u');
     }
 
     /**
@@ -48,6 +51,11 @@ class TimingController extends Controller
     public function startRaceSectionAction(RaceSection $section)
     {
         $myTime = $this->getCurrentTimestamp();
+        // XXX: ugly hack to get the offset correct when working with timestamps (always UTC)
+        $tmpTime = \DateTime::createFromFormat('U.u', $myTime);
+        $offsetInSeconds = (new \DateTimeZone('Europe/Berlin'))->getOffset($tmpTime);
+        $tmpTime->add(new \DateInterval('PT'.$offsetInSeconds.'S'));
+        $myTime = $tmpTime->format('U.u');
 
         // sanity checks
         if (is_null($section)) {

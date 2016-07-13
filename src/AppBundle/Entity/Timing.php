@@ -3,6 +3,9 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Type;
+
+Type::overrideType('datetimetz', 'AppBundle\Doctrine\VarDateTimeWithMicroseconds');
 
 /**
  * Timing information for a team in a race

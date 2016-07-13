@@ -28,9 +28,9 @@
                 {{ render(controller('AppBundle:Registration:getEditContent', { 'race': registration.section.race, 'team': team })) }}
             {% endif %}
         {% elseif registration.isDeregistered %}
-        abgemeldet
+            abgemeldet
         {% elseif registration.hasChangedToNewRace %}
-        umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
+            umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
         {% endif %}
     </td>
 </tr>

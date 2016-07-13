@@ -6,13 +6,7 @@
         {{ registration.getLane() }}
     </td>
     <td>
-        {% if registration.isDeregistered or registration.hasChangedToNewRace %}<s>{% endif %}
-        {{ team.getName() }} ({{ team.getClub().getShortName() }})<br>
-        <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
-            {{ m.getMembership.getPerson.getLastName | upper }}
-            ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}</em>
-        {% if registration.isDeregistered or registration.hasChangedToNewRace %}</s>{% endif %}
-        {% if registration.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>){% endif %}
+        {{ include('race/_registration.title.html.twig', { 'registration': registration }, with_context = false) }}
     </td>
     <td>
         {% if registration.isFinished %}

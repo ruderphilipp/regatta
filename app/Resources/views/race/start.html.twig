@@ -38,10 +38,7 @@
                                 {{ group.getLane() }}
                             </td>
                             <td>
-                                {% if group.isDeregistered or group.hasChangedToNewRace %}<s>{% endif %}
-                                {{ team.getName() }} ({{ team.getClub().getShortName() }})<br>
-                                {% if group.isDeregistered %}</s> <strong>abgemeldet</strong>{% endif %}
-                                {% if group.hasChangedToNewRace %}</s> <strong>umgemeldet</strong>{% endif %}
+                                {{ include('race/_registration.title.html.twig', { 'registration': group }, with_context = false) }}
                             </td>
                             <td>
                             {% if group.isCheckedIn %}

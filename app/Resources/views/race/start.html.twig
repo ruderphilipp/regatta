@@ -27,6 +27,8 @@
         </div>
         {% endif %}
 
+        {# show this only if the race was not yet started #}
+        {% if not section.isStarted and not section.isFinished %}
         <table class="table table-striped">
             <tbody>
                 {% for group in section.getRegistrations() %}
@@ -72,5 +74,6 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
     {% endfor %}
 {% endblock %}

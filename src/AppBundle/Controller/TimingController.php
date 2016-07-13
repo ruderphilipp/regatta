@@ -91,7 +91,7 @@ class TimingController extends Controller
 
         $this->addFlash(
             'notice',
-            "Section {$section->getId()} of race {$section->getRace()->getNumberInEvent()} started successfully!"
+            "Section {$section->getNumber()} of race {$section->getRace()->getNumberInEvent()} started successfully!"
         );
 
         return $this->redirectToRoute('race_index', array(

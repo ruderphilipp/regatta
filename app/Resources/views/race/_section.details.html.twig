@@ -16,7 +16,7 @@
         {% elseif registration.isAborted %}
             abgebrochen
         {% elseif registration.isCancelled %}
-            n.a.S.e.
+            <abbr title="nicht am Start erschienen">n.a.S.e.</abbr>
         {% elseif not registration.hasChangedToNewRace and not registration.isDeregistered %}
             {% if false %}
                 {# TODO show only text if user is not allowed to change registrations #}

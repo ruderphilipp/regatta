@@ -75,4 +75,8 @@
         </table>
         {% endif %}
     {% endfor %}
+
+    <div>
+        <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-default">Zurück zum Rennen</a>
+    </div>
 {% endblock %}

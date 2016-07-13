@@ -18,19 +18,30 @@ class RaceController extends Controller
     /**
      * Lists all Race entities.
      *
-     * @Route("/event/{event}/races", name="race_index")
+     * @Route("/event/{event}/races/{onlyThoseThatCanBeStarted}", name="race_index")
      * @Method("GET")
      */
-    public function indexAction(Event $event)
+    public function indexAction(Event $event, $onlyThoseThatCanBeStarted = false)
     {
         $em = $this->getDoctrine()->getManager();
 
         $repo = $em->getRepository('AppBundle:Race');
+        if ($onlyThoseThatCanBeStarted) {
+            $races = array();
+            foreach($event->getRaces() as $r) {
+                if (0 < $repo->getNumberOfRegistrations($r)) {
+                    $races[] = $r;
+                }
+            }
+        } else {
+            $races = $event->getRaces();
+        }
 
         return $this->render('race/index.html.twig', array(
-            'races' => $event->getRaces(),
+            'races' => $races,
             'event' => $event,
             'rr' => $repo,
+            'filtered' => $onlyThoseThatCanBeStarted,
         ));
     }
 

@@ -36,6 +36,13 @@
         </tbody>
     </table>
 
+    <div>
+        <p>
+            <a href="{{ path('race_index', { 'event': event.id, 'onlyThoseThatCanBeStarted': not filtered }) }}" class="btn btn-default">{% if not filtered %}nur startbare{% else %}alle{% endif %} Rennen anzeigen</a>
+        </p>
+    </div>
+
+    <div>
     <ul>
         <li>
             <a href="{{ path('event_show', { 'id': event.id }) }}">Zurück zum Event</a>
@@ -44,4 +51,5 @@
             <a href="{{ path('race_new', { 'id': event.id }) }}">Neues Rennen erstellen</a>
         </li>
     </ul>
+    </div>
 {% endblock %}

@@ -21,6 +21,8 @@
             gestartet <a href="{{ path('race_abort', { 'registration' : registration.id }) }}" class="btn">abbrechen (wegen Aufgabe/Verletzung)</a>
         {% elseif registration.isAborted %}
             abgebrochen
+        {% elseif registration.isCancelled %}
+            n.a.S.e.
         {% elseif not registration.hasChangedToNewRace and not registration.isDeregistered %}
             {% if false %}
                 {# TODO show only text if user is not allowed to change registrations #}

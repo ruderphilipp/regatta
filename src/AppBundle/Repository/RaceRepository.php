@@ -5,6 +5,7 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceSection;
+use AppBundle\Entity\RaceSectionStatus;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -55,6 +56,39 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         }
 
         return $result;
+    }
+
+    /**
+     * @param Race $race
+     * @return bool <tt>TRUE</tt> if any corresponding section has started but is not yet finished.
+     */
+    public function isStarted(Race $race)
+    {
+        return (0 < $this->hasAnySectionWithStatus($race, RaceSectionStatus::STARTED));
+    }
+
+    public function isFinished(Race $race)
+    {
+        $total = $race->getSections()->count();
+        if (0 == $total) {
+            return false;
+        }
+        $finished = $this->hasAnySectionWithStatus($race, RaceSectionStatus::FINISHED);
+        return ($total == $finished);
+    }
+
+    private function hasAnySectionWithStatus(Race $race, $status)
+    {
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+        // Ask if number of sections associated with race in status "running" is greater then 0"
+        $qb->select('COUNT(r) amount')
+            ->from('AppBundle:RaceSection', 'r')
+            ->where($qb->expr()->eq('r.race', '?1'))
+            ->andWhere($qb->expr()->eq('r.status', '?2'))
+            ->setParameter(1, $race->getId())
+            ->setParameter(2, $status);
+        return  (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     private function isMixedGender(Race $race)

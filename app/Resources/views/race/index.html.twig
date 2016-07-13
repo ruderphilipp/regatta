@@ -17,7 +17,7 @@
         {% for race in races %}
             <tr>
                 <td>
-                    {{ race.numberInEvent }}
+                    {{ race.numberInEvent }}{% if rr.isStarted(race) %}*{% elseif rr.isFinished(race) %}!{% endif %}
                 </td>
                 <td  data-value="{{ rr.getOfficialName(race) }}">
                     {% set counter = rr.getNumberOfRegistrations(race) %}

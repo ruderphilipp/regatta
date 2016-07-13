@@ -198,6 +198,11 @@ class RaceSection
         return ($this->getRegistrations()->count() == $counter && $cancelled != $counter);
     }
 
+    public function isStarted()
+    {
+        return ($this->getStatus() == RaceSectionStatus::STARTED);
+    }
+
     public function isFinished()
     {
         return ($this->getStatus() == RaceSectionStatus::FINISHED);

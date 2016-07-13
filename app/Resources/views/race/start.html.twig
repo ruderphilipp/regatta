@@ -13,7 +13,11 @@
         <h2>Abteilung {{ section.getNumber() }}</h2>
         <!-- if isStarted : show "started at <time>" else: -->
 
-        {% if section.isReadyToStart %}
+        {% if section.isStarted %}
+            gestartet
+        {% elseif section.isFinished %}
+            fertig
+        {% elseif section.isReadyToStart %}
         <div class="row">
             <div class="col" align="center">
                 <form method="post" action="{{ path('timing_start', { 'section': section.id }) }}">

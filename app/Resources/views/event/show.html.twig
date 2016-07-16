@@ -26,8 +26,11 @@
         <dt>Website für mehr</dt>
         <dd><a href="#" target="_blank">{{ event.moreInfoWebsite }}</a></dd>
     </dl>
+
+    <hr />
+
     <p>
-        {{ event.description }}
+        {{ description | raw }}
     </p>
 
     <hr />

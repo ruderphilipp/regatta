@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ event.getName }} - Rechnung für {{ club.name }}
+{% endblock %}
+
+{% block body %}
+<h1>Rechnung für {{ club.name }}</h1>
+
+<table class="table table-striped sortable">
+    <thead>
+    <th data-defaultsign="_19" data-defaultsort="asc">Rennen</th>
+    <th data-defaultsign="_19">Meldungen</th>
+    <th data-defaultsign="_19">Betrag</th>
+    </thead>
+    <tbody>
+    {% for p in positions %}
+        <tr>
+            <td><a href="{{ path('race_show', { 'race': p.race.id, 'event': event.id }) }}">{{ rr.getOfficialName(p.race) }}</a></td>
+            <td>{{ p.teams }}</td>
+            <td>{{ p.amount }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+    <th colspan="2">Total</th>
+    <th>{{ total }}</th>
+    </tfoot>
+</table>
+
+    {# TODO POST-form call that the amount was payed (before: popup to ask how! #}
+<div>
+    <li>
+        <a href="{{ path('billing_index', { 'event': event.id }) }}">Zurück zur Liste</a>
+    </li>
+</div>
+{% endblock %}

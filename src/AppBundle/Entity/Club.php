@@ -96,6 +96,11 @@ class Club
      */
     private $teams;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Billing", mappedBy="club")
+     */
+    private $billings;
+
     public function __construct()
     {
         $this->memberships = new ArrayCollection();
@@ -335,6 +340,26 @@ class Club
     public function getMemberships()
     {
         return $this->memberships;
+    }
+
+    /**
+     * Get all teams of this club that where registered for any race at least once.
+     *
+     * @return ArrayCollection[Team]
+     */
+    public function getTeams()
+    {
+        return $this->teams;
+    }
+
+    /**
+     * Get all billings that this club paid already.
+     *
+     * @return ArrayCollection[Billing]
+     */
+    public function getPayedBillings()
+    {
+        return $this->billings;
     }
 
     public function __toString() {

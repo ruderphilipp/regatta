@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ event.getName }} - Übersicht der meldenden Vereine
+{% endblock %}
+
+{% block body %}
+<h1>Meldene Vereine</h1>
+
+<table class="table table-striped sortable">
+    <thead>
+    <th data-defaultsign="az" data-defaultsort="asc">Name</th>
+    <th data-defaultsign="az">Bezahlt?</th>
+    </thead>
+    <tbody>
+    {% for club in clubs %}
+        <tr>
+            <td><a href="{{ path('billing_show', { 'club': club.id, 'event': event.id }) }}">{{ club.name }}</a></td>
+            {% if repo.hasPaidEverything(event, club) %}<td><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">ja</span></td>
+            {% else %}<td>NEIN</td>{% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div>
+    <li>
+        <a href="{{ path('race_index', { 'event': event.id }) }}">Zurück zur Liste</a>
+    </li>
+</div>
+{% endblock %}

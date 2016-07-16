@@ -93,6 +93,11 @@ class Event
      */
     private $races;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Billing", mappedBy="event")
+     */
+    private $billings;
+
     public function __construct()
     {
         $this->races = new ArrayCollection();
@@ -364,6 +369,16 @@ class Event
      */
     public function getRaces() {
         return $this->races;
+    }
+
+    /**
+     * Get all billings of this event that are already paid.
+     *
+     * @return ArrayCollection[Billing]
+     */
+    public function getPayedBillings()
+    {
+        return $this->billings;
     }
 }
 

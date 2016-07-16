@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Repository\RaceRepository;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -25,14 +26,10 @@ class RaceController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var RaceRepository $repo */
         $repo = $em->getRepository('AppBundle:Race');
         if ($onlyThoseThatCanBeStarted) {
-            $races = array();
-            foreach($event->getRaces() as $r) {
-                if (0 < $repo->getNumberOfRegistrations($r)) {
-                    $races[] = $r;
-                }
-            }
+            $races = $repo->getAllRacesThatHaveRegistrations($event->getId());
         } else {
             $races = $event->getRaces();
         }

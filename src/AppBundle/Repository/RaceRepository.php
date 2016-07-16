@@ -169,6 +169,23 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $name;
     }
 
+    /**
+     * Get all races that have at least one registered starter and ignore all those without.
+     *
+     * @param int $eventId The ID of the event.
+     * @return array The races with registrations.
+     */
+    public function getAllRacesThatHaveRegistrations($eventId)
+    {
+        $races = array();
+        foreach($this->findAllForEvent($eventId) as $r) {
+            if (0 < $this->getNumberOfRegistrations($r)) {
+                $races[] = $r;
+            }
+        }
+        return $races;
+    }
+
     // FIXME not used
     private function getAgeClassSuffix($min, $max) {
         return "(".$min." - ".$max.")";

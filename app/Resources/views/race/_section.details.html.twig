@@ -18,8 +18,9 @@
         {% elseif registration.isCancelled %}
             <abbr title="nicht am Start erschienen">n.a.S.e.</abbr>
         {% elseif not registration.hasChangedToNewRace and not registration.isDeregistered %}
-            {% if false %}
+            {% if registration.isCheckedIn or false %}
                 {# TODO show only text if user is not allowed to change registrations #}
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
             {% else %}
                 {{ render(controller('AppBundle:Registration:getEditContent', { 'race': registration.section.race, 'team': team })) }}
             {% endif %}

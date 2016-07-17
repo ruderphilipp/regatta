@@ -1,5 +1,6 @@
 {# team of type Team #}
 {# all_races of type Iterable[Race] #}
+{# recommended of type Iterable[Race] #}
 {# registration of type Registration #}
 {# token of type string #}
 {# rr of type RaceRepository #}
@@ -25,9 +26,18 @@
                             <label class="col-sm-2 control-label required" for="form_race">Rennen</label>
                             <div class="col-sm-10">
                                 <select id="form_race" name="form[race]" class="form-control">
-                                    {% for r in all_races %}
-                                    <option value="{{ r.getId }}" >{{ r.getId }}: {{ rr.getOfficialName(r) }}</option>
+                                    {% if recommended is defined %}
+                                    <optgroup label="Empfehlung">
+                                    {% for r in recommended %}
+                                        <option value="{{ r.getId }}" >{{ r.getId }}: {{ rr.getOfficialName(r) }}</option>
                                     {% endfor %}
+                                    </optgroup>
+                                    {% endif %}
+                                    <optgroup label="Alle">
+                                    {% for r in all_races %}
+                                        <option value="{{ r.getId }}" >{{ r.getId }}: {{ rr.getOfficialName(r) }}</option>
+                                    {% endfor %}
+                                    </optgroup>
                                 </select>
                             </div>
                         </div>

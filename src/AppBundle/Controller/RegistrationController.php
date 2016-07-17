@@ -28,7 +28,7 @@ class RegistrationController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var \AppBundle\Repository\RaceRepository $repo */
         $repo = $em->getRepository('AppBundle:Race');
-        $all_races = $repo->findAllByEventForChanges($race);
+        $all_races = $repo->findAllForEvent($race->getEvent()->getId());
 
         $form = $this->getEditForm($all_races);
         $csrf_token = $this->getCsrfToken($form);
@@ -68,16 +68,23 @@ class RegistrationController extends Controller
             /** @var integer $regId */
             $regId = (int)$formData["registration"];
 
-            /** @var \AppBundle\Repository\RegistrationRepository $regRepo */
-            $regRepo = $em->getRepository('AppBundle:Registration');
-            /** @var \AppBundle\Entity\Registration $registration */
-            $registration = $regRepo->find($regId);
-            $regRepo->changeRace($registration, $race, $newRace);
+            if ($newRace == $race) {
+                $this->addFlash(
+                    'error',
+                    'Ummelden in das identische Rennen nicht sinnvoll!'
+                );
+            } else {
+                /** @var \AppBundle\Repository\RegistrationRepository $regRepo */
+                $regRepo = $em->getRepository('AppBundle:Registration');
+                /** @var \AppBundle\Entity\Registration $registration */
+                $registration = $regRepo->find($regId);
+                $regRepo->changeRace($registration, $race, $newRace);
 
-            $this->addFlash(
-                'notice',
-                'Mannschaft umgemeldet!'
-            );
+                $this->addFlash(
+                    'notice',
+                    'Mannschaft umgemeldet!'
+                );
+            }
         }
 
         return $this->redirectToRoute('race_show', array(
@@ -132,15 +139,17 @@ class RegistrationController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var \AppBundle\Repository\RaceRepository $repo */
         $repo = $em->getRepository('AppBundle:Race');
-        $all_races = $repo->findAllByEventForChanges($race);
+        $recommended_races = $repo->findAllByEventForChanges($race);
+        $all_races = $repo->findAllForEvent($race->getEvent()->getId());
 
-        $csrf_token = $this->getCsrfToken($this->getEditForm($all_races));
+        $csrf_token = $this->getCsrfToken($this->getEditForm(array_merge($recommended_races, $all_races)));
 
         return $this->render('race/_section.registration.html.twig', array(
             'registration' => $registration,
             'team' => $team,
             'race' => $race,
             'rr' => $repo,
+            'recommended' => $recommended_races,
             'all_races' => $all_races,
             'token' => $csrf_token,
         ));

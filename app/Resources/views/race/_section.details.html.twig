@@ -8,10 +8,11 @@
     <td>
         {{ include('race/_registration.title.html.twig', { 'registration': registration }, with_context = false) }}
     </td>
-    <td>
-        {% if registration.isFinished %}
-            {{ registration.getFinalTime }}
-        {% elseif registration.isStarted %}
+    {% if registration.isFinished %}
+    <td data-value="{{ registration.getFinalTime }} ">{{ registration.getFinalTime | timeString }}</td>
+    {% else %}
+    <td data-value="9999999999">
+        {% if registration.isStarted %}
             <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span><span class="sr-only">gestartet</span> <a href="{{ path('race_abort', { 'registration' : registration.id }) }}" class="btn btn-danger">abbrechen (wegen Aufgabe/Verletzung)</a>
         {% elseif registration.isAborted %}
             abgebrochen
@@ -32,4 +33,5 @@
             gestarted
         {% endif %}
     </td>
+    {% endif %}
 </tr>

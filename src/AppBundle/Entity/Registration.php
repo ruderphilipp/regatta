@@ -359,9 +359,9 @@ class Registration
                     $startTime = $timing;
                 }
             }
-            /** @var \DateInterval $total */
-            $total = $finishTime->getTime()->diff($startTime->getTime());
-            return $total->format("%I:%S"); //TODO Millisekunden
+
+            $delta = doubleval($finishTime->getTime()->format('U.u')) - doubleval($startTime->getTime()->format('U.u'));
+            return $delta;
         } else {
             throw new \InvalidArgumentException("Not finished!");
         }

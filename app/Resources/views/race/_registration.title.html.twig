@@ -7,4 +7,4 @@
        ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}
 </em>
 {% if registration.isDeregistered or registration.hasChangedToNewRace %}</s>{% endif %}
-{% if registration.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>){% endif %}
+{% if registration.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': registration.getChangedRace.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>){% endif %}

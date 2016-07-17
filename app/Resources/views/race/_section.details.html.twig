@@ -12,7 +12,7 @@
         {% if registration.isFinished %}
             {{ registration.getFinalTime }}
         {% elseif registration.isStarted %}
-            gestartet <a href="{{ path('race_abort', { 'registration' : registration.id }) }}" class="btn">abbrechen (wegen Aufgabe/Verletzung)</a>
+            <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span><span class="sr-only">gestartet</span> <a href="{{ path('race_abort', { 'registration' : registration.id }) }}" class="btn btn-danger">abbrechen (wegen Aufgabe/Verletzung)</a>
         {% elseif registration.isAborted %}
             abgebrochen
         {% elseif registration.isCancelled %}

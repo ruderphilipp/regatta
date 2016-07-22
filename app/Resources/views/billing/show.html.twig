@@ -9,22 +9,26 @@
 
 <table class="table table-striped">
     <thead>
+        <th>Nr.</th>
         <th>Rennen</th>
-        <th>Meldungen</th>
-        <th>Betrag</th>
+        <th style="text-align:right">Anzahl</th>
+        <th style="text-align:right">Preis</th>
+        <th style="text-align:right">Betrag</th>
     </thead>
     <tbody>
     {% for p in positions %}
         <tr>
-            <td><a href="{{ path('race_show', { 'race': p.race.id, 'event': event.id }) }}">{{ rr.getOfficialName(p.race) }}</a></td>
-            <td>{{ p.teams }}</td>
-            <td>{{ p.amount }}</td>
+            <td>{{ p.race.numberInEvent }}</td>
+            <td>{{ rr.getOfficialName(p.race) }}</td>
+            <td align="right">{{ p.teams }}</td>
+            <td align="right">{{ p.race.pricePerStarter |number_format(2, ',', '') }} €</td>
+            <td align="right">{{ p.amount |number_format(2, ',', '') }} €</td>
         </tr>
     {% endfor %}
     </tbody>
     <tfoot>
-    <th colspan="2">Total</th>
-    <th>{{ total }}</th>
+        <th colspan="4">Total</th>
+        <th style="text-align:right">{{ total |number_format(2, ',', '') }} €</th>
     </tfoot>
 </table>
 

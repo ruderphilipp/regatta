@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+<p class="visible-print-block" align="right"><small>{{ "now"|date("d.m.Y H:i") }}</small></p>
 <h1 class="visible-print-block">{{ event.getName }}</h1>
 <h2>Rechnung für {{ club.name }}</h2>
 

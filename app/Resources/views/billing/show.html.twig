@@ -7,11 +7,11 @@
 {% block body %}
 <h1>Rechnung für {{ club.name }}</h1>
 
-<table class="table table-striped sortable">
+<table class="table table-striped">
     <thead>
-    <th data-defaultsign="_19" data-defaultsort="asc">Rennen</th>
-    <th data-defaultsign="_19">Meldungen</th>
-    <th data-defaultsign="_19">Betrag</th>
+        <th>Rennen</th>
+        <th>Meldungen</th>
+        <th>Betrag</th>
     </thead>
     <tbody>
     {% for p in positions %}

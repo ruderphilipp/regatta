@@ -35,10 +35,13 @@
 </table>
 
     {# TODO POST-form call that the amount was payed (before: popup to ask how! #}
-<div class="hidden-print">
-    <li>
-        <a href="{{ path('billing_index', { 'event': event.id }) }}">Zurück zur Liste</a>
-    </li>
+<div class="hidden-print row">
+    <div class="col-md-6">
+        <a href="{{ path('billing_index', { 'event': event.id }) }}" class="btn btn-default">Zurück zur Liste</a>
+    </div>
+    <div class="col-md-6" align="right">
+        <a href="javascript:window.print()" class="btn btn-primary"> drucken </a>
+    </div>
 </div>
 <div class="visible-print-block">
     <p>Betrag dankend erhalten.</p>

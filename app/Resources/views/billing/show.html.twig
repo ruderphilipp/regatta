@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block body %}
-<h1>Rechnung für {{ club.name }}</h1>
+<h1 class="visible-print-block">{{ event.getName }}</h1>
+<h2>Rechnung für {{ club.name }}</h2>
 
 <table class="table table-striped">
     <thead>
@@ -33,9 +34,12 @@
 </table>
 
     {# TODO POST-form call that the amount was payed (before: popup to ask how! #}
-<div>
+<div class="hidden-print">
     <li>
         <a href="{{ path('billing_index', { 'event': event.id }) }}">Zurück zur Liste</a>
     </li>
+</div>
+<div class="visible-print-block">
+    <p>Betrag dankend erhalten.</p>
 </div>
 {% endblock %}

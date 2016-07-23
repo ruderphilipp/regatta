@@ -1,0 +1,3 @@
+Copy the glyphicons font files here to use the website without internet connection.
+
+For more, please check: <http://getbootstrap.com/components/#callout-glyphicons-location>

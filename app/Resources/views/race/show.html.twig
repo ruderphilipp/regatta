@@ -62,6 +62,7 @@
         </div>
     {% endif %}
 
+    <hr>
 {% for section in race.getSections() %}
     <h2>Abteilung {{ section.getNumber() }}{% if section.isFinished %}*{% endif %}</h2>
 

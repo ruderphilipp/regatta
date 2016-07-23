@@ -1,5 +1,4 @@
 {# registration of type Registration #}
-{# race of type Race #}
 {# withLane of type bool - should the lane column be rendered? #}
 {% set team = registration.getTeam() %}
 <tr>
@@ -31,7 +30,7 @@
         {% elseif registration.isDeregistered %}
             abgemeldet
         {% elseif registration.hasChangedToNewRace %}
-            umgemeldet &raquo; <a href="{{ path('race_show', { 'event': race.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
+            umgemeldet &raquo; <a href="{{ path('race_show', { 'event': getChangedRace.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
         {% elseif registration.isStarted %}
             gestarted
         {% endif %}

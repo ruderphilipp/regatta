@@ -1,5 +1,5 @@
 {# registration of type Registration #}
-{# withLane of type bool - should the lane column be rendered? #}
+{# withLane (optional) of type bool - should the lane column be rendered? #}
 {% set team = registration.getTeam() %}
 <tr>
     {% if withLane is not defined or withLane == true %}

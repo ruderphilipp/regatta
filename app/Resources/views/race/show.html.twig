@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% set finishedSections = 0 %}
+{% for s in race.sections %}
+    {% if s.isFinished %}
+        {% set finishedSections = finishedSections + 1 %}
+    {% endif %}
+{% endfor %}
+
 {% block title %}
     {{ race.getEvent.getName }} - Rennen {{ race.numberInEvent }}
 {% endblock %}
@@ -62,6 +69,18 @@
         </div>
     {% endif %}
 
+{% if true %}
+    {# TODO show this only if the user has the right to start a race #}
+    {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}
+        {# only show start button if there are enough competitors and the sections are not finished yet #}
+        <hr>
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <a href="{{ path('race_start', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-lg btn-primary">Rennen starten</a>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
     <hr>
 {% for section in race.getSections() %}
     <h2>
@@ -111,22 +130,4 @@
             <a href="{{ path('race_index', { 'event': race.event.id }) }}" class="btn btn-default">Zurück zur Übersicht</a>
         </div>
     </div>
-
-{% if true %}
-    {# TODO show this only if the user has the right to start a race #}
-    {# only show start button if there are enough competitors and the sections are not finished yet #}
-    {% set finishedSections = 0 %}
-    {% for s in race.sections %}
-        {% if s.isFinished %}
-            {% set finishedSections = finishedSections + 1 %}
-        {% endif %}
-    {% endfor %}
-    {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}
-    <div class="row">
-        <div class="col-md-4 col-md-offset-4">
-            <a href="{{ path('race_start', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-lg btn-primary">Rennen starten</a>
-        </div>
-    </div>
-    {% endif %}
-{% endif %}
 {% endblock %}

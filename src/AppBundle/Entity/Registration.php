@@ -253,6 +253,8 @@ class Registration
     public function setDeregistered()
     {
         $this->registrationStatus = self::DE_REGISTERED;
+        // remove lane since the team is no longer in the race
+        $this->lane = -1;
         return $this;
     }
 
@@ -268,6 +270,8 @@ class Registration
 
     public function setChangedTo(Race $race)
     {
+        // remove lane since the team is no longer in the race
+        $this->lane = -1;
         return $this->setChangedRace($race, self::CHANGED_TO);
     }
 

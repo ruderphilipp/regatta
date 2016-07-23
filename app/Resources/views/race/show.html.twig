@@ -73,7 +73,7 @@
             <th data-defaultsort='_19'></th>
         </thead>
         <tbody>
-            {% for group in section.getRegistrations() %}
+            {% for group in section.getValidRegistrations() %}
                 {{ include('race/_section.details.html.twig', { 'registration': group, 'section': section, 'race': race }, with_context = false) }}
             {% endfor %}
         </tbody>

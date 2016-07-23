@@ -186,7 +186,7 @@ class RaceSection
         $counter = 0;
         $cancelled = 0;
         /** @var \AppBundle\Entity\Registration $g */
-        foreach($this->getRegistrations() as $g) {
+        foreach($this->getValidRegistrations() as $g) {
             if ($g->isCheckedIn()) {
                 $counter += 1;
             } elseif ($g->isCancelled()) {

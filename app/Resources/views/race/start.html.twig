@@ -31,7 +31,7 @@
         {% if not section.isStarted and not section.isFinished %}
         <table class="table table-striped">
             <tbody>
-                {% for group in section.getRegistrations() %}
+                {% for group in section.getValidRegistrations() %}
                     {% set team = group.getTeam() %}
                         <tr>
                             <td>

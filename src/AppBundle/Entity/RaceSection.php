@@ -207,6 +207,51 @@ class RaceSection
     {
         return ($this->getStatus() == RaceSectionStatus::FINISHED);
     }
+
+    /**
+     * @return \DateTime Starting time of this section
+     * @throws \InvalidArgumentException if this section was not started, yet
+     */
+    public function getStartTime()
+    {
+        if (!$this->isStarted() && !$this->isFinished()) {
+            throw new \InvalidArgumentException('Only those section that where started have a starting time!');
+        }
+        // get first start timing, since all have the same start time
+        /** @var Registration $registration */
+        foreach ($this->getValidRegistrations() as $registration) {
+            /** @var Timing $timing */
+            foreach ($registration->getTimings() as $timing) {
+                if ($timing->getCheckpoint() == Registration::CHECKPOINT_START) {
+                    return $timing->getTime();
+                }
+            }
+        }
+    }
+
+    /**
+     * @return \DateTime Finishing time of the latest team.
+     * @throws \InvalidArgumentException if this section is not finished, yet
+     */
+    public function getLatestFinishingTime()
+    {
+        if (!$this->isFinished()) {
+            throw new \InvalidArgumentException('Only those section that are finished have a finishing time!');
+        }
+        $latest = new \DateTime('@0'); // unix timestamp: 1970-1-1 0:00:00
+        /** @var Registration $registration */
+        foreach ($this->getValidRegistrations() as $registration) {
+            /** @var Timing $timing */
+            foreach ($registration->getTimings() as $timing) {
+                if ($timing->getCheckpoint() == Registration::CHECKPOINT_FINISH) {
+                    if ($latest <  $timing->getTime()) {
+                        $latest = $timing->getTime();
+                    }
+                }
+            }
+        }
+        return $latest;
+    }
 }
 
 interface RaceSectionStatus

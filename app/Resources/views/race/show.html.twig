@@ -64,7 +64,12 @@
 
     <hr>
 {% for section in race.getSections() %}
-    <h2>Abteilung {{ section.getNumber() }}{% if section.isFinished %}*{% endif %}</h2>
+    <h2>
+        Abteilung {{ section.getNumber() }}
+{% if section.isFinished %}<br><small>{{ section.getStartTime | date('H:i:s') }} - {{ section.getLatestFinishingTime | date('H:i:s') }}</small>
+{% elseif section.isStarted and not section.isFinished %}<br><small>gestartet um {{ section.getStartTime|date('H:i:s') }}</small>
+{% endif %}
+    </h2>
 {% set num = (section.getValidRegistrations() | count) %}{% if race.maxStarterPerSection < num %}
     <div class="alert alert-warning">
         ACHTUNG: es sind nur {{ race.maxStarterPerSection }} Starter pro Abteilung erlaubt

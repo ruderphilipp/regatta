@@ -346,6 +346,11 @@ class Registration
         return $this->isFinished() || $this->isAborted() || ($this->isDeregistered() || $this->isCancelled());
     }
 
+    public function isValidForRace()
+    {
+        return !($this->isDeregistered() || $this->hasChangedToNewRace());
+    }
+
     public function getFinalTime()
     {
         if ($this->isFinished()) {

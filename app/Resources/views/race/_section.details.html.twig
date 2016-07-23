@@ -1,10 +1,13 @@
 {# registration of type Registration #}
 {# race of Type Race#}
+{# withLane of Type bool - should the lane column be rendered? #}
 {% set team = registration.getTeam() %}
 <tr>
+    {% if withLane is not defined or withLane == true %}
     <td>
         {{ registration.getLane() }}
     </td>
+    {% endif %}
     <td>
         {{ include('race/_registration.title.html.twig', { 'registration': registration }, with_context = false) }}
     </td>

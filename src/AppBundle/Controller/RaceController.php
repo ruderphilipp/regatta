@@ -97,10 +97,23 @@ class RaceController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:Race');
 
+        $invalidRegistrations = null;
+        foreach($race->getSections() as $section) {
+            foreach($section->getRegistrations() as $registration) {
+                if (!$registration->isValidForRace()) {
+                    if (is_null($invalidRegistrations)) {
+                        $invalidRegistrations = array();
+                    }
+                    $invalidRegistrations[] = $registration;
+                }
+            }
+        }
+
         return $this->render('race/show.html.twig', array(
             'race' => $race,
             'rr' => $repo,
             'delete_form' => $deleteForm->createView(),
+            'invalidRegistrations' => $invalidRegistrations,
         ));
     }
 

@@ -169,7 +169,7 @@ class RaceSection
         $result = new ArrayCollection();
         /** @var Registration $registration */
         foreach($this->registrations as $registration) {
-            if (!$registration->isDeregistered() && !$registration->hasChangedToNewRace()) {
+            if ($registration->isValidForRace()) {
                 $result->add($registration);
             }
         }

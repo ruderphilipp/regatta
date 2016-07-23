@@ -72,11 +72,9 @@
             <th data-defaultsort='_19'></th>
         </thead>
         <tbody>
-        {% for section in race.getSections() %}
             {% for group in section.getRegistrations() %}
                 {{ include('race/_section.details.html.twig', { 'registration': group, 'section': section, 'race': race }, with_context = false) }}
             {% endfor %}
-        {% endfor %}
         </tbody>
     </table>
 {% endfor %}

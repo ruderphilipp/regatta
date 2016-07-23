@@ -1,0 +1,18 @@
+{# showUpButton of type bool #}
+{# showDownButton of type bool #}
+{# registration of type Registration #}
+
+{% if showUpButton is defined and showUpButton == true %}
+    <form action="{{ path('registration_move_up', { 'registration': registration.id }) }}" method="POST">
+        <button type="submit" class="btn btn-default">
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span><span class="hidden-xs"> hoch</span>
+        </button>
+    </form>
+{% endif %}
+{% if showDownButton is defined and showDownButton == true %}
+    <form action="{{ path('registration_move_down', { 'registration': registration.id }) }}" method="POST">
+        <button type="submit" class="btn btn-default">
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span><span class="hidden-xs"> runter</span>
+        </button>
+    </form>
+{% endif %}

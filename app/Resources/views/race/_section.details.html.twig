@@ -1,5 +1,6 @@
 {# registration of type Registration #}
 {# withLane (optional) of type bool - should the lane column be rendered? #}
+{# lanesChangeable (optional) of type bool - is it allowed to move the starters? #}
 {% set team = registration.getTeam() %}
 <tr>
     {% if withLane is not defined or withLane == true %}
@@ -20,12 +21,18 @@
             abgebrochen
         {% elseif registration.isCancelled %}
             <abbr title="nicht am Start erschienen">n.a.S.e.</abbr>
+            {% if lanesChangeable is defined and lanesChangeable == true %}
+                {{ render(controller('AppBundle:RaceSectionMove:getPageContent', { 'registration': registration })) }}
+            {% endif %}
         {% elseif not registration.hasChangedToNewRace and not registration.isDeregistered %}
             {% if registration.isCheckedIn or false %}
                 {# TODO show only text if user is not allowed to change registrations #}
                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
             {% else %}
                 {{ render(controller('AppBundle:Registration:getEditContent', { 'race': registration.section.race, 'team': team })) }}
+                {% if lanesChangeable is defined and lanesChangeable == true %}
+                    {{ render(controller('AppBundle:RaceSectionMove:getPageContent', { 'registration': registration })) }}
+                {% endif %}
             {% endif %}
         {% elseif registration.isDeregistered %}
             abgemeldet

@@ -45,10 +45,14 @@ class TeamRepository extends \Doctrine\ORM\EntityRepository
                 $logger->warning($message);
                 throw new \Exception($message);
             }
-            /** @var \AppBundle\Repository\RaceRepository $raceRepo */
-            $raceRepo = $this->getEntityManager()->getRepository('AppBundle:Race');
+            if ($race->getSections()->isEmpty()) {
+                /** @var \AppBundle\Repository\RaceRepository $raceRepo */
+                $raceRepo = $this->getEntityManager()->getRepository('AppBundle:Race');
+                // create initial section
+                $raceRepo->createSection($race, 1, $logger);
+            }
             /** @var \AppBundle\Entity\RaceSection $raceSection */
-            $raceSection = $raceRepo->getNextAvailableSection($race, $logger);
+            $raceSection = $race->getSections()->last();
             if (null == $raceSection) {
                 $message = "Found no section for race {$race->getId()}! No team created for "
                     . "[{$boat->name}, {$boat->id}]";

@@ -211,31 +211,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getNextAvailableSection(Race $race, LoggerInterface $logger = null)
-    {
-        if ($race->getSections()->isEmpty()) {
-            // create initial section
-            $this->createSection($race, 1, $logger);
-        }
-
-        /** @var RaceSection $last */
-        $result = null;
-        /** @var RaceSection $last */
-        $last = $race->getSections()->last();
-        /** @var \AppBundle\Repository\RegistrationRepository $regRepo */
-        $regRepo = $this->getEntityManager()->getRepository('AppBundle:Registration');
-        // open a new one if the max number of starters is already assigned)
-        if ($race->getMaxStarterPerSection() < $regRepo->getNextLaneForSection($last)) {
-            // create new section
-            $result = $this->createSection($race, $last->getNumber() + 1, $logger);
-        } else {
-            $result = $last;
-        }
-
-        return $result;
-    }
-
-    private function createSection(Race $race, $number, LoggerInterface $logger = null)
+    public function createSection(Race $race, $number, LoggerInterface $logger = null)
     {
         $em = $this->getEntityManager();
 

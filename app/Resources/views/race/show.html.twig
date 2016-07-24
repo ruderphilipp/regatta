@@ -67,6 +67,28 @@
                 {{ form_end(delete_form) }}
             </div>
         </div>
+        {% if finishedSections != race.sections.count %}
+        <div class="row">
+            <div class="col-lg-1">
+                <form method="post" action="{{ path('race_add_section', {'race': race.id }) }}">
+                    <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> neue Abteilung erstellen
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+                <div class="col-lg-1">
+                    <form method="post" action="{{ path('race_clean_sections', {'race': race.id }) }}">
+                        <button type="submit" class="btn btn-default">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> alle leeren Abteilungen entfernen
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     {% endif %}
 
 {% if true %}

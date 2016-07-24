@@ -2,8 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\RaceSection;
+use AppBundle\Entity\Registration;
 use AppBundle\Repository\RaceRepository;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -188,5 +189,98 @@ class RaceController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    /**
+     * Add a new section to this race.
+     *
+     * @Route("/race/{race}/section/add", name="race_add_section")
+     * @Method("POST")
+     */
+    public function addSectionAction(Race $race)
+    {
+        $max = 0;
+        /** @var RaceSection $section */
+        foreach ($race->getSections() as $section) {
+            if ($section->getNumber() > $max) {
+                $max = $section->getNumber();
+            }
+        }
+        $nextNumber = $max + 1;
+
+        $em = $this->getDoctrine()->getManager();
+        /** @var RaceRepository $raceRepo */
+        $raceRepo = $em->getRepository('AppBundle:Race');
+        $raceRepo->createSection($race, $nextNumber, $this->get('logger'));
+
+        $this->addFlash(
+            'notice',
+            'Neue Abteilung angelegt.'
+        );
+
+        return $this->redirectToRoute('race_show',
+            array(
+                'event' => $race->getEvent()->getId(),
+                'race' => $race->getId(),
+            )
+        );
+    }
+
+    /**
+     * Remove all sections without competitors from this race.
+     *
+     * @Route("/race/{race}/section/clean", name="race_clean_sections")
+     * @Method("POST")
+     */
+    public function cleanSectionsAction(Race $race)
+    {
+        $sectionOne = null;
+        foreach ($race->getSections() as $section) {
+            if(1 == $section->getNumber()) {
+                $sectionOne = $section;
+                break;
+            }
+        }
+        if (is_null($sectionOne)) {
+            // TODO better error message
+            die("no section with number 1 found for this race!");
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        /** @var RaceSection $section */
+        foreach ($race->getSections() as $section) {
+            if (0 == $section->getValidRegistrations()->count()) {
+                if (1 != $section->getNumber()) {
+                    // are there some non-valids in this section?
+                    if (0 < $section->getRegistrations()->count()) {
+                        // move them all to section 1
+                        /** @var Registration $registration */
+                        foreach ($section->getRegistrations() as $registration) {
+                            $registration->setSection($sectionOne);
+                        }
+                    }
+//                    } else {
+//                        // check if another section exists with
+//                        // if so, then move them there
+//                        // delete section one
+//                        // make the new one to number one
+                    $em->remove($section);
+                }
+            }
+        }
+        $em->flush();
+        $em->refresh($race);
+
+        $this->addFlash(
+            'notice',
+            'Leere Abteilungen entfernt.'
+        );
+
+        return $this->redirectToRoute('race_show',
+            array(
+                'event' => $race->getEvent()->getId(),
+                'race' => $race->getId(),
+            )
+        );
     }
 }

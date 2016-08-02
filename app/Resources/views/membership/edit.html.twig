@@ -5,19 +5,14 @@
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
-        <input type="submit" class="btn btn-primary" value="Edit" />
+        <input type="submit" class="btn btn-primary" value="Speichern" />
     {{ form_end(edit_form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('membership_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" class="btn btn-danger" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div>
+        {{ form_start(delete_form) }}
+        <input type="submit" class="btn btn-danger" value="Löschen">
+        {{ form_end(delete_form) }}
+    </div>
 
     <hr>
     <a href="{{ path('competitor_show', { 'id': person.id }) }}" class="btn btn-default">Zurück zum Sportler</a>

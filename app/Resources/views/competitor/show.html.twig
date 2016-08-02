@@ -29,7 +29,7 @@
             <td>{{ membership.club.name }}</td>
             <td data-dateformat="DD.MM.YYYY">{{ membership.since | date("d.m.Y")}}</td>
             <td data-dateformat="DD.MM.YYYY">{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
-{% if true %}<td><a href="{{ path('membership_edit', { 'id': membership.id }) }}" class="btn btn-default">Edit</a></td>{% endif %}{# TODO check user rights #}
+{% if true %}<td><a href="{{ path('membership_edit', { 'id': membership.id }) }}" class="btn btn-default">Ändern</a></td>{% endif %}{# TODO check user rights #}
         </tr>
         {% endfor %}
         </tbody>

@@ -43,13 +43,14 @@
     </table>
 
     <div class="hidden-print">
-    <ul>
-        <li>
-            <a href="{{ path('event_show', { 'id': event.id }) }}">Zurück zum Event</a>
-        </li>
-        <li>
-            <a href="{{ path('race_new', { 'id': event.id }) }}">Neues Rennen erstellen</a>
-        </li>
-    </ul>
+{% if true %}
+        <p>
+            <a href="{{ path('race_new', { 'id': event.id }) }}" class="btn btn-primary">Neues Rennen erstellen</a>
+        </p>
+{% endif %}{# TODO check user rights #}
+        <hr />
+        <p>
+            <a href="{{ path('event_show', { 'id': event.id }) }}" class="btn btn-default">Zurück zum Event</a>
+        </p>
     </div>
 {% endblock %}

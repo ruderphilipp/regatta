@@ -2,11 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Club;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\RaceSection;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Form;
@@ -17,6 +18,138 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class RegistrationController extends Controller
 {
+    /**
+     * Creates a new Event entity.
+     *
+     * @Route("/event/{event}/race/{race}/new", name="registration_new")
+     * @Method({"GET", "POST"})
+     */
+    public function newAction(Request $request, Event $event, Race $race)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $registration = new Registration();
+
+        /** @var QueryBuilder $qb */
+        $qb = $em->createQueryBuilder();
+
+        $now = (new \DateTime('now'))->format('Y');
+        $minYear = $now - $race->getAgeMax();
+        $maxYear = $now - $race->getAgeMin();
+
+        if ('a' == $race->getGender()) { // mixed
+            $whereGender = $qb->expr()->neq('p.gender', ':gender');
+        } else {
+            $whereGender = $qb->expr()->eq('p.gender', ':gender');
+        }
+        $whereYear = $qb->expr()->between('p.yearOfBirth', $minYear, $maxYear);
+        $whereSameRace = $qb->expr()->neq('s.race', ':raceId');
+
+        $where = $qb->expr()->andX();
+        $where->add($whereYear);
+        $where->add($whereGender);
+        $where->add($whereSameRace);
+
+        $query = $qb
+            ->select('t')
+            ->from('AppBundle:Team', 't')
+            ->join('t.registrations', 'r')
+            ->join('r.section', 's')
+            ->join('t.members', 'tp')
+            ->join('tp.membership', 'membership')
+            ->join('membership.person', 'p')
+            ->where($where)
+            ->setParameter('gender', $race->getGender())
+            ->setParameter(':raceId', $race->getId())
+            ->getQuery();
+        $teamResult = $query->getResult();
+
+        $alreadyRegistered = array();
+        foreach ($race->getSections() as $s) {
+                /** @var RaceSection $s */
+            foreach ($s->getRegistrations() as $r) {
+                /** @var Registration $r */
+                $alreadyRegistered[] = $r->getTeam();
+            }
+        }
+
+        // filter by number of members and show only those with the correct team size
+        $teams = array();
+        /** @var Team $t */
+        foreach ($teamResult as $t) {
+            if ($t->getMembers()->count() == $race->getTeamsize()) {
+                if (!in_array($t, $alreadyRegistered)) {
+                    $teams[] = $t;
+                }
+            }
+        }
+
+        if (0 == count($teams)) {
+            $this->addFlash(
+                'error',
+                'Keine passenden Teams gefunden, die noch hinzugefügt werden könnten!'
+            );
+
+            return $this->redirectToRoute('race_show', array('event' => $event->getId(), 'race' => $race->getId()));
+        }
+
+        $form = $this->createForm(
+            'AppBundle\Form\RegistrationType',
+            $registration,
+            array(
+                'teams' => $teams,
+            )
+        );
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (is_null($registration->getTeam())) {
+                $this->addFlash(
+                    'error',
+                    'Kein Team angegeben!'
+                );
+
+                return $this->redirectToRoute('race_show', array('event' => $event->getId(), 'race' => $race->getId()));
+            }
+            if (is_null($registration->getSection())) {
+                if ($race->getSections()->count() > 0) {
+                    $registration->setSection($race->getSections()->last());
+                } else {
+                    $raceRepo = $em->getRepository('AppBundle:Race');
+                    $section = $raceRepo->createSection($race, 1);
+                    $registration->setSection($section);
+                }
+            }
+            if (is_null($registration->getLane())) {
+                // find highest existing lane
+                $highestLane = 0;
+                /** @var Registration $r */
+                foreach ($registration->getSection()->getRegistrations() as $r) {
+                    if ($r->getLane() > $highestLane) {
+                        $highestLane = $r->getLane();
+                    }
+                }
+                $registration->setLane(1 + $highestLane);
+            }
+            $em->persist($registration);
+            $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Neue Meldung wurde angelegt!'
+            );
+
+            return $this->redirectToRoute('race_show', array('event' => $event->getId(), 'race' => $race->getId()));
+        }
+
+        return $this->render(
+            'registration/new.html.twig',
+            array(
+                'race' => $race,
+                'form' => $form->createView(),
+            )
+        );
+    }
+
     /**
      * Show page to modify participation (re-register for different race or de-register from this race)
      *

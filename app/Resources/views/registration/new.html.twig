@@ -1,0 +1,17 @@
+{% extends 'form.new.base.html.twig' %}
+
+{% block title %}
+    {{ race.event.name }} - Rennen #{{ race.numberInEvent }} - Neue Meldung erstellen
+{% endblock %}
+
+{% block body %}
+    <h1>Neue Meldung erstellen</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" class="btn btn-primary" value="Erstellen" />
+    {{ form_end(form) }}
+
+    <hr />
+    <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-default">Zurück zum Rennen</a>
+{% endblock %}

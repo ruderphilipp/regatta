@@ -27,6 +27,17 @@
         <dd><a href="#" target="_blank">{{ event.moreInfoWebsite }}</a></dd>
     </dl>
 
+{% if true %}
+    <div>
+        <a href="{{ path('event_edit', { 'id': event.id }) }}" class="btn btn-warning">Bearbeiten</a>
+    </div>
+    <div>
+        {{ form_start(delete_form) }}
+        <input type="submit" class="btn btn-danger" value="Löschen">
+        {{ form_end(delete_form) }}
+    </div>
+{% endif %}{# TODO check user rights #}
+
     <hr />
 
     <p>
@@ -41,20 +52,10 @@
         <hr />
     {% endif %}
 
-    <ul>
-        <li>
-            <a href="{{ path('event_index') }}">Zurück zur Liste</a>
-        </li>
-        <li>
-            <a href="{{ path('race_index', { 'event': event.id }) }}">Rennen anzeigen</a>
-        </li>
-        <li>
-            <a href="{{ path('event_edit', { 'id': event.id }) }}">Bearbeiten</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Löschen">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div>
+        <a href="{{ path('race_index', { 'event': event.id }) }}" class="btn btn-primary">Rennen anzeigen</a>
+    </div>
+
+    <hr>
+    <a href="{{ path('event_index') }}" class="btn btn-default">Zurück zur Liste</a>
 {% endblock %}

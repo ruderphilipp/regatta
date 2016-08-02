@@ -8,9 +8,6 @@
         <input type="submit" value="Create" />
     {{ form_end(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('membership_index') }}">Back to the list</a>
-        </li>
-    </ul>
+    <hr>
+    <a href="{{ path('competitor_show', { 'id': person.id }) }}" class="btn btn-default">Zurück zum Sportler</a>
 {% endblock %}

@@ -229,7 +229,7 @@ class Competitor
     /**
      * Get memberships
      *
-     * @return array[Membership]
+     * @return ArrayCollection[Membership]
      */
     public function getMemberships()
     {

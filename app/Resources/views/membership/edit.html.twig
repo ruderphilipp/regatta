@@ -18,4 +18,7 @@
             {{ form_end(delete_form) }}
         </li>
     </ul>
+
+    <hr>
+    <a href="{{ path('competitor_show', { 'id': person.id }) }}" class="btn btn-default">Zurück zum Sportler</a>
 {% endblock %}

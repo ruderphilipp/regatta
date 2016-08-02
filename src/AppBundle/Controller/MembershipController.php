@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Competitor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -16,61 +17,45 @@ use AppBundle\Entity\Membership;
 class MembershipController extends Controller
 {
     /**
-     * Lists all Membership entities.
-     *
-     * @Route("s/", name="membership_index")
-     * @Method("GET")
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $memberships = $em->getRepository('AppBundle:Membership')->findAll();
-
-        return $this->render('membership/index.html.twig', array(
-            'memberships' => $memberships,
-        ));
-    }
-
-    /**
      * Creates a new Membership entity.
      *
-     * @Route("/new", name="membership_new")
+     * @Route("/new/{competitor}", name="membership_new")
      * @Method({"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, Competitor $competitor)
     {
         $membership = new Membership();
-        $form = $this->createForm('AppBundle\Form\MembershipType', $membership);
+        $em = $this->getDoctrine()->getManager();
+
+        // find all clubs where the given competitor is _not_ a member
+        $myClubs = $competitor->getMemberships()->map(function($membership) {
+            return $membership->getClub()->getId();
+        });
+        $clubQb = $em->getRepository('AppBundle:Club')->createQueryBuilder('c');
+        $clubQ = $clubQb->where('c.id NOT IN (:clubs)')->setParameter('clubs', $myClubs)->getQuery();
+        $clubs = $clubQ->getResult();
+
+        $form = $this->createForm('AppBundle\Form\MembershipType', $membership, array(
+            'competitors' => array($competitor),
+            'clubs' => $clubs));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($membership);
             $em->flush();
 
-            return $this->redirectToRoute('membership_show', array('id' => $membership->getId()));
+            $this->addFlash(
+                'notice',
+                'Neue Mitgliedschaft wurde angelegt!'
+            );
+
+            return $this->redirectToRoute('competitor_show', array('id' => $competitor->getId()));
         }
 
         return $this->render('membership/new.html.twig', array(
             'membership' => $membership,
+            'person' => $competitor,
             'form' => $form->createView(),
-        ));
-    }
-
-    /**
-     * Finds and displays a Membership entity.
-     *
-     * @Route("/{id}", name="membership_show")
-     * @Method("GET")
-     */
-    public function showAction(Membership $membership)
-    {
-        $deleteForm = $this->createDeleteForm($membership);
-
-        return $this->render('membership/show.html.twig', array(
-            'membership' => $membership,
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 
@@ -83,7 +68,28 @@ class MembershipController extends Controller
     public function editAction(Request $request, Membership $membership)
     {
         $deleteForm = $this->createDeleteForm($membership);
-        $editForm = $this->createForm('AppBundle\Form\MembershipType', $membership);
+        $em = $this->getDoctrine()->getManager();
+        $clubRepo = $em->getRepository('AppBundle:Club');
+
+        // find all clubs where the given competitor is _not_ a member plus the current one
+        $myClubs = $membership->getPerson()->getMemberships()
+            ->filter(function($m) use (&$membership) {
+                return $m->getId() != $membership->getId();
+            })
+            ->map(function($m) {
+                return $m->getClub()->getId();
+            });
+        if (0 == count($myClubs)) {
+            $clubs = $clubRepo->findAll();
+        } else {
+            $clubQb = $clubRepo->createQueryBuilder('c');
+            $clubQ = $clubQb->where('c.id NOT IN (:clubs)')->setParameter('clubs', $myClubs)->getQuery();
+            $clubs = $clubQ->getResult();
+        }
+
+        $editForm = $this->createForm('AppBundle\Form\MembershipType', $membership, array(
+            'competitors' => array($membership->getPerson()),
+            'clubs' => $clubs));
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -91,11 +97,17 @@ class MembershipController extends Controller
             $em->persist($membership);
             $em->flush();
 
-            return $this->redirectToRoute('membership_edit', array('id' => $membership->getId()));
+            $this->addFlash(
+                'notice',
+                'Mitgliedschaft geändert!'
+            );
+
+            return $this->redirectToRoute('competitor_show', array('id' => $membership->getPerson()->getId()));
         }
 
         return $this->render('membership/edit.html.twig', array(
             'membership' => $membership,
+            'person' => $membership->getPerson(),
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
@@ -116,9 +128,14 @@ class MembershipController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($membership);
             $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Mitgliedschaft gelöscht!'
+            );
         }
 
-        return $this->redirectToRoute('membership_index');
+        return $this->redirectToRoute('competitor_show', array('id' => $membership->getPerson()->getId()));
     }
 
     /**

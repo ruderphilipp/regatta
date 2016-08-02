@@ -20,6 +20,7 @@
             <th data-defaultsign="az" data-defaultsort="asc">Verein</th>
             <th>Von</th>
             <th>Bis</th>
+{% if true %}<th data-defaultsort='disabled'></th>{% endif %}{# TODO check user rights #}
         </tr>
         </thead>
         <tbody>
@@ -28,11 +29,17 @@
             <td>{{ membership.club.name }}</td>
             <td data-dateformat="DD.MM.YYYY">{{ membership.since | date("d.m.Y")}}</td>
             <td data-dateformat="DD.MM.YYYY">{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
+{% if true %}<td><a href="{{ path('membership_edit', { 'id': membership.id }) }}" class="btn btn-default">Edit</a></td>{% endif %}{# TODO check user rights #}
         </tr>
         {% endfor %}
         </tbody>
     </table>
-
+{% if true %}
+    <hr>
+    <div>
+        <a href="{{ path('membership_new', { 'competitor': competitor.id }) }}" class="btn btn-default">Neue Mitgliedschaft hinzufügen</a>
+    </div>
+{% endif %}{# TODO check user rights #}
     <hr>
 
     <ul>

@@ -18,7 +18,7 @@
         <thead>
         <tr>
             <th data-defaultsign="az" data-defaultsort="asc">Verein</th>
-            <th>Von</th>
+            <th>Seit</th>
             <th>Bis</th>
 {% if true %}<th data-defaultsort='disabled'></th>{% endif %}{# TODO check user rights #}
         </tr>
@@ -26,7 +26,7 @@
         <tbody>
         {% for membership in competitor.memberships %}
         <tr>
-            <td>{{ membership.club.name }}</td>
+            <td><a href="{{ path('club_show', { 'id': membership.club.id }) }}">{{ membership.club.name }}</a></td>
             <td data-dateformat="DD.MM.YYYY">{{ membership.since | date("d.m.Y")}}</td>
             <td data-dateformat="DD.MM.YYYY">{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
 {% if true %}<td><a href="{{ path('membership_edit', { 'id': membership.id }) }}" class="btn btn-default">Ändern</a></td>{% endif %}{# TODO check user rights #}

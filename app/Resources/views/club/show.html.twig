@@ -38,8 +38,8 @@
         {% for membership in activeMemberships %}
             {% set p = membership.person %}
             <tr>
-                <td>{{ p.lastName }}</td>
-                <td>{{ p.firstName }}</td>
+                <td><a href="{{ path('competitor_show', { 'id': p.id }) }}">{{ p.lastName }}</a></td>
+                <td><a href="{{ path('competitor_show', { 'id': p.id }) }}">{{ p.firstName }}</a></td>
                 <td>{{ membership.since | date("d.m.Y")}} -
                     {% if null != membership.until %}{{ membership.until | date("d.m.Y")}}
                     {% else %}∞{% endif %}</td>

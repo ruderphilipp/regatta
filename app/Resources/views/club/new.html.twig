@@ -8,9 +8,7 @@
         <input type="submit" value="Erstellen" />
     {{ form_end(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('club_index') }}">Zurück zur Übersicht</a>
-        </li>
-    </ul>
+    <div>
+        <a href="{{ path('club_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
+    </div>
 {% endblock %}

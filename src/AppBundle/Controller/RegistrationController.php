@@ -172,11 +172,14 @@ class RegistrationController extends Controller
             $logger = $this->get('logger');
             $errors = array();
             /** @var \Symfony\Component\Form\FormError $err */
-            foreach($form->getErrors(true) as $err) {
+            foreach ($form->getErrors(true) as $err) {
                 if ('Symfony\Component\Validator\ConstraintViolation' == get_class($err->getCause())) {
                     /** @var \Symfony\Component\Validator\ConstraintViolation $cause */
                     $cause = $err->getCause();
-                    $logger->warning("Error while evaluating form: ".$err->getMessage().' '.$cause->getPropertyPath().' got: '.$cause->getInvalidValue());
+                    $logger->warning(
+                        "Error while evaluating form: ".$err->getMessage().' '.$cause->getPropertyPath(
+                        ).' got: '.$cause->getInvalidValue()
+                    );
                 } elseif (get_class($this) == get_class($err->getCause())) {
                     $errors[] = $err->getMessage();
                 }
@@ -186,7 +189,7 @@ class RegistrationController extends Controller
                 'error',
                 'Beim Ummelden sind Fehler aufgetreten!'
             );
-            foreach($errors as $e) {
+            foreach ($errors as $e) {
                 $this->addFlash(
                     'error',
                     $e
@@ -299,7 +302,7 @@ class RegistrationController extends Controller
         // sanity check
         $races = array();
         /** @var \AppBundle\Entity\Registration $registration */
-        foreach($team->getRegistrations() as $registration) {
+        foreach ($team->getRegistrations() as $registration) {
             array_push($races, $registration->getSection()->getRace());
         }
         if (!in_array($race, $races)) {
@@ -311,7 +314,7 @@ class RegistrationController extends Controller
             /** @var \AppBundle\Entity\Registration $myRegistrationForThisRace */
             $myRegistrationForThisRace = null;
             // find the "lane"
-            foreach($team->getRegistrations() as $registration) {
+            foreach ($team->getRegistrations() as $registration) {
                 if ($registration->getSection()->getRace() == $race) {
                     $myRegistrationForThisRace = $registration;
                 }

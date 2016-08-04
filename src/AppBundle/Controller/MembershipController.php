@@ -32,7 +32,10 @@ class MembershipController extends Controller
             return $membership->getClub()->getId();
         });
         $clubQb = $em->getRepository('AppBundle:Club')->createQueryBuilder('c');
-        $clubQ = $clubQb->where('c.id NOT IN (:clubs)')->setParameter('clubs', $myClubs)->getQuery();
+        if (0 < count($myClubs)) {
+            $clubQb = $clubQb->where('c.id NOT IN (:clubs)')->setParameter('clubs', $myClubs);
+        }
+        $clubQ = $clubQb->getQuery();
         $clubs = $clubQ->getResult();
 
         $form = $this->createForm('AppBundle\Form\MembershipType', $membership, array(

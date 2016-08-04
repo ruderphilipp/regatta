@@ -42,7 +42,9 @@ class RegistrationController extends Controller
             $whereGender = $qb->expr()->eq('p.gender', ':gender');
         }
         $whereYear = $qb->expr()->between('p.yearOfBirth', $minYear, $maxYear);
-        $whereSameRace = $qb->expr()->neq('s.race', ':raceId');
+        $whereSameRace = $qb->expr()->orX();
+        $whereSameRace->add($qb->expr()->neq('s.race', ':raceId'));
+        $whereSameRace->add($qb->expr()->isNull('s.race'));
 
         $where = $qb->expr()->andX();
         $where->add($whereYear);
@@ -52,14 +54,15 @@ class RegistrationController extends Controller
         $query = $qb
             ->select('t')
             ->from('AppBundle:Team', 't')
-            ->join('t.registrations', 'r')
-            ->join('r.section', 's')
+            ->leftJoin('t.registrations', 'r')
+            ->leftJoin('r.section', 's')
             ->join('t.members', 'tp')
             ->join('tp.membership', 'membership')
             ->join('membership.person', 'p')
             ->where($where)
             ->setParameter('gender', $race->getGender())
             ->setParameter(':raceId', $race->getId())
+            ->addOrderBy('t.id', 'ASC')
             ->getQuery();
         $teamResult = $query->getResult();
 

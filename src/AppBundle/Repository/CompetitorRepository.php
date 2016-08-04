@@ -47,10 +47,10 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
                 $dbItem->setYearOfBirth($athlete->yearofbirth);
                 $updates = true;
             }
-            if ($athlete->is_female && $dbItem->getGender() != 'w') {
-                $dbItem->setGender('w');
-            } elseif (!$athlete->is_female && $dbItem->getGender() != 'm') {
-                $dbItem->setGender('m');
+            if ($athlete->is_female && $dbItem->getGender() != Competitor::GENDER_FEMALE) {
+                $dbItem->setGender(Competitor::GENDER_FEMALE);
+            } elseif (!$athlete->is_female && $dbItem->getGender() != Competitor::GENDER_MALE) {
+                $dbItem->setGender(Competitor::GENDER_MALE);
             }
             if ($dbItem->getDrvId() != $athlete->drv_id) {
                 $dbItem->setDrvId($athlete->drv_id);
@@ -68,7 +68,7 @@ class CompetitorRepository extends \Doctrine\ORM\EntityRepository
                 $dbItem->setLastName($athlete->lastname)
                     ->setFirstName($athlete->firstname)
                     ->setYearOfBirth($athlete->yearofbirth)
-                    ->setGender(($athlete->is_female) ? 'w' : 'm')
+                    ->setGender(($athlete->is_female) ? Competitor::GENDER_FEMALE : Competitor::GENDER_MALE)
                     ->setDrvId($athlete->drv_id);
 
                 $this->getEntityManager()->persist($dbItem);

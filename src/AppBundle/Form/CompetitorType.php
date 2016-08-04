@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Competitor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -37,8 +38,8 @@ class CompetitorType extends AbstractType
             ->add('gender', ChoiceType::class, array(
                 'label' => 'Geschlecht',
                 'choices' => array(
-                    'weiblich' => 'w',
-                    'männlich' => 'm',
+                    'weiblich' => Competitor::GENDER_FEMALE,
+                    'männlich' => Competitor::GENDER_MALE,
                 ),
                 'expanded' => true,
                 'multiple' => false,

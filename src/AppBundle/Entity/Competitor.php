@@ -14,6 +14,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Competitor
 {
+    const GENDER_MALE = 'm';
+    const GENDER_FEMALE = 'w';
+    const GENDER_BOTH = 'a';
     /**
      * @var int
      *
@@ -214,9 +217,9 @@ class Competitor
     public function getGenderSymbol()
     {
         $result = '';
-        if ($this->gender == 'm') {
+        if ($this->gender == self::GENDER_MALE) {
             $result = '♂';
-        } elseif ($this->gender == 'w') {
+        } elseif ($this->gender == self::GENDER_FEMALE) {
             $result = '♀';
         }
         return $result;

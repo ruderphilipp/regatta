@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceSection;
@@ -101,9 +102,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
 
         switch($race->getAgeClass()) {
             case 'Kind':
-                if ($race->getGender() == 'w') {
+                if ($race->getGender() == Competitor::GENDER_FEMALE) {
                     $name = 'Mädchen';
-                } elseif($race->getGender() == 'm') {
+                } elseif($race->getGender() == Competitor::GENDER_MALE) {
                     $name = 'Jungen';
                 } else {
                     $name = 'JuM';
@@ -117,7 +118,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 $name .= ' Jahre)';
                 break;
             case 'Junior':
-                if ($race->getGender() == 'w') {
+                if ($race->getGender() == Competitor::GENDER_FEMALE) {
                     $name = 'Juniorinnen';
                 } else {
                     $name = 'Junioren';
@@ -130,9 +131,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 }
             break;
             case 'Senior':
-                if ($race->getGender() == 'w') {
+                if ($race->getGender() == Competitor::GENDER_FEMALE) {
                     $name = 'Frauen';
-                } elseif($race->getGender() == 'm') {
+                } elseif($race->getGender() == Competitor::GENDER_MALE) {
                     $name = 'Männer';
                 } else {
                     $name = 'Senioren';
@@ -147,9 +148,9 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 }
             break;
             case 'Master':
-                if ($race->getGender() == 'w') {
+                if ($race->getGender() == Competitor::GENDER_FEMALE) {
                     $name = 'Frauen (Masters)';
-                } elseif($race->getGender() == 'm') {
+                } elseif($race->getGender() == Competitor::GENDER_MALE) {
                     $name = 'Männer (Masters)';
                 } else {
                     $name = 'Masters';

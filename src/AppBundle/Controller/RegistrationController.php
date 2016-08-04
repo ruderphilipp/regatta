@@ -2,11 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceSection;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
+
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -36,7 +38,7 @@ class RegistrationController extends Controller
         $minYear = $now - $race->getAgeMax();
         $maxYear = $now - $race->getAgeMin();
 
-        if ('a' == $race->getGender()) { // mixed
+        if (Competitor::GENDER_BOTH == $race->getGender()) { // mixed
             $whereGender = $qb->expr()->neq('p.gender', ':gender');
         } else {
             $whereGender = $qb->expr()->eq('p.gender', ':gender');

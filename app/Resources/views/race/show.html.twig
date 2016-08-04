@@ -59,36 +59,52 @@
 
     {% if true %}
         {# TODO show this only if the user has the right to modify races #}
-        <div class="row">
-            <div class="col-md-4 col-md-offset-8">
-                <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
-                {{ form_start(delete_form) }}
-                <input type="submit" value="Rennen löschen" class="btn btn-danger">
-                {{ form_end(delete_form) }}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Rennen anpassen</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_start(delete_form) }}
+                        <input type="submit" value="Rennen löschen" class="btn btn-danger">
+                        {{ form_end(delete_form) }}
+                    </div>
+                </div>
             </div>
         </div>
-        {% if finishedSections != race.sections.count %}
-        <div class="row">
-            <div class="col-lg-1">
-                <form method="post" action="{{ path('race_add_section', {'race': race.id }) }}">
-                    <button type="submit" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> neue Abteilung erstellen
-                    </button>
-                </form>
+
+        {% if race.sections.count == 0 or finishedSections != race.sections.count %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Starter anpassen</h3>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-1">
-                <form method="post" action="{{ path('race_clean_sections', {'race': race.id }) }}">
-                    <button type="submit" class="btn btn-default">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> alle leeren Abteilungen entfernen
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-1">
-                <a href="{{ path('registration_new', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-default">Team hinzufügen</a>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <form method="post" action="{{ path('race_add_section', {'race': race.id }) }}">
+                            <button type="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> neue Abteilung erstellen
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form method="post" action="{{ path('race_clean_sections', {'race': race.id }) }}">
+                            <button type="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> alle leeren Abteilungen entfernen
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{{ path('registration_new', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-default">Team hinzufügen</a>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}

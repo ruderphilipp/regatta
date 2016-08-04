@@ -1,0 +1,23 @@
+{% extends 'form.new.base.html.twig' %}
+
+{% block title %}
+    {% if race is defined %}
+    {{ race.event.name }} - Rennen #{{ race.numberInEvent }} -
+    {% endif %}
+    Neue Mannschaft anlegen
+{% endblock %}
+
+{% block body %}
+    <h1>Neue Mannschaft anlegen</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <input type="submit" class="btn btn-success" value="Erstellen" />
+    {{ form_end(form) }}
+
+{% if race is defined %}
+    <hr />
+    <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-default">Zurück zum Rennen</a>
+{% endif %}
+
+{% endblock %}

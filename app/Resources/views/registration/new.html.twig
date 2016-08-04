@@ -12,6 +12,12 @@
         <input type="submit" class="btn btn-primary" value="Erstellen" />
     {{ form_end(form) }}
 
+
+    <hr>
+    <p>
+        Mannschaft existiert noch nicht? <a class="btn btn-primary" href="{{ path('team_new', { 'race': race.id }) }}">Neue erstellen</a>
+    </p>
+
     <hr />
     <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-default">Zurück zum Rennen</a>
 {% endblock %}

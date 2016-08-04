@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Membership;
+use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -53,5 +54,47 @@ class MembershipRepository extends \Doctrine\ORM\EntityRepository
             }
         }
         return $dbItem;
+    }
+
+    /**
+     * Find all memberships that are currently valid for any club and fulfil the given parameters.
+     *
+     * @param string $gender The gender to search for
+     * @param int $minAge The minimum age of the competitors
+     * @param int $maxAge The maximum age of the competitors
+     *
+     * @return array[Membership]
+     */
+    public function findAllCurrent($gender, $minAge, $maxAge)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->createQueryBuilder('m');
+        $qb = $qb->join('m.person', 'p');
+        $qb = $qb->addOrderBy('p.lastName', 'ASC')->addOrderBy('p.firstName', 'ASC');
+
+        // create where clause
+        $age = $qb->expr()->andX();
+        $age->add('p.yearOfBirth >= :age_max');
+        $age->add('p.yearOfBirth <= :age_min');
+        $or = $qb->expr()->orX();
+        $or->add('m.until >= :now');
+        $or->add($qb->expr()->isNull('m.until'));
+        $where = $qb->expr()->andX();
+        $where->add('m.since < :now');
+        $where->add($or);
+        $where->add($age);
+        if($gender != Competitor::GENDER_BOTH) {
+            $qb = $qb->setParameter('g', $gender);
+            $where->add('p.gender = :g');
+        }
+        $now = new \DateTime('now');
+        $max = intval($now->format('Y')) - $maxAge;
+        $min = intval($now->format('Y')) - $minAge;
+        $qb = $qb->where($where)
+            ->setParameter('now', $now)
+            ->setParameter('age_min', $min)
+            ->setParameter('age_max', $max);
+
+        return $qb->getQuery()->getResult();
     }
 }

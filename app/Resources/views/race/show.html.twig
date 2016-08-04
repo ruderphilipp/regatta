@@ -104,6 +104,9 @@
                     <div class="col-md-4">
                         <a href="{{ path('registration_new', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-default">Team hinzufügen</a>
                     </div>
+                    <div class="col-md-4">
+                        <a href="{{ path('team_new', { 'race': race.id }) }}" class="btn btn-default">Neue Mannschaft anlegen</a>
+                    </div>
                 </div>
             </div>
         </div>

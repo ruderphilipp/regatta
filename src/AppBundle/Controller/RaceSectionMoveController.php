@@ -96,7 +96,7 @@ class RaceSectionMoveController extends Controller
             }
         );
 
-        if (!($lastLane == $myLane)) {
+        if (!($lastLane <= $myLane)) {
             return $this->moveInSection($request, $registration, 'down');
         } elseif(!is_null($next)) {
             return $this->addToNextSection($request, $registration, 'down');

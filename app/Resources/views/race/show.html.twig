@@ -26,19 +26,19 @@
                     <table class="table table-striped">
                         <tbody>
                         <tr>
-                            <th>Gender</th>
+                            <th>Geschlecht</th>
                             <td>{{ race.gender }}</td>
                         </tr>
                         <tr>
-                            <th>Age (min.)</th>
+                            <th>Alter (min.)</th>
                             <td>{{ race.ageMin }}</td>
                         </tr>
                         <tr>
-                            <th>Age (max.)</th>
+                            <th>Alter (max.)</th>
                             <td>{{ race.ageMax }}</td>
                         </tr>
                         <tr>
-                            <th>Level</th>
+                            <th>Leistungsklasse</th>
                             <td>{{ race.level }}</td>
                         </tr>
                         <tr>
@@ -50,15 +50,15 @@
                             <td>{{ race.starterMax }}</td>
                         </tr>
                         <tr>
-                            <th>max. starter per section</th>
+                            <th>max. Teams pro Abteilung</th>
                             <td>{{ race.maxStarterPerSection }}</td>
                         </tr>
                         <tr>
-                            <th>Price per starter</th>
-                            <td>{{ race.pricePerStarter }}</td>
+                            <th>Preis pro Team</th>
+                            <td>{{ race.pricePerStarter|number_format(2, ',', '') }} Euro</td>
                         </tr>
                         <tr>
-                            <th>Competitors per team</th>
+                            <th>Sportler pro Team</th>
                             <td>{{ race.teamsize }}</td>
                         </tr>
                         </tbody>

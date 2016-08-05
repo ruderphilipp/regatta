@@ -6,7 +6,9 @@ use AppBundle\Entity\RaceSection;
 
 use AppBundle\Entity\RaceSectionStatus;
 use AppBundle\Entity\Registration;
+use AppBundle\Entity\Timing;
 use AppBundle\Repository\RegistrationRepository;
+use AppBundle\Twig\AppExtension;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -195,5 +197,31 @@ class TimingController extends Controller
         $this->checkIfFinished($registration->getSection());
 
         return $this->redirect($request->headers->get('referer'));
+    }
+
+    public function singlePeriodsAction(Registration $registration)
+    {
+        $app = new AppExtension();
+        $myTimings = array();
+        /** @var string $startPoint */
+        $startPoint = null;
+        /** @var \DateTime $startTime */
+        $startTime = null;
+        /** @var Timing $timing */
+        foreach ($registration->getTimings() as $timing) {
+            if (!is_null($startPoint)) {
+                // calculate delta
+                $myTimeD = doubleval($timing->getTime()->format('U.u'));
+                $startTimeD = doubleval($startTime->format('U.u'));
+                $delta = abs($myTimeD - $startTimeD);
+                $deltaString = $app->timeString($delta);
+                $myTimings[] = sprintf('%s - %s: <strong>%s</strong>', $startPoint, $timing->getCheckpoint(), $deltaString);
+            }
+            $startPoint = $timing->getCheckpoint();
+            $startTime = $timing->getTime();
+        }
+        return new Response(
+            implode('<br>', $myTimings)
+        );
     }
 }

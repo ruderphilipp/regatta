@@ -69,7 +69,7 @@
 
     {% if true %}
         {# TODO show this only if the user has the right to modify races #}
-    <div class="col-md-4">
+    <div class="col-md-8">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Rennen anpassen</h3>
@@ -95,14 +95,14 @@
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <form method="post" action="{{ path('race_add_section', {'race': race.id }) }}">
                             <button type="submit" class="btn btn-default">
                                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> neue Abteilung erstellen
                             </button>
                         </form>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <form method="post" action="{{ path('race_clean_sections', {'race': race.id }) }}">
                             <button type="submit" class="btn btn-default">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> alle leeren Abteilungen entfernen
@@ -112,10 +112,10 @@
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <a href="{{ path('registration_new', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-default">Team hinzufügen</a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <a href="{{ path('team_new', { 'race': race.id }) }}" class="btn btn-default">Neue Mannschaft anlegen</a>
                     </div>
                 </div>

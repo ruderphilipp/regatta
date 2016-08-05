@@ -16,59 +16,70 @@
         {% if race.extraText != "" %}<small>{{ race.extraText }}</small>{% endif %}
     </h1>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Gender</th>
-                <td>{{ race.gender }}</td>
-            </tr>
-            <tr>
-                <th>Age (min.)</th>
-                <td>{{ race.ageMin }}</td>
-            </tr>
-            <tr>
-                <th>Age (max.)</th>
-                <td>{{ race.ageMax }}</td>
-            </tr>
-            <tr>
-                <th>Level</th>
-                <td>{{ race.level }}</td>
-            </tr>
-            <tr>
-                <th>Starter (min.)</th>
-                <td>{{ race.starterMin }}</td>
-            </tr>
-            <tr>
-                <th>Starter (max.)</th>
-                <td>{{ race.starterMax }}</td>
-            </tr>
-            <tr>
-                <th>max. starter per section</th>
-                <td>{{ race.maxStarterPerSection }}</td>
-            </tr>
-            <tr>
-                <th>Price per starter</th>
-                <td>{{ race.pricePerStarter }}</td>
-            </tr>
-            <tr>
-                <th>Competitors per team</th>
-                <td>{{ race.teamsize }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Info zum Rennen</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <th>Gender</th>
+                            <td>{{ race.gender }}</td>
+                        </tr>
+                        <tr>
+                            <th>Age (min.)</th>
+                            <td>{{ race.ageMin }}</td>
+                        </tr>
+                        <tr>
+                            <th>Age (max.)</th>
+                            <td>{{ race.ageMax }}</td>
+                        </tr>
+                        <tr>
+                            <th>Level</th>
+                            <td>{{ race.level }}</td>
+                        </tr>
+                        <tr>
+                            <th>Starter (min.)</th>
+                            <td>{{ race.starterMin }}</td>
+                        </tr>
+                        <tr>
+                            <th>Starter (max.)</th>
+                            <td>{{ race.starterMax }}</td>
+                        </tr>
+                        <tr>
+                            <th>max. starter per section</th>
+                            <td>{{ race.maxStarterPerSection }}</td>
+                        </tr>
+                        <tr>
+                            <th>Price per starter</th>
+                            <td>{{ race.pricePerStarter }}</td>
+                        </tr>
+                        <tr>
+                            <th>Competitors per team</th>
+                            <td>{{ race.teamsize }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
     {% if true %}
         {# TODO show this only if the user has the right to modify races #}
+    <div class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Rennen anpassen</h3>
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         {{ form_start(delete_form) }}
                         <input type="submit" value="Rennen löschen" class="btn btn-danger">
                         {{ form_end(delete_form) }}
@@ -111,7 +122,9 @@
             </div>
         </div>
         {% endif %}
+    </div>
     {% endif %}
+    </div>
 
 {% if true %}
     {# TODO show this only if the user has the right to start a race #}

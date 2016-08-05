@@ -12,7 +12,7 @@
         {{ include('race/_registration.title.html.twig', { 'registration': registration }, with_context = false) }}
     </td>
     {% if registration.isFinished %}
-    <td data-value="{{ registration.getFinalTime }} ">{{ registration.getFinalTime | timeString }}</td>
+    <td data-value="{{ registration.getFinalTime }} "><strong>{{ registration.getFinalTime | timeString }}</strong></td>
     {% else %}
     <td data-value="9999999999">
         {% if registration.isStarted %}

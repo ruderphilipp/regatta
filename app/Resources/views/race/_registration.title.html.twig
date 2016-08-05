@@ -1,7 +1,7 @@
 {# registration of type Registration #}
 {% set team = registration.getTeam() %}
 {% if registration.isDeregistered or registration.hasChangedToNewRace %}<s>{% endif %}
-{{ team.getName() }} ({{ team.getClub().getShortName() }})<br>
+{{ team.getName() }}<br>
 <em>{% for m in team.getMembers %}{{ m.getMembership.getPerson.getFirstName }}
        {{ m.getMembership.getPerson.getLastName | upper }}
        ({% if m.getIsCox %}Stm., {% endif %}{{ m.getMembership.getPerson.getYearOfBirth }}, {{ m.getMembership.getPerson.getAge }}) {% endfor %}

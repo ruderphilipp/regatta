@@ -195,7 +195,8 @@ class RaceSection
             }
         }
 
-        return ($this->getRegistrations()->count() == $counter && $cancelled != $counter);
+        return (0 < $this->getValidRegistrations()->count()) &&
+               ($this->getRegistrations()->count() == $counter && $cancelled != $counter);
     }
 
     public function isStarted()

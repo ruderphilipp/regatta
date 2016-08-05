@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Event;
 use AppBundle\Entity\RaceSection;
 
 use AppBundle\Entity\RaceSectionStatus;
@@ -9,6 +10,7 @@ use AppBundle\Entity\Registration;
 use AppBundle\Entity\Timing;
 use AppBundle\Repository\RegistrationRepository;
 use AppBundle\Twig\AppExtension;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -33,6 +35,16 @@ class TimingController extends Controller
         return $dt->format('U.u');
     }
 
+    private function getTimeWithFractionSeconds()
+    {
+        $myTime = $this->getCurrentTimestamp();
+        // XXX: ugly hack to get the offset correct when working with timestamps (always UTC)
+        $tmpTime = \DateTime::createFromFormat('U.u', $myTime);
+        $offsetInSeconds = (new \DateTimeZone('Europe/Berlin'))->getOffset($tmpTime);
+        $tmpTime->add(new \DateInterval('PT'.$offsetInSeconds.'S'));
+        return $tmpTime->format('U.u');
+    }
+
     /**
      * Output the current server time in seconds _in UTC_
      *
@@ -52,53 +64,104 @@ class TimingController extends Controller
      */
     public function startRaceSectionAction(RaceSection $section)
     {
-        $myTime = $this->getCurrentTimestamp();
-        // XXX: ugly hack to get the offset correct when working with timestamps (always UTC)
-        $tmpTime = \DateTime::createFromFormat('U.u', $myTime);
-        $offsetInSeconds = (new \DateTimeZone('Europe/Berlin'))->getOffset($tmpTime);
-        $tmpTime->add(new \DateInterval('PT'.$offsetInSeconds.'S'));
-        $myTime = $tmpTime->format('U.u');
+        $myTime = $this->getTimeWithFractionSeconds();
+        $em = $this->getDoctrine()->getManager();
+        $this->markAsStarted($section, $section->getId(), $em, $myTime);
 
+        $errors = $this->get('session')->getFlashBag()->get('error');
+        if (!is_null($errors) && count($errors) > 0) {
+            return $this->redirectToRoute('race_start', array(
+                'event' => $section->getRace()->getEvent()->getId(),
+                'race' => $section->getRace()->getId()
+            ));
+        } else {
+            $em->flush();
+
+            return $this->redirectToRoute('race_index', array(
+                'event' => $section->getRace()->getEvent()->getId(),
+            ));
+        }
+    }
+
+    /**
+     * starts the timing for multiple race sections
+     *
+     * @Route("/api/timing/start/event/{event}", name="timing_start_all")
+     * @Method("POST")
+     */
+    public function startMultipleRaceSectionsAction(Request $request, Event $event)
+    {
+        $timeWithFractionSeconds = $this->getTimeWithFractionSeconds();
+
+        $sectionIDs = $request->get('sections');
+        if (is_null($sectionIDs)) {
+            $this->addFlash(
+                'error',
+                "Keine Abteilung ausgewählt zum starten!"
+            );
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $sectionRepo = $em->getRepository('AppBundle:RaceSection');
+            foreach ($sectionIDs as $sID) {
+                $section = $sectionRepo->find($sID);
+                $this->markAsStarted($section, $sID, $em, $timeWithFractionSeconds);
+            }
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('race_index', array(
+            'event' => $event->getId(),
+        ));
+    }
+
+    /**
+     * Mark a given section and all related teams as started and save the start time.
+     *
+     * @param RaceSection $section The section to start.
+     * @param int $sID Id of the section to start.
+     * @param EntityManager $em For handling the DB requests
+     * @param float|string $time Unix timestamp (optional) with fractional seconds
+     */
+    private function markAsStarted(RaceSection $section, $sID, EntityManager $em, $time)
+    {
         // sanity checks
         if (is_null($section)) {
-            throw new \InvalidArgumentException('How should I start a NULL section?');
+            $this->addFlash(
+                'error',
+                "Abteilung mit ID {$sID} nicht gefunden!"
+            );
         } elseif (!$section->isReadyToStart()) {
             $this->addFlash(
                 'error',
                 "Abteilung {$section->getId()} von Rennen {$section->getRace()->getNumberInEvent()} ist noch" .
                 " nicht bereit zum starten!"
             );
-
-            return $this->redirectToRoute('race_start', array(
-                'event' => $section->getRace()->getEvent()->getId(),
-                'race' => $section->getRace()->getId()
-            ));
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        /** @var RegistrationRepository $repo */
-        $repo = $em->getRepository('AppBundle:Registration');
-        /** @var Registration $checkedIn */
-        foreach($section->getValidRegistrations() as $checkedIn) {
-            if ($checkedIn->isCheckedIn()) {
-                $this->get('logger')->debug("try to set as started: {$checkedIn->getId()}");
-                $repo->setTime($checkedIn, $myTime, Registration::CHECKPOINT_START, $this->get('logger'));
+        } else {
+            // try to mark all competiting teams as started
+            /** @var RegistrationRepository $registrationRepo */
+            $registrationRepo = $em->getRepository('AppBundle:Registration');
+            /** @var Registration $checkedIn */
+            foreach ($section->getValidRegistrations() as $checkedIn) {
+                if ($checkedIn->isCheckedIn()) {
+                    $this->get('logger')->debug("try to set as started: {$checkedIn->getId()}");
+                    $registrationRepo->setTime(
+                        $checkedIn,
+                        $time,
+                        Registration::CHECKPOINT_START,
+                        $this->get('logger')
+                    );
+                }
             }
+
+            // set this section status as started
+            $section->setStatus(RaceSectionStatus::STARTED);
+            $em->persist($section);
+
+            $this->addFlash(
+                'notice',
+                "Abteilung {$section->getNumber()} von Rennen {$section->getRace()->getNumberInEvent()} ist gestartet!"
+            );
         }
-
-        $section->setStatus(RaceSectionStatus::STARTED);
-        $em->persist($section);
-
-        $em->flush();
-
-        $this->addFlash(
-            'notice',
-            "Abteilung {$section->getNumber()} von Rennen {$section->getRace()->getNumberInEvent()} ist gestartet!"
-        );
-
-        return $this->redirectToRoute('race_index', array(
-            'event' => $section->getRace()->getEvent()->getId(),
-        ));
     }
 
     /**

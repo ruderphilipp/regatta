@@ -43,10 +43,44 @@ class StartController extends Controller
             return $this->redirectToRoute('race_show', array('event' => $event->getId(), 'race' => $race->getId()));
         }
 
-
         return $this->render('race/start.html.twig', array(
             'race' => $race,
             'race_name' => $repo->getOfficialName($race),
+        ));
+    }
+
+    /**
+     * Show overview of all startable races to start multiple at once.
+     *
+     * @Route("/event/{event}/start", name="race_start_all")
+     * @Method("GET")
+     * TODO check if user is allowed
+     */
+    public function showAllAction(Request $request, Event $event)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var RaceRepository $repo */
+        $repo = $em->getRepository('AppBundle:Race');
+        $allRaces = $repo->getAllRacesThatHaveRegistrations($event->getId());
+        $races = array();
+        /** @var Race $race */
+        foreach ($allRaces as $race) {
+            if (!$repo->isFinished($race)) {
+                $races[] = $race;
+            }
+        }
+        if (0 == count($races)) {
+            $this->addFlash(
+                'error',
+                'Keine startbaren Rennen gefunden!'
+            );
+            $this->redirect($request->headers->get('referer'));
+        }
+
+        return $this->render('race/startAll.html.twig', array(
+            'races' => $races,
+            'event' => $event,
+            'rr' => $repo,
         ));
     }
 

@@ -47,6 +47,10 @@
         <p>
             <a href="{{ path('race_new', { 'id': event.id }) }}" class="btn btn-primary">Neues Rennen erstellen</a>
         </p>
+        <hr />
+        <p>
+            <a href="{{ path('race_start_all', { 'event': event.id }) }}" class="btn btn-success">Rennen starten</a>
+        </p>
 {% endif %}{# TODO check user rights #}
         <hr />
         <p>

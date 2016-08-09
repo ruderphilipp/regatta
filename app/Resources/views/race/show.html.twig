@@ -139,7 +139,16 @@
     {% endif %}
 {% endif %}
     <hr>
+{% set first = true %}
 {% for section in race.getSections() %}
+{% if not first %}
+    {# repeat header on each page #}
+    <h1 class="visible-print always-page-break-before">#{{ race.numberInEvent }}: {{ rr.getOfficialName(race) }}<br>
+        {% if race.extraText != "" %}<small>{{ race.extraText }}</small>{% endif %}
+    </h1>
+{% else %}
+{% set first = false %}
+{% endif %}
     <h2>
         Abteilung {{ section.getNumber() }}
 {% if section.isFinished %}<br><small>{{ section.getStartTime | date('H:i:s') }} - {{ section.getLatestFinishingTime | date('H:i:s') }}</small>

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -26,6 +27,7 @@ class StartController extends Controller
      *
      * @Route("/event/{event}/race/{race}/start", name="race_start")
      * @Method("GET")
+     * @Security("has_role('ROLE_REGISTRATION') or has_role('ROLE_REFEREE')")
      */
     public function showAction(Event $event, Race $race)
     {
@@ -54,7 +56,7 @@ class StartController extends Controller
      *
      * @Route("/event/{event}/start", name="race_start_all")
      * @Method("GET")
-     * TODO check if user is allowed
+     * @Security("has_role('ROLE_REFEREE')")
      */
     public function showAllAction(Request $request, Event $event)
     {
@@ -89,6 +91,7 @@ class StartController extends Controller
      *
      * @Route("/team/{registration}/checkIn", name="race_start_checkin")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function checkInAction(Request $request, Registration $registration)
     {
@@ -154,6 +157,7 @@ class StartController extends Controller
      *
      * @Route("/team/{registration}/NotAtStart", name="race_start_nas")
      * @Method("GET")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function notAtStartAction(Request $request, Registration $registration)
     {
@@ -172,6 +176,7 @@ class StartController extends Controller
      *
      * @Route("/team/{registration}/resetNas", name="race_start_reset")
      * @Method("GET")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function resetNotAtStart(Request $request, Registration $registration)
     {

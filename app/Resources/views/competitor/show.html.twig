@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% set canChange = is_granted('ROLE_REGISTRATION') %}
     <h1>{{ competitor.lastName | upper }}, {{ competitor.firstName }} {{ competitor.getGenderSymbol }}</h1>
 
     <dl class="dl-horizontal">
@@ -20,7 +21,7 @@
             <th data-defaultsign="az" data-defaultsort="asc">Verein</th>
             <th>Seit</th>
             <th>Bis</th>
-{% if true %}<th data-defaultsort='disabled'></th>{% endif %}{# TODO check user rights #}
+{% if canChange %}<th data-defaultsort='disabled'></th>{% endif %}
         </tr>
         </thead>
         <tbody>
@@ -29,28 +30,28 @@
             <td><a href="{{ path('club_show', { 'id': membership.club.id }) }}">{{ membership.club.name }}</a></td>
             <td data-dateformat="DD.MM.YYYY">{{ membership.since | date("d.m.Y")}}</td>
             <td data-dateformat="DD.MM.YYYY">{% if null != membership.until %}{{ membership.until | date("d.m.Y")}}{% endif %}</td>
-{% if true %}<td><a href="{{ path('membership_edit', { 'id': membership.id }) }}" class="btn btn-default">Ändern</a></td>{% endif %}{# TODO check user rights #}
+{% if canChange %}<td><a href="{{ path('membership_edit', { 'id': membership.id }) }}" class="btn btn-default">Ändern</a></td>{% endif %}
         </tr>
         {% endfor %}
         </tbody>
     </table>
-{% if true %}
+{% if canChange %}
     <hr>
     <div>
         <a href="{{ path('membership_new', { 'competitor': competitor.id }) }}" class="btn btn-default">Neue Mitgliedschaft hinzufügen</a>
     </div>
-{% endif %}{# TODO check user rights #}
+{% endif %}
     <hr>
 
     <div>
         <a href="{{ path('competitor_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
     </div>
-{% if true %}
+{% if canChange %}
     <div>
         <a href="{{ path('competitor_edit', { 'id': competitor.id }) }}" class="btn btn-default">Bearbeiten</a>
         {{ form_start(delete_form) }}
         <input type="submit" class="btn btn-default" value="Löschen">
         {{ form_end(delete_form) }}
     </div>
-{% endif %}{# TODO check user rights #}
+{% endif %}
 {% endblock %}

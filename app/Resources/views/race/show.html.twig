@@ -67,28 +67,28 @@
             </div>
         </div>
 
-    {% if true %}
-        {# TODO show this only if the user has the right to modify races #}
-    <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Rennen anpassen</h3>
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_start(delete_form) }}
-                        <input type="submit" value="Rennen löschen" class="btn btn-danger">
-                        {{ form_end(delete_form) }}
+        <div class="col-md-8">
+{% if is_granted('ROLE_EVENT_ORGANIZER') %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Rennen anpassen</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_start(delete_form) }}
+                            <input type="submit" value="Rennen löschen" class="btn btn-danger">
+                            {{ form_end(delete_form) }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        {% if race.sections.count == 0 or finishedSections != race.sections.count %}
+{% endif %}
+{% if (race.sections.count == 0 or finishedSections != race.sections.count) and
+       is_granted('ROLE_EVENT_ORGANIZER') or is_granted('ROLE_REGISTRATION') %}
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Starter anpassen</h3>
@@ -110,6 +110,7 @@
                         </form>
                     </div>
                 </div>
+{% if is_granted('ROLE_REGISTRATION') %}
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
@@ -119,15 +120,14 @@
                         <a href="{{ path('team_new', { 'race': race.id }) }}" class="btn btn-default">Neue Mannschaft anlegen</a>
                     </div>
                 </div>
+{% endif %}
             </div>
         </div>
         {% endif %}
     </div>
-    {% endif %}
     </div>
 
-{% if true %}
-    {# TODO show this only if the user has the right to start a race #}
+{% if is_granted('ROLE_REFEREE') %}
     {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}
         {# only show start button if there are enough competitors and the sections are not finished yet #}
         <hr class="hidden-print">

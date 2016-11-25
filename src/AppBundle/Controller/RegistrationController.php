@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class RegistrationController extends Controller
 {
@@ -25,6 +26,7 @@ class RegistrationController extends Controller
      *
      * @Route("/event/{event}/race/{race}/new", name="registration_new")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function newAction(Request $request, Event $event, Race $race)
     {
@@ -160,6 +162,7 @@ class RegistrationController extends Controller
      *
      * @Route("/race/{race}/change", name="registration_edit")
      * @Method("POST")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function editAction(Request $request, Race $race)
     {
@@ -301,6 +304,7 @@ class RegistrationController extends Controller
      *
      * @Route("/race/{race}/deregister/{team}", name="registration_delete")
      * @Method("POST")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function deleteAction(Team $team, Race $race)
     {

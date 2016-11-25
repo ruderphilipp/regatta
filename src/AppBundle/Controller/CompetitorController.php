@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Entity\Competitor;
 
 /**
@@ -37,6 +38,7 @@ class CompetitorController extends Controller
      *
      * @Route("/new", name="competitor_new")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function newAction(Request $request)
     {
@@ -79,6 +81,7 @@ class CompetitorController extends Controller
      *
      * @Route("/{id}/edit", name="competitor_edit")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function editAction(Request $request, Competitor $competitor)
     {
@@ -106,6 +109,7 @@ class CompetitorController extends Controller
      *
      * @Route("/{id}", name="competitor_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function deleteAction(Request $request, Competitor $competitor)
     {

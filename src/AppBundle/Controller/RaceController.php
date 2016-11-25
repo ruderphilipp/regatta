@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Event;
 
@@ -48,6 +49,7 @@ class RaceController extends Controller
      *
      * @Route("/event/{id}/race/new", name="race_new")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function newAction(Request $request, Event $event)
     {
@@ -123,6 +125,7 @@ class RaceController extends Controller
      *
      * @Route("/event/{event}/race/{race}/edit", name="race_edit")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function editAction(Request $request, Race $race, Event $event)
     {
@@ -155,6 +158,7 @@ class RaceController extends Controller
      *
      * @Route("/race/{id}", name="race_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function deleteAction(Request $request, Race $race)
     {
@@ -196,6 +200,7 @@ class RaceController extends Controller
      *
      * @Route("/race/{race}/section/add", name="race_add_section")
      * @Method("POST")
+     * @Security("has_role('ROLE_EVENT_ORGANIZER') or has_role('ROLE_REGISTRATION')")
      */
     public function addSectionAction(Race $race)
     {
@@ -231,6 +236,7 @@ class RaceController extends Controller
      *
      * @Route("/race/{race}/section/clean", name="race_clean_sections")
      * @Method("POST")
+     * @Security("has_role('ROLE_EVENT_ORGANIZER') or has_role('ROLE_REGISTRATION')")
      */
     public function cleanSectionsAction(Race $race)
     {

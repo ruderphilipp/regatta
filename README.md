@@ -44,3 +44,33 @@ This can be done by system software like NTP or by using the server as master an
 ```bash
 date --set=@`curl -s http://<server:port>/api/timing/server`
 ```
+
+## Roles ##
+This tool has several security roles that can do different kind of actions.
+In the following sections the different working areas are explained based on the specific role that a user has to have in the system.
+A user can have multiple roles.
+
+### EVENT_ORGANIZER ###
+As the name suggests, an _event organizer_ is responsible for the organization of an event. This includes the tasks of
+
+- creating new events
+- changing existing events
+- creating new races in one event
+- changing existing races
+- creating new sections in a race
+- importing registrations from other systems
+
+### REGISTRATION ###
+Users at the _registration_ desk are in direct contact with trainers and competitors. They are responsible for
+
+- registering and de-registering of competitors for a specific race
+- creation of new competitors in the system
+- creation of new clubs in the system
+- assignment of (existing) competitors to (existing) clubs
+
+### REFEREEE ###
+Each competition has at least one _referee_. People with this role are able to
+
+- start races
+- cancel races
+- register give-ups of single competitors

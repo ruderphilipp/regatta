@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Entity\Membership;
 
 /**
@@ -21,6 +22,7 @@ class MembershipController extends Controller
      *
      * @Route("/new/{competitor}", name="membership_new")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function newAction(Request $request, Competitor $competitor)
     {
@@ -67,6 +69,7 @@ class MembershipController extends Controller
      *
      * @Route("/{id}/edit", name="membership_edit")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function editAction(Request $request, Membership $membership)
     {
@@ -121,6 +124,7 @@ class MembershipController extends Controller
      *
      * @Route("/{id}", name="membership_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function deleteAction(Request $request, Membership $membership)
     {

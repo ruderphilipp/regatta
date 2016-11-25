@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -29,6 +30,7 @@ class DrvImportController extends Controller
      *
      * @Route("/event/{id}/import", name="drv_import_index")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function indexAction(Request $request, Event $event)
     {

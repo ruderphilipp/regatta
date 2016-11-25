@@ -8,6 +8,7 @@ use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,10 +38,10 @@ class RaceSectionMoveController extends Controller
      *
      * @Route("/team/{registration}/up", name="registration_move_up")
      * @Method("POST")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function moveUpAction(Request $request, Registration $registration)
     {
-        // TODO check if user is allowed to modify races
         if (is_null($registration) || !$this->canBeMovedUp($registration)) {
             // TODO error message with flash and redirection
             return new Response('Not possible', Response::HTTP_PRECONDITION_FAILED);
@@ -73,10 +74,10 @@ class RaceSectionMoveController extends Controller
      *
      * @Route("/team/{registration}/down", name="registration_move_down")
      * @Method("POST")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function moveDownAction(Request $request, Registration $registration)
     {
-        // TODO check if user is allowed to modify races
         if (is_null($registration) || !$this->canBeMovedDown($registration)) {
             // TODO error message with flash and redirection
             return new Response('Not possible', Response::HTTP_PRECONDITION_FAILED);

@@ -23,7 +23,7 @@
                 <td>{{ competitor.gender }}</td>
                 {% if isAdmin %}<td>
                     <a class="btn btn-default" role="button" href="{{ path('competitor_edit', { 'id': competitor.id }) }}">ändern</a>
-                    </td>{% endif %}
+                </td>{% endif %}
             </tr>
         {% endfor %}
         </tbody>

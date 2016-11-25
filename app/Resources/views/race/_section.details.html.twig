@@ -38,8 +38,6 @@
             abgemeldet
         {% elseif registration.hasChangedToNewRace %}
             umgemeldet &raquo; <a href="{{ path('race_show', { 'event': getChangedRace.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
-        {% elseif registration.isStarted %}
-            gestarted
         {% endif %}
     </td>
     {% endif %}

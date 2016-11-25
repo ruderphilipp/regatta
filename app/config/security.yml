@@ -5,7 +5,19 @@ security:
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
         in_memory:
-            memory: ~
+            memory:
+                users:
+                    evo:
+                        password: evo
+                        roles: 'ROLE_EVENT_ORGANIZER'
+                    reg:
+                        password: reg
+                        roles: 'ROLE_REGISTRATION'
+                    ref:
+                        password: ref
+                        roles: 'ROLE_REFEREE'
+    encoders:
+            Symfony\Component\Security\Core\User\User: plaintext
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -17,7 +29,7 @@ security:
             anonymous: ~
             # activate different ways to authenticate
 
-            # http_basic: ~
+            http_basic: ~
             # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
 
             # form_login: ~

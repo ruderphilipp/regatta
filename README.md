@@ -3,7 +3,7 @@
 Software project to manage (non-water) regattas of my current rowing club.
 It is currently used to do events like a just for fun triathlon (swimming, rowing on an [ergometer](https://en.wikipedia.org/wiki/Indoor_rower), running) or an indoor rowing event where the competitors have to run afterwards.
 
-Why did we not use existing software on the marked?
+Why did we not use existing software on the market?
 
 On the one hand, I am not aware of any good solution for the organization and realization of such (on land/ indoor) rowing events.
 In my club we usualy got an consultant that is doing this kind of events on every weekend since many years and who has his own home-grown software.
@@ -21,7 +21,7 @@ Of course, you have to have more than one sensor at the finishing line to guaran
 
 ### System requirements ###
 
-The software is based on [Symfony 3](http://symfony.com/) needs at least the following:
+The software is based on [Symfony 3](http://symfony.com/) and needs at least the following:
 
 - [PHP](http://php.net/) 5.4 or higher
 - a database supported by [Symfony](http://symfony.com/) - I currently use [MariaDB](https://en.wikipedia.org/wiki/MariaDB)

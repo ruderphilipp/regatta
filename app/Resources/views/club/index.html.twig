@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% set isAdmin = true %}
+    {% set isAdmin = is_granted('ROLE_REGISTRATION') %}
     <h1>Vereine</h1>
 
     <table class="table table-striped">

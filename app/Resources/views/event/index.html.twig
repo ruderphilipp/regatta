@@ -2,13 +2,13 @@
 
 {% block body %}
     <h1>Eventliste</h1>
-
+{% if is_granted('ROLE_EVENT_ORGANIZER') %}
     <ul>
         <li>
             <a href="{{ path('event_new') }}">Neue Veranstaltung erstellen</a>
         </li>
     </ul>
-
+{% endif %}
 {% if count(upcomming_events) > 0 %}
     <h2>zukünftige Veranstaltungen</h2>
     <table class="table table-striped">
@@ -50,9 +50,11 @@
                         <li>
                             <a href="{{ path('event_show', { 'id': event.id }) }}">mehr</a>
                         </li>
+{% if is_granted('ROLE_EVENT_ORGANIZER') %}
                         <li>
                             <a href="{{ path('event_edit', { 'id': event.id }) }}">bearbeiten</a>
                         </li>
+{% endif %}
                     </ul>
                 </td>
             </tr>
@@ -82,9 +84,11 @@
                         <li>
                             <a href="{{ path('event_show', { 'id': event.id }) }}">mehr</a>
                         </li>
+{% if is_granted('ROLE_EVENT_ORGANIZER') %}
                         <li>
                             <a href="{{ path('event_edit', { 'id': event.id }) }}">bearbeiten</a>
                         </li>
+{% endif %}
                     </ul>
                 </td>
             </tr>

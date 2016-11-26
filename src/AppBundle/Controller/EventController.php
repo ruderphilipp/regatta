@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Entity\Event;
 
 /**
@@ -39,6 +40,7 @@ class EventController extends Controller
      *
      * @Route("/new", name="event_new")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function newAction(Request $request)
     {
@@ -81,6 +83,7 @@ class EventController extends Controller
      *
      * @Route("/{id}/edit", name="event_edit")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function editAction(Request $request, Event $event)
     {
@@ -108,6 +111,7 @@ class EventController extends Controller
      *
      * @Route("/{id}", name="event_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_EVENT_ORGANIZER')")
      */
     public function deleteAction(Request $request, Event $event)
     {

@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 use AppBundle\Entity\Club;
 
 /**
@@ -37,6 +39,7 @@ class ClubController extends Controller
      *
      * @Route("/new", name="club_new")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function newAction(Request $request)
     {
@@ -88,6 +91,7 @@ class ClubController extends Controller
      *
      * @Route("/{id}/edit", name="club_edit")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function editAction(Request $request, Club $club)
     {
@@ -115,6 +119,7 @@ class ClubController extends Controller
      *
      * @Route("/{id}", name="club_delete")
      * @Method("DELETE")
+     * @Security("has_role('ROLE_REGISTRATION')")
      */
     public function deleteAction(Request $request, Club $club)
     {

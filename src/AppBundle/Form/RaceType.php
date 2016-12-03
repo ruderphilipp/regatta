@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Race;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -24,20 +25,28 @@ class RaceType extends AbstractType
     {
         // set default values
         $default_starter_min = 2;
-        if (isset($options['data']) && !empty($options['data']->getStarterMin())) {
-            $default_starter_min = $options['data']->getStarterMin();
-        }
         $default_starter_max = 1000;
-        if (isset($options['data']) && !empty($options['data']->getStarterMax())) {
-            $default_starter_max = $options['data']->getStarterMax();
-        }
         $default_max_starter_per_section = 4;
-        if (isset($options['data']) && !empty($options['data']->getMaxStarterPerSection())) {
-            $default_max_starter_per_section = $options['data']->getMaxStarterPerSection();
-        }
         $default_number = $options['number'];
-        if (isset($options['data']) && !empty($options['data']->getNumberInEvent())) {
-            $default_number = $options['data']->getNumberInEvent();
+
+        /** @var Race $me */
+        $me = null;
+        if (isset($options['data'])) {
+            $me = $options['data'];
+        }
+        if (!is_null($me)) {
+            if (!empty($me->getStarterMin())) {
+                $default_starter_min = $me->getStarterMin();
+            }
+            if (!empty($me->getStarterMax())) {
+                $default_starter_max = $options['data']->getStarterMax();
+            }
+            if (!empty($me->getMaxStarterPerSection())) {
+                $default_max_starter_per_section = $options['data']->getMaxStarterPerSection();
+            }
+            if (!empty($me->getNumberInEvent())) {
+                $default_number = $options['data']->getNumberInEvent();
+            }
         }
 
         $builder

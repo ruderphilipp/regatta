@@ -14,6 +14,7 @@
 {% block body %}
     <h1>#{{ race.numberInEvent }}: {{ rr.getOfficialName(race) }}<br>
         {% if race.extraText != "" %}<small>{{ race.extraText }}</small>{% endif %}
+        {% if race.runRace is not empty %}<small>Laufrennen: #{{ race.runRace.numberInEvent }} - {{ race.runRace.extraText }}</small>{% endif %}
     </h1>
 
     <div class="row hidden-print">

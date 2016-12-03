@@ -77,6 +77,15 @@ class Event
     /**
      * @var string
      *
+     * @ORM\Column(name="event_type",  type="string", length=255, nullable=true)
+     */
+    private $eventType;
+
+    const TYPE_ROW_RUN = "row&run";
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="more_info_website", type="string", length=255, nullable=true)
      */
     private $moreInfoWebsite;
@@ -360,6 +369,38 @@ class Event
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set event type
+     *
+     * @param string $type
+     *
+     * @return Event
+     */
+    public function setEventType($type)
+    {
+        $this->eventType = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get event type
+     *
+     * @return string
+     */
+    public function getEventType()
+    {
+        return $this->eventType;
+    }
+
+    /**
+     * @return bool <code>true</code> if the event is a Row&Run, <code>false</code> otherwise
+     */
+    public function isRowAndRun()
+    {
+        return (self::TYPE_ROW_RUN === $this->eventType);
     }
 
     /**

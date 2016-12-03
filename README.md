@@ -74,3 +74,24 @@ Each competition has at least one _referee_. People with this role are able to
 - start races
 - cancel races
 - register give-ups of single competitors
+
+## Race Types ##
+There are two types of races supported at the moment:
+
+- regular
+- indoor rowing plus running
+
+### Regular ###
+Regular races are those, that use the build-in registration functionality to start races.
+The start will be done via the web interface.
+Nothing special.
+
+### Row & Run ###
+In a _Row & Run_ event there are indoor rowing races and outdoor running activities.
+Usually, first all indoor rowing events will take place and later there are 1..n running races.
+The results/timings of a competitor in a run are added to the result/timing of his/her rowing race to get an overall rating.
+
+This type of event is technically different because the indoor races are performed with the [Concept 2 Venue Racing Application](http://www.concept2.com/service/software/venue-race-application) while the outdoor races are regular races (see section above).
+
+When you want to create such an event, you currently have to _edit_ races multiple times to be able to set all needed options.
+Otherwise the software will not be able to calculate the total results correctly.

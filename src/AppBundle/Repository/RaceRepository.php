@@ -97,7 +97,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return ('a' == $race->getGender());
     }
 
-    public function getOfficialName(Race $race) {
+    public static function getOfficialName(Race $race) {
         $name = '';
 
         switch($race->getAgeClass()) {

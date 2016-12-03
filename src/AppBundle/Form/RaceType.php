@@ -49,6 +49,42 @@ class RaceType extends AbstractType
             }
         }
 
+        // only if corresponding event is of type row&run and single race
+        // NOTE: This can not be shown in the creation dialog since there is no decision about the team size, yet.
+        if (!is_null($me) && !is_null($me->getEvent()) && $me->getEvent()->isRowAndRun() && 1 == $me->getTeamsize()) {
+            $builder
+                ->add('raceType', ChoiceType::class, array(
+                    'label' => 'Typ',
+                    'choices' => array(
+                        'Running' => Race::TYPE_RUN,
+                        'Indoor Rowing' => Race::TYPE_ROW,
+                    ),
+                    'expanded' => true,
+                    'multiple' => false,
+                ));
+            // only if this is a "rowing" event
+            // NOTE: you might have to open the "edit" dialog more than once to set this field
+            if (Race::TYPE_ROW === $me->getRaceType()) {
+                $choices = $me->getEvent()->getRaces()->filter(
+                    function ($r) use ($me) {
+                        /** @var Race $r */
+                        return Race::TYPE_RUN === $r->getRaceType() &&
+                            $r->getAgeMin() <= $me->getAgeMin() && $r->getAgeMax() >= $me->getAgeMax();
+                    });
+
+                $builder
+                    ->add('runRace', ChoiceType::class, array(
+                        'label' => 'zugehöriges Lauf-Rennen',
+                        'choices' => $choices,
+                        'expanded' => false,
+                        'multiple' => false,
+                        'choice_label' => function($race, $key, $index) {
+                            /** @var Race $race */
+                            return $race->__toString();
+                        },
+                    ));
+            }
+        }
         $builder
             ->add('numberInEvent', HiddenType::class, array(
                 'data' => $default_number,

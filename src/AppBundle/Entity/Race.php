@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\RaceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -119,6 +120,50 @@ class Race
      * @ORM\Column(name="starter_per_team", type="smallint")
      */
     private $teamsize;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="race_type", type="string", length=255, nullable=true)
+     */
+    private $raceType;
+
+    const TYPE_ROW = "row";
+    const TYPE_RUN = "run";
+
+    /**
+     * In a Row&Run event, first all indoor rowing events will take place.
+     * Later there are 1..n running races. The results/timings of them will
+     * be added to the result/timing of a competitor in the rowing race to
+     * get an overall rating.
+     *
+     * This mapping allows to link those two types of races to allow an
+     * automatic result calculation.
+     *
+     * @see Race::rowRaces
+     *
+     * @var Race
+     *
+     * @ORM\ManyToOne(targetEntity="Race", inversedBy="rowRaces")
+     */
+    private $runRace;
+
+    /**
+     * In a Row&Run event, first all indoor rowing events will take place.
+     * Later there are 1..n running races. The results/timings of them will
+     * be added to the result/timing of a competitor in the rowing race to
+     * get an overall rating.
+     *
+     * This mapping allows to link those two types of races to allow an
+     * automatic result calculation.
+     *
+     * @see Race::runRace
+     *
+     * @var ArrayCollection[Race]
+     *
+     * @ORM\OneToMany(targetEntity="Race", mappedBy="runRace")
+     */
+    private $rowRaces;
 
     /**
      * @var ArrayCollection[RaceSection]
@@ -450,12 +495,81 @@ class Race
     }
 
     /**
+     * Set race type
+     *
+     * @param string $type
+     *
+     * @return Race
+     */
+    public function setRaceType($type)
+    {
+        $this->raceType = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get race type
+     *
+     * @return string
+     */
+    public function getRaceType()
+    {
+        return $this->raceType;
+    }
+
+    /**
+     * Set run race
+     *
+     * @see Race::runRace
+     *
+     * @param Race $race
+     *
+     * @return Race
+     * @throws \DomainException if not allowed
+     */
+    public function setRunRace(Race $race)
+    {
+        if (self::TYPE_ROW === $this->raceType && 1 == $this->getTeamsize()) {
+            $this->runRace = $race;
+            return $this;
+        } else {
+            throw new \DomainException("Only allowed for (indoor) rowing races with one person!");
+        }
+    }
+
+    /**
+     * Get run race
+     *
+     * @see Race::runRace
+     *
+     * @return Race|null
+     */
+    public function getRunRace()
+    {
+        return $this->runRace;
+    }
+
+    /**
+     * Get all corresponding rowing races if this is a running race
+     * @return ArrayCollection[Race]
+     */
+    public function getRowRaces()
+    {
+        return $this->rowRaces;
+    }
+
+    /**
      * Get all sections of this race
      * @return ArrayCollection[RaceSection]
      */
     public function getSections()
     {
         return $this->sections;
+    }
+
+    public function __toString() {
+        return "#" . $this->numberInEvent . ": " . RaceRepository::getOfficialName($this);
     }
 }
 

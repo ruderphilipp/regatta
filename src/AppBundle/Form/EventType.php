@@ -2,7 +2,9 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\Event;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -21,6 +23,15 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
+            ->add('eventType', ChoiceType::class, array(
+                'label' => 'Typ',
+                'choices' => array(
+                    'regular' => null,
+                    'Row&Run' => Event::TYPE_ROW_RUN,
+                ),
+                'expanded' => true,
+                'multiple' => false,
+            ))
             ->add('start', DateTimeType::class)
             ->add('end', DateTimeType::class)
             ->add('registrationStart', DateTimeType::class)

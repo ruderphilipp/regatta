@@ -26,9 +26,11 @@
 
 </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('race_index', { 'event': event.id }) }}">Back to the list</a>
-        </li>
-    </ul>
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="{{ path('race_index', { 'event': event.id }) }}" class="btn btn-default">Zurück zur Liste</a>
+    </div>
+</div>
 {% endblock %}

@@ -5,17 +5,20 @@
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
-        <input type="submit" value="Speichern" />
+        <input type="submit" class="btn btn-primary" value="Speichern" />
     {{ form_end(edit_form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('event_index') }}">Zurück zur Liste</a>
-        </li>
-        <li>
+    <div class="row">
+        <div class="col-md-12" align="right">
             {{ form_start(delete_form) }}
-                <input type="submit" value="Löschen">
+            <input type="submit" class="btn btn-danger" value="Löschen">
             {{ form_end(delete_form) }}
-        </li>
-    </ul>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('event_index') }}" class="btn btn-default">Zurück zur Liste</a>
+        </div>
+    </div>
 {% endblock %}

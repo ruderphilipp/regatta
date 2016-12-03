@@ -5,12 +5,13 @@
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Erstellen" />
+        <input type="submit" class="btn btn-primary" value="Erstellen" />
     {{ form_end(form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('event_index') }}">Zurück zur Liste</a>
-        </li>
-    </ul>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('event_index') }}" class="btn btn-default">Zurück zur Liste</a>
+        </div>
+    </div>
 {% endblock %}

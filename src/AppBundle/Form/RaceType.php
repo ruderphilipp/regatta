@@ -176,7 +176,8 @@ class RaceType extends AbstractType
                 )
             ))
             ->add('extraText', TextType::class, array(
-                'label' => 'Zusatztext'
+                'label' => 'Zusatztext',
+                'required' => false,
             ))
         ;
     }

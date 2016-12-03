@@ -39,7 +39,8 @@
                             {% else %}
                                 {% set css = ' progress-bar-danger' %}
                             {% endif %}
-                    <div class="progress"><div class="progress-bar{{ css }}" role="progressbar" aria-valuenow="{{ perc }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ perc }}%">noch {{ event.getRemainingRegistrationTime }}</div></div>
+                        <span class="small">noch {{ event.getRemainingRegistrationTime }}</span>
+                        <div class="progress"><div class="progress-bar{{ css }}" role="progressbar" aria-valuenow="{{ perc }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ perc }}%"></div></div>
                         {% else %}
                         <span class="label label-default">nicht mehr möglich</span>
                         {% endif %}

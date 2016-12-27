@@ -163,6 +163,10 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             break;
         }
 
+        if ($race->hasWeightLimit()) {
+            $name .= " Lgw.";
+        }
+
         if ($race->getTeamsize() > 1) {
             $name .= ' ['.$race->getTeamsize().' Pers.]';
         }

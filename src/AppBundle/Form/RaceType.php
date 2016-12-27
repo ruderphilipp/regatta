@@ -131,6 +131,10 @@ class RaceType extends AbstractType
                     'max' => 99,
                 ),
             ))
+            ->add('weightMax', NumberType::class, array(
+                'label' => "Maximalgewicht in KG (nur bei Lgw.)",
+                'required' => false,
+            ))
             ->add('level', ChoiceType::class, array(
                 'label' => 'Leistungsklasse',
                 'choices' => array(

@@ -73,6 +73,13 @@ class Race
     private $ageMax;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="weight_max", type="decimal", precision=4, scale=1, nullable=true) // means 123.4 (4 total, 1 after dot)
+     */
+    private $weightMax;
+
+    /**
      * @var int
      *
      * @ORM\Column(name="level", type="smallint", nullable=true)
@@ -300,6 +307,46 @@ class Race
     public function getAgeMax()
     {
         return $this->ageMax;
+    }
+
+    /**
+     * Set weightMax
+     *
+     * @param float|null $weightMax
+     *
+     * @return Race
+     */
+    public function setWeightMax($weightMax)
+    {
+        if (is_null($weightMax) || (is_numeric($weightMax) && $weightMax == 0)) {
+            $this->weightMax = null;
+        } elseif (is_numeric($weightMax) && $weightMax > 0) {
+            $this->weightMax = round($weightMax, 1); // round 1 after comma
+        } else {
+            throw new \InvalidArgumentException("Parameter must be either NULL or positive decimal!");
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get weightMax
+     *
+     * @return float|null
+     */
+    public function getWeightMax()
+    {
+        return $this->weightMax;
+    }
+
+    /**
+     * Check if this race is a light weight race.
+     *
+     * @return bool
+     */
+    public function hasWeightLimit()
+    {
+        return !is_null($this->weightMax);
     }
 
     /**

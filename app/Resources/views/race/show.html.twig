@@ -42,6 +42,12 @@
                             <th>Leistungsklasse</th>
                             <td>{{ race.level }}</td>
                         </tr>
+{% if race.hasWeightLimit %}
+                        <tr>
+                            <th>Maximalgewicht</th>
+                            <td>{{ race.weightMax|number_format(1, ',', '') }} kg</td>
+                        </tr>
+{% endif %}
                         <tr>
                             <th>Starter (min.)</th>
                             <td>{{ race.starterMin }}</td>

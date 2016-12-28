@@ -63,7 +63,7 @@ class TeamController extends Controller
         if (0 == count($memberships)) {
             $this->addFlash(
                 'error',
-                'Keine passenden Sportler gefunden, um neue Mannschaft anzulegen!'
+                'Keine passenden Sportler gefunden, um weitere neue Mannschaft anzulegen! Bitte bei den existierenden Teams nachschauen.'
             );
             return $this->redirect($request->headers->get('referer'));
         } else {

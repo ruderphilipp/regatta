@@ -4,6 +4,14 @@
     {% set isAdmin = is_granted('ROLE_REGISTRATION') %}
     <h1>Vereine</h1>
 
+{% if isAdmin %}
+    <div class="hidden-print">
+        <p>
+            <a class="btn btn-default" role="button" href="{{ path('club_new') }}">Neu</a>
+        </p>
+    </div>
+{% endif %}
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -26,10 +34,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-{% if isAdmin %}
-    <p>
-        <a class="btn btn-default" role="button" href="{{ path('club_new') }}">Neu</a>
-    </p>
-{% endif %}
 {% endblock %}

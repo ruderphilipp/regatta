@@ -5,17 +5,17 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Neue Meldung erstellen</h1>
+    <h1>Rennen #{{ race.numberInEvent }} - Mannschaft hinzufügen</h1>
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" class="btn btn-success" value="Erstellen" />
+        <input type="submit" class="btn btn-success" value="Hinzufügen" />
     {{ form_end(form) }}
 
 
     <hr>
     <p>
-        Mannschaft existiert noch nicht? <a class="btn btn-primary" href="{{ path('team_new', { 'race': race.id }) }}">Neue erstellen</a>
+        Mannschaft existiert noch nicht?<br><a class="btn btn-primary" href="{{ path('team_new', { 'race': race.id }) }}">Neue Mannschaft erstellen</a>
     </p>
 
     <hr />

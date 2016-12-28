@@ -4,6 +4,14 @@
     {% set isAdmin = is_granted('ROLE_REGISTRATION') %}
     <h1>Sportler</h1>
 
+{% if isAdmin %}
+    <div class="hidden-print">
+        <p>
+            <a class="btn btn-default" role="button" href="{{ path('competitor_new') }}">Neu</a>
+        </p>
+    </div>
+{% endif %}
+
     <table class="table table-striped sortable">
         <thead>
             <tr>
@@ -28,10 +36,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-{% if isAdmin %}
-    <p>
-        <a class="btn btn-default" role="button" href="{{ path('competitor_new') }}">Neu</a>
-    </p>
-{% endif %}
 {% endblock %}

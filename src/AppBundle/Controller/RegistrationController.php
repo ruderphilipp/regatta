@@ -299,6 +299,143 @@ class RegistrationController extends Controller
         ));
     }
 
+    public function getUndoContentAction(Registration $registration)
+    {
+        return $this->render('race/_section.undoCancellation.html.twig', array(
+            'team' => $registration->getTeam(),
+            'race' => $registration->getSection()->getRace(),
+            'sectionNumber' => $registration->getSection()->getNumber(),
+            'registrationId' => $registration->getId(),
+        ));
+    }
+
+    /**
+     * Take away the marker of deregistration, so that the team is back in race.
+     *
+     * @Route("/race/{race}/reregister/{registration}", name="registration_undo_cancellation")
+     * @Method("POST")
+     * @Security("has_role('ROLE_REGISTRATION')")
+     */
+    public function undoDeregistationAction(Race $race, Registration $registration)
+    {
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $this->get('logger');
+        $logger->debug("RegistrationController:undoDeregistationAction({$race->getId()}, {$registration->getId()})");
+        /** @var boolean $sanityCheckOk */
+        $sanityCheckOk = $this->allRegistrationsValidForRace(array($registration), $race);
+        if ($sanityCheckOk) {
+            /** @var RaceSection $mySection */
+            $mySection = $registration->getSection();
+            // is it still possible to add the team to the old section?
+            if (!$mySection->canTakeMoreTeams()) {
+                $this->addFlash(
+                    'error',
+                    sprintf('Abteilung %d wurde bereits gestartet! Kein Hinzufügen mehr möglich...', $mySection->getNumber())
+                );
+                $mySection = null;
+            } else {
+                // is there some space?
+                try {
+                    $this->findNextFreeLaneInSection($mySection);
+                } catch (\InvalidArgumentException $e) {
+                    $mySection = null;
+                }
+            }
+            // Do I need to look for a new section?
+            if (is_null($mySection)) {
+                try {
+                    $mySection = $this->findNextFreeSection($race);
+                } catch (\Exception $e) {
+                    $this->addFlash(
+                        'error',
+                        $e->getMessage()
+                    );
+                }
+            }
+            // Was the search for a section successful?
+            if (!is_null($mySection)) {
+                /** @var int $lane */
+                $lane = $this->findNextFreeLaneInSection($mySection);
+                $registration->undoDeregistered($mySection, $lane);
+                $this->getDoctrine()->getManager()->flush();
+
+                $this->addFlash(
+                    'notice',
+                    sprintf('Abmeldung zurückgenommen (siehe Abteilung %d)', $mySection->getNumber())
+                );
+            }
+        }
+        return $this->redirectToRoute('race_show', array(
+            'event' => $race->getEvent()->getId(),
+            'race' => $race->getId()));
+    }
+
+    /**
+     * Get the first section of the given race that is valid to add at least one more team.
+     *
+     * @param Race $race The race to inspect.
+     * @return RaceSection The next valid race section where there is still space for new teams
+     * @throws \Exception if there is no free section at all
+     */
+    protected function findNextFreeSection(Race $race)
+    {
+        $result = null;
+        foreach ($race->getSections() as $section) {
+            try {
+                $this->findNextFreeLaneInSection($section);
+                // this will only be reached if there is a free lane
+                $result = $section;
+                break; // found one --> leave iteration
+            } catch (\InvalidArgumentException $e) {
+                // no free lane
+            }
+        }
+
+        if (is_null($result)) {
+            throw new \Exception("Konnte keine einzige freie Abteilung in dem Rennen ermitteln!");
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param RaceSection $section
+     * @return int
+     * @throws InvalidArgumentException if no free lane exists
+     */
+    protected function findNextFreeLaneInSection(RaceSection $section)
+    {
+        if (!$section->canTakeMoreTeams()) {
+            throw new \InvalidArgumentException(sprintf('Abteilung %d hat keine freie Bahn mehr...', $section->getNumber()));
+        }
+        $result = -1;
+
+        // check if there is some space in the middle and if the lane
+        // number is smaller than the total number of available lanes
+        $max = $section->getRace()->getMaxStarterPerSection();
+        for($lane = 1; $lane <= $max; $lane++) {
+            // is the lane already in use?
+            $inUse = false;
+            /** @var Registration $team */
+            foreach ($section->getValidRegistrations() as $team) {
+                if ($team->getLane() == $lane) {
+                    $inUse = true;
+                    break;
+                }
+            }
+            if (!$inUse) {
+                $result = $lane;
+                break;
+            }
+        }
+
+        if (-1 == $result) {
+            throw new \InvalidArgumentException(sprintf('Abteilung %d hat keine freie Bahn mehr...', $section->getNumber()));
+        }
+
+        return $result;
+    }
+
     /**
      * Mark the given team as being not any longer part of the given race.
      *
@@ -308,21 +445,10 @@ class RegistrationController extends Controller
      */
     public function deleteAction(Team $team, Race $race)
     {
-        // sanity check
-        $races = array();
-        /** @var \AppBundle\Entity\Registration $registration */
-        foreach ($team->getRegistrations() as $registration) {
-            array_push($races, $registration->getSection()->getRace());
-        }
-        if (!in_array($race, $races)) {
-            $this->addFlash(
-                'error',
-                'Falsche Inputdaten!'
-            );
-        } else {
+        $sanityCheckOk = $this->allRegistrationsValidForRace($team->getRegistrations(), $race);
+        if ($sanityCheckOk) {
             /** @var \AppBundle\Entity\Registration $myRegistrationForThisRace */
             $myRegistrationForThisRace = null;
-            // find the "lane"
             foreach ($team->getRegistrations() as $registration) {
                 if ($registration->getSection()->getRace() == $race) {
                     $myRegistrationForThisRace = $registration;
@@ -347,5 +473,35 @@ class RegistrationController extends Controller
         return $this->redirectToRoute('race_show', array(
             'event' => $race->getEvent()->getId(),
             'race' => $race->getId()));
+    }
+
+    /**
+     * Check if the given registrations belong to the given race.
+     *
+     * Adds a <em>error</em> flash notice if any of those does not.
+     *
+     * @param array[Registration] $registrations The registrations to check.
+     * @param Race $race The race that might contain the registrations.
+     * @return bool <tt>True</tt> if all registrations belong to the given race.
+     */
+    protected function allRegistrationsValidForRace($registrations, Race $race)
+    {
+        $result = false;
+        // sanity check
+        $races = array();
+        /** @var \AppBundle\Entity\Registration $registration */
+        foreach ($registrations as $registration) {
+            array_push($races, $registration->getSection()->getRace());
+        }
+        if (!in_array($race, $races)) {
+            $this->addFlash(
+                'error',
+                'Falsche Inputdaten!'
+            );
+        } else {
+            $result = true;
+        }
+
+        return $result;
     }
 }

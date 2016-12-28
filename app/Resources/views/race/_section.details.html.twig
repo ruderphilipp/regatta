@@ -36,6 +36,9 @@
             {% endif %}
         {% elseif registration.isDeregistered %}
             abgemeldet
+            {% if is_granted('ROLE_REGISTRATION') %}
+                {{ render(controller('AppBundle:Registration:getUndoContent', { 'registration': registration })) }}
+            {% endif %}
         {% elseif registration.hasChangedToNewRace %}
             umgemeldet &raquo; <a href="{{ path('race_show', { 'event': getChangedRace.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>
         {% endif %}

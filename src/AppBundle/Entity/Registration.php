@@ -268,6 +268,34 @@ class Registration
         return (self::DE_REGISTERED == $this->registrationStatus);
     }
 
+    /**
+     * Undo de-registration of a team.
+     *
+     * @param RaceSection $section New section where the team should now start.
+     * @param int $laneNumber Number of the lane in section.
+     * @return Registration
+     * @see Registration#setDeregistered
+     */
+    public function undoDeregistered(RaceSection $section, $laneNumber)
+    {
+        if (!$this->isDeregistered()) {
+            throw new \InvalidArgumentException('Cannot undo a non-de-registered registration!');
+        }
+        if (is_null($section)) {
+            throw new \InvalidArgumentException('No section given!');
+        }
+        if (is_null($laneNumber) || !is_numeric($laneNumber) || $laneNumber <= 0) {
+            throw new \InvalidArgumentException('Given lane number must be positive integer');
+        }
+
+        $this->token = null;
+        $this->registrationStatus = null;
+        $this->lane = $laneNumber;
+        $this->section = $section;
+
+        return $this;
+    }
+
     public function setChangedTo(Race $race)
     {
         // remove lane since the team is no longer in the race

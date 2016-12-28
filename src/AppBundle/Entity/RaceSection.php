@@ -209,6 +209,17 @@ class RaceSection
         return ($this->getStatus() == RaceSectionStatus::FINISHED);
     }
 
+    public function canTakeMoreTeams()
+    {
+        if ($this->isFinished() || $this->isStarted()) {
+            return false;
+        }
+        if ($this->race->getMaxStarterPerSection() <= $this->getValidRegistrations()->count()) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @return \DateTime Starting time of this section
      * @throws \InvalidArgumentException if this section was not started, yet

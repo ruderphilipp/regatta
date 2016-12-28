@@ -1,14 +1,20 @@
 {% extends 'form.new.base.html.twig' %}
 
 {% block body %}
-    <h1>Sportler anlegen</h1>
+    <h1>Neuen Sportler erfassen</h1>
 
-    {{ form_start(form) }}
+    <div class="row">
+        {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" class="btn btn-primary" value="Speichern" />
-    {{ form_end(form) }}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10"> <button type="submit" class="btn btn-default">Speichern</button></div>
+        </div>
+        {{ form_end(form) }}
+    </div>
 
-    <div>
-        <a href="{{ path('competitor_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('competitor_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
+        </div>
     </div>
 {% endblock %}

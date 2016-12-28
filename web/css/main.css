@@ -1,3 +1,9 @@
 body {
   padding-top: 65px;
 }
+/* overwrite Bootstrap's way of printing URLs */
+@media print {
+  a[href]:after {
+    content: none
+  }
+}

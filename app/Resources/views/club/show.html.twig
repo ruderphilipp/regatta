@@ -3,26 +3,66 @@
 {% block body %}
     <h1>{{ club.name }}</h1>
 
-    <dl class="dl-horizontal">
-    {% if null != club.shortname %}
-        <dt>Kurzname</dt>
-        <dd>{{ club.shortname }}</dd>
-    {% endif %}
-    {% if null != club.abbreviation %}
-        <dt>Abkürzung</dt>
-        <dd>{{ club.abbreviation }}</dd>
-    {% endif %}
-        <dt>Stadt</dt>
-        <dd>{{ club.city }}{% if null != club.state %} ({{ club.state }}){% endif %}</dd>
-        <dt>Anschrift</dt>
-        <dd>{{ club.street }} {{ club.streetNumber }}</dd>
-        <dt>Postleitzahl</dt>
-        <dd>{{ club.zip }}</dd>
-        <dt>DRV-ID</dt>
-        <dd>{% if null != club.drvId %}{{ club.drvId }}{% else %}nicht verfügbar{% endif %}</dd>
-    </dl>
-
-    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Info zum Verein</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <th>Kurzname</th>
+                            <td>{% if null != club.shortname %}{{ club.shortname }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Abkürzung</th>
+                            <td>{% if null != club.abbreviation %}{{ club.abbreviation }}{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Stadt</th>
+                            <td>{{ club.city }}{% if null != club.state %} ({{ club.state }}){% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Anschrift</th>
+                            <td>{{ club.street }} {{ club.streetNumber }}</td>
+                        </tr>
+                        <tr>
+                            <th>Postleitzahl</th>
+                            <td>{{ club.zip }}</td>
+                        </tr>
+                        <tr>
+                            <th>DRV-ID</th>
+                            <td>{% if null != club.drvId %}{{ club.drvId }}{% else %}nicht verfügbar{% endif %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 hidden-print">
+{% if is_granted('ROLE_REGISTRATION') %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Verein anpassen</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{{ path('club_edit', { 'id': club.id }) }}" class="btn btn-warning">Bearbeiten</a>
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_start(delete_form) }}
+                            <input type="submit" value="Löschen" class="btn btn-danger">
+                            {{ form_end(delete_form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endif %}
+        </div>
+    </div>
 
     <p><strong>Mitgliedschaften</strong> <span class="badge">{{ activeMemberships | count }}</span> </p>
 {% if count(activeMemberships) > 0 %}
@@ -72,19 +112,10 @@
     </table>
 {% endif %}
 
-    <hr>
-
-    <ul>
-        <li>
-            <a href="{{ path('club_index') }}">Zurück zur Übersicht</a>
-        </li>
-        <li>
-            <a href="{{ path('club_edit', { 'id': club.id }) }}">Bearbeiten</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Löschen">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="row hidden-print">
+        <hr>
+        <div class="col-md-8">
+            <a href="{{ path('club_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
+        </div>
+    </div>
 {% endblock %}

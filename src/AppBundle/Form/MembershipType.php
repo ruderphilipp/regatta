@@ -57,11 +57,17 @@ class MembershipType extends AbstractType
             ))
             ->add('since', BirthdayType::class, array(
                 'label' => 'Beitrittsdatum',
-                'widget' => 'single_text',
+                //'widget' => 'single_text',
+                'placeholder' => array(
+                    'year' => 'Jahr', 'month' => 'Monat', 'day' => 'Tag',
+                ),
             ))
             ->add('until', BirthdayType::class, array(
                 'label' => 'Austrittsdatum',
-                'widget' => 'single_text',
+                //'widget' => 'single_text',
+                'placeholder' => array(
+                    'year' => 'Jahr', 'month' => 'Monat', 'day' => 'Tag',
+                ),
                 'required' => false,
             ))
         ;

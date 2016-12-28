@@ -3,12 +3,18 @@
 {% block body %}
     <h1>Neuen Verein erfassen</h1>
 
+    <div class="row">
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Erstellen" />
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10"> <button type="submit" class="btn btn-default">Erstellen</button></div>
+        </div>
     {{ form_end(form) }}
+    </div>
 
-    <div>
-        <a href="{{ path('club_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
+    <div class="row">
+        <div class="col-md-12">
+            <a href="{{ path('club_index') }}" class="btn btn-default">Zurück zur Übersicht</a>
+        </div>
     </div>
 {% endblock %}

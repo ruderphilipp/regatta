@@ -59,6 +59,41 @@ class TeamController extends Controller
         /** @var MembershipRepository $memberRepo */
         $memberRepo = $em->getRepository('AppBundle:Membership');
         $memberships = $memberRepo->findAllCurrent($gender, $minAge, $maxAge);
+        // sort by id (needed due to bug in udiff comparison function; otherwise the first element is not checked correctly)
+        usort($memberships, function ($x, $y) {
+            /** @var Membership $x */
+            /** @var Membership $y */
+            $a = $x->getId();
+            $b = $y->getId();
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a < $b) ? -1 : 1;
+        });
+
+        $competitors = array();
+        // filter out all those that are already in this race
+        if (!is_null($race) && $race instanceof Race && isset($raceRepo)) {
+            $competitors = $raceRepo->findAllCompetitors($race)->toArray();
+            usort($competitors, function ($x, $y) {
+                /** @var Membership $x */
+                /** @var Membership $y */
+                $a = $x->getId();
+                $b = $y->getId();
+                if ($a == $b) {
+                    return 0;
+                }
+                return ($a < $b) ? -1 : 1;
+            });
+        }
+        $memberships = array_udiff($memberships, $competitors, function ($a, $b) {
+            /** @var Membership $a */
+            /** @var Membership $b */
+            if ($a->equals($b))
+                return 0;
+            else
+                return -1;
+        });
 
         if (0 == count($memberships)) {
             $this->addFlash(

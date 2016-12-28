@@ -164,5 +164,23 @@ class Membership
         return ($this->since < $date && (null == $this->until || $date < $this->until));
     }
 
+    /**
+     * Check if another object is the same as the current one.
+     *
+     * @param $other The other object.
+     * @return bool <tt>TRUE</tt> if same.
+     */
+    public function equals($other)
+    {
+        if (!($other instanceof self)) {
+            return false;
+        }
+        if ($this->id != $other->id) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
 

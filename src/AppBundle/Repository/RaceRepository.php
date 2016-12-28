@@ -7,6 +7,9 @@ use AppBundle\Entity\Event;
 use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceSection;
 use AppBundle\Entity\RaceSectionStatus;
+use AppBundle\Entity\Registration;
+use AppBundle\Entity\TeamPosition;
+use Doctrine\Common\Collections\ArrayCollection;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -189,6 +192,28 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
             }
         }
         return $races;
+    }
+
+    /**
+     * Get all competitors that start in the given race.
+     *
+     * @param Race $race The race to inspect.
+     * @return ArrayCollection[Membership] All competitors.
+     */
+    public function findAllCompetitors(Race $race)
+    {
+        $result = new ArrayCollection();
+        /** @var RaceSection $section */
+        foreach($race->getSections() as $section) {
+            /** @var Registration $registration */
+            foreach($section->getRegistrations() as $registration) {
+                /** @var TeamPosition $member */
+                foreach($registration->getTeam()->getMembers() as $member) {
+                    $result->add($member->getMembership());
+                }
+            }
+        }
+        return $result;
     }
 
     // FIXME not used

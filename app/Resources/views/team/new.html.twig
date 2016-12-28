@@ -8,11 +8,11 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Neue Mannschaft anlegen</h1>
+    <h1>{% if race is defined %}Rennen #{{ race.numberInEvent }} - {% endif %}Neue Mannschaft anlegen</h1>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
-    <input type="submit" class="btn btn-success" value="Erstellen" />
+    <input type="submit" class="btn btn-success" value="Hinzufügen" />
     {{ form_end(form) }}
 
 {% if race is defined %}

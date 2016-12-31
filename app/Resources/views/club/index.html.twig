@@ -1,4 +1,10 @@
+{# clubs of type Iterable[Club] #}
+
 {% extends 'base.html.twig' %}
+
+{% block title %}
+    Vereinsübersicht
+{% endblock %}
 
 {% block body %}
     {% set isAdmin = is_granted('ROLE_REGISTRATION') %}

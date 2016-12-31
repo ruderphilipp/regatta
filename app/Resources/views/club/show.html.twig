@@ -1,4 +1,13 @@
+{# club of type Club #}
+{# delete_form of type Form (only if ROLE_REGISTRATION) #}
+{# activeMemberships of type Iterable[Membership] #}
+{# formerMemberships of typ Iterable[Membership] #}
+
 {% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ club.name }}
+{% endblock %}
 
 {% block body %}
     <h1>{{ club.name }}</h1>

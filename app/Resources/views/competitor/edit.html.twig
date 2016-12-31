@@ -1,4 +1,12 @@
+{# competitor of type Competitor #}
+{# edit_form of type Form #}
+{# delete_form of type Form #}
+
 {% extends 'form.edit.base.html.twig' %}
+
+{% block title %}
+    Sportler bearbeiten - {{ competitor.lastName | upper }}, {{ competitor.firstName }}
+{% endblock %}
 
 {% block body %}
     <h1>{{ competitor.lastName | upper }}, {{ competitor.firstName }}</h1>

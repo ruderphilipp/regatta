@@ -1,4 +1,10 @@
+{# competitors of type Iterable[Competitor] #}
+
 {% extends 'base.html.twig' %}
+
+{% block title %}
+    Sportlerübersicht
+{% endblock %}
 
 {% block body %}
     {% set isAdmin = is_granted('ROLE_REGISTRATION') %}

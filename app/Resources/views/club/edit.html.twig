@@ -1,7 +1,15 @@
+{# club of type Club #}
+{# edit_form of type Form #}
+{# delete_form of type Form #}
+
 {% extends 'form.edit.base.html.twig' %}
 
+{% block title %}
+    Verein bearbeiten{% if club.abbreviation is not empty %} - {{ club.abbreviation }}{% endif %}
+{% endblock %}
+
 {% block body %}
-    <h1>Verein bearbeiten</h1>
+    <h1>{{ club.name }}</h1>
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}

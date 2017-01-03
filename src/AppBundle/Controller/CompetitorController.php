@@ -19,7 +19,7 @@ class CompetitorController extends Controller
     /**
      * Lists all Competitor entities.
      *
-     * @Route("/", name="competitor_index")
+     * @Route("s/", name="competitor_index")
      * @Method("GET")
      */
     public function indexAction()

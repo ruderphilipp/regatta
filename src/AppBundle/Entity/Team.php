@@ -179,5 +179,13 @@ class Team
     {
         return !is_null($this->token);
     }
+
+    public function deleteToken()
+    {
+        if (is_null($this->token)) {
+            throw new \InvalidArgumentException('Team does not have a valid token!');
+        }
+        $this->token = null;
+    }
 }
 

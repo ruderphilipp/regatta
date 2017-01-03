@@ -1,0 +1,58 @@
+{# event of type Event #}
+{# count of type int #}
+{# form of type Form #}
+{# team of type Team - optional #}
+{% extends 'form.new.base.html.twig' %}
+
+{% block title %}
+    Tokenrückgabe
+{% endblock %}
+
+{% block body %}
+    <h1>Rückgabe<br><small>{{ event.name }}</small></h1>
+
+    <p>Eingeloggte Mannschaften in dieser Veranstaltung: <span class="label label-default">{{ count }}</span></p>
+
+{% if 0 < count %}
+    <p>&nbsp;</p>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <div class="row">
+        <div class="col-md-12" align="center">
+            <input type="submit" class="btn btn-primary" value="Ausloggen" />
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endif %}
+
+{% if team is defined and team is not null %}
+    <hr>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title"><small>Zurückgenommen für:</small><br>{{ team.getName() }}</h2>
+        </div>
+        <div class="panel-body">
+            <ul>
+            {% for m in team.getMembers %}
+                <li>
+                    {{ m.getMembership.getPerson.getFirstName }} {{ m.getMembership.getPerson.getLastName | upper }}
+                    {%- if m.getIsCox %}(Stm.){% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    // empty the field
+    $("#form_token").val('');
+    $("#form_token").focus();
+});
+</script>
+{% endblock %}

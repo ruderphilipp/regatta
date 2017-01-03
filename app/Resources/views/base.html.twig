@@ -54,6 +54,7 @@
                     <li><a href="{{ path('drv_import_index', { 'id': event.id }) }}">Import DRV-Meldungen</a></li>
     {% elseif is_granted('ROLE_REGISTRATION') %}
                     <li><a href="{{ path('billing_index', { 'event': event.id }) }}">Rechnungen</a></li>
+                    <li><a href="{{ path('team_checkout', { 'event': event.id }) }}">Rückgabe</a></li>
     {% endif %}
 {% endif %}
                 </ul>

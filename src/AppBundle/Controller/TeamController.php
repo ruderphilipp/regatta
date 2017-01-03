@@ -4,9 +4,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Club;
 use AppBundle\Entity\Competitor;
+use AppBundle\Entity\Event;
 use AppBundle\Entity\Membership;
 use AppBundle\Entity\Race;
-use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
 use AppBundle\Entity\TeamPosition;
 use AppBundle\Repository\ClubRepository;
@@ -260,7 +260,7 @@ class TeamController extends Controller
     }
 
     /**
-     * Check-in a team for this specific race.
+     * Check-in a team.
      *
      * @Route("/{team}/checkIn", name="team_checkin")
      * @Method({"GET", "POST"})
@@ -324,8 +324,73 @@ class TeamController extends Controller
         ));
     }
 
-    public function checkOutAction()
+    /**
+     * Check-out a team.
+     *
+     * @Route("s/checkOut/{event}", name="team_checkout")
+     * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
+     */
+    public function checkOutAction(Request $request, Event $event)
     {
-        // FIXME implementation missing
+        $em = $this->getDoctrine()->getManager();
+        /** @var TeamRepository $repo */
+        $repo = $em->getRepository('AppBundle:Team');
+        /** @var int $count */
+        $count = $repo->getNumberOfCheckedInTeamsForEvent($event);
+
+        $data = array();
+        $form = $this->createFormBuilder($data)
+            ->add('token', TextType::class, array(
+                'label' => 'Token',
+                'data' => '',
+            ))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            // $data is a simply array with your form fields
+            $data = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            /** @var TeamRepository $repo */
+            $repo = $em->getRepository('AppBundle:Team');
+            if ($repo->isTokenExistent($data["token"])) {
+                /** @var Team $team */
+                $team = $repo->findOneBy(array('token' => $data["token"]));
+                try {
+                    $team->deleteToken();
+                    $em->persist($team);
+                    $em->flush();
+                    $this->addFlash(
+                        'notice',
+                        'Mannschaft erfolgreich ausgeloggt!'
+                    );
+                    $count -= 1;
+                    // TODO reset value of "token" in form (= empty!)
+                } catch (\Exception $e) {
+                    $this->addFlash(
+                        'error',
+                        $e->getMessage()
+                    );
+                }
+            } else {
+                $this->addFlash(
+                    'error',
+                    'Keine Mannschaft für den gegebenen Token gefunden!'
+                );
+            }
+        }
+
+        $result = array(
+            'event' => $event,
+            'count' => $count,
+            'form' => $form->createView(),
+        );
+        if (isset($team)) {
+            $result['team'] = $team;
+        }
+        return $this->render('team/checkout.html.twig', $result);
     }
 }

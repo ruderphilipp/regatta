@@ -17,6 +17,7 @@
         {%- if race.runRace is not empty %}<small>Laufrennen: #{{ race.runRace.numberInEvent }} - {{ race.runRace.extraText }}</small>{% endif -%}
     </h1>
 
+{% if is_granted('IS_AUTHENTICATED_FULLY')  %}
     <div class="row hidden-print">
         <div class="col-md-4">
             <div class="panel panel-default">
@@ -133,7 +134,7 @@
         {% endif %}
     </div>
     </div>
-
+{% endif %}
 {% if is_granted('ROLE_REFEREE') %}
     {% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}
         {# only show start button if there are enough competitors and the sections are not finished yet #}

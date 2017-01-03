@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class RegistrationController extends Controller
 {
     /**
-     * Creates a new Event entity.
+     * Creates a new registration entity.
      *
      * @Route("/event/{event}/race/{race}/new", name="registration_new")
      * @Method({"GET", "POST"})

@@ -213,8 +213,7 @@ class TimingController extends Controller
             $repo->setTime($registration, $time, $checkpoint, $this->get('logger'));
 
             if ($checkpoint == Registration::CHECKPOINT_FINISH) {
-
-                $this->checkIfFinished($registration->getSection());
+                $this->finishSectionIfAllTeamsAreDone($registration->getSection());
             }
         } catch (\InvalidArgumentException $e) {
             $this->get('logger')->debug('TimingController::setCheckpointTimeAction - ' . $e->getMessage());
@@ -228,7 +227,7 @@ class TimingController extends Controller
      * Check if all participants are cancelled or finished and if so, finish the race
      * @param RaceSection $section
      */
-    public function checkIfFinished(RaceSection $section)
+    public function finishSectionIfAllTeamsAreDone(RaceSection $section)
     {
         $done = 0;
         /** @var Registration $reg */
@@ -257,7 +256,7 @@ class TimingController extends Controller
         $em->persist($registration);
         $em->flush();
         // TODO howto call functions of other controllers with keeping doctrine reference?
-        $this->checkIfFinished($registration->getSection());
+        $this->finishSectionIfAllTeamsAreDone($registration->getSection());
 
         return $this->redirect($request->headers->get('referer'));
     }

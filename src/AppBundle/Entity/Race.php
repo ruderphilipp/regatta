@@ -615,6 +615,33 @@ class Race
         return $this->sections;
     }
 
+    /**
+     * Get the first section in this race that is valid to add at least one more team.
+     *
+     * @return RaceSection The next valid race section where there is still space for new teams
+     * @throws \Exception if there is no free section at all
+     */
+    public function tryToGetNextFreeSection()
+    {
+        $result = null;
+        foreach ($this->getSections() as $section) {
+            try {
+                $section->tryToFindNextFreeLaneInSection();
+                // this will only be reached if there is a free lane
+                $result = $section;
+                break; // found one --> leave iteration
+            } catch (\InvalidArgumentException $e) {
+                // no free lane
+            }
+        }
+
+        if (is_null($result)) {
+            throw new \Exception("Konnte keine einzige freie Abteilung in dem Rennen ermitteln!");
+        }
+
+        return $result;
+    }
+
     public function __toString() {
         return "#" . $this->numberInEvent . ": " . RaceRepository::getOfficialName($this);
     }

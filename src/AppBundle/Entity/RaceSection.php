@@ -264,6 +264,45 @@ class RaceSection
         }
         return $latest;
     }
+
+    /**
+     * Get the first free lane in this section.
+     *
+     * @return int
+     * @throws \InvalidArgumentException if no free lane left
+     */
+    public function tryToGetFirstFreeLane()
+    {
+        if (!$this->canTakeMoreTeams()) {
+            throw new \InvalidArgumentException(sprintf('Abteilung %d hat keine freie Bahn mehr...', $this->getNumber()));
+        }
+        $result = -1;
+
+        // check if there is some space in the middle and if the lane
+        // number is smaller than the total number of available lanes
+        $max = $this->getRace()->getMaxStarterPerSection();
+        for($lane = 1; $lane <= $max; $lane++) {
+            // is the lane already in use?
+            $inUse = false;
+            /** @var Registration $team */
+            foreach ($this->getValidRegistrations() as $team) {
+                if ($team->getLane() == $lane) {
+                    $inUse = true;
+                    break;
+                }
+            }
+            if (!$inUse) {
+                $result = $lane;
+                break;
+            }
+        }
+
+        if (-1 == $result) {
+            throw new \InvalidArgumentException(sprintf('Abteilung %d hat keine freie Bahn mehr...', $this->getNumber()));
+        }
+
+        return $result;
+    }
 }
 
 interface RaceSectionStatus

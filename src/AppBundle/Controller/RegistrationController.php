@@ -170,13 +170,12 @@ class RegistrationController extends Controller
 
     private function getOrCreateSection(Race $race, ObjectManager $em)
     {
-        if ($race->getSections()->count() > 0) {
-            $section = $race->getSections()->last();
-        } else {
+        try {
+            $section = $race->tryToGetNextFreeSection();
+        } catch (\Exception $e) {
             $raceRepo = $em->getRepository('AppBundle:Race');
             $section = $raceRepo->createSection($race, 1);
         }
-
         return $section;
     }
 
@@ -378,7 +377,7 @@ class RegistrationController extends Controller
             } else {
                 // is there some space?
                 try {
-                    $this->findNextFreeLaneInSection($mySection);
+                    $mySection->tryToGetFirstFreeLane();
                 } catch (\InvalidArgumentException $e) {
                     $mySection = null;
                 }
@@ -386,7 +385,7 @@ class RegistrationController extends Controller
             // Do I need to look for a new section?
             if (is_null($mySection)) {
                 try {
-                    $mySection = $this->findNextFreeSection($race);
+                    $mySection = $race->tryToGetNextFreeSection();
                 } catch (\Exception $e) {
                     $this->addFlash(
                         'error',
@@ -397,7 +396,7 @@ class RegistrationController extends Controller
             // Was the search for a section successful?
             if (!is_null($mySection)) {
                 /** @var int $lane */
-                $lane = $this->findNextFreeLaneInSection($mySection);
+                $lane = $mySection->tryToGetFirstFreeLane();
                 $registration->undoDeregistered($mySection, $lane);
                 $this->getDoctrine()->getManager()->flush();
 
@@ -410,72 +409,6 @@ class RegistrationController extends Controller
         return $this->redirectToRoute('race_show', array(
             'event' => $race->getEvent()->getId(),
             'race' => $race->getId()));
-    }
-
-    /**
-     * Get the first section of the given race that is valid to add at least one more team.
-     *
-     * @param Race $race The race to inspect.
-     * @return RaceSection The next valid race section where there is still space for new teams
-     * @throws \Exception if there is no free section at all
-     */
-    protected function findNextFreeSection(Race $race)
-    {
-        $result = null;
-        foreach ($race->getSections() as $section) {
-            try {
-                $this->findNextFreeLaneInSection($section);
-                // this will only be reached if there is a free lane
-                $result = $section;
-                break; // found one --> leave iteration
-            } catch (\InvalidArgumentException $e) {
-                // no free lane
-            }
-        }
-
-        if (is_null($result)) {
-            throw new \Exception("Konnte keine einzige freie Abteilung in dem Rennen ermitteln!");
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param RaceSection $section
-     * @return int
-     * @throws InvalidArgumentException if no free lane exists
-     */
-    protected function findNextFreeLaneInSection(RaceSection $section)
-    {
-        if (!$section->canTakeMoreTeams()) {
-            throw new \InvalidArgumentException(sprintf('Abteilung %d hat keine freie Bahn mehr...', $section->getNumber()));
-        }
-        $result = -1;
-
-        // check if there is some space in the middle and if the lane
-        // number is smaller than the total number of available lanes
-        $max = $section->getRace()->getMaxStarterPerSection();
-        for($lane = 1; $lane <= $max; $lane++) {
-            // is the lane already in use?
-            $inUse = false;
-            /** @var Registration $team */
-            foreach ($section->getValidRegistrations() as $team) {
-                if ($team->getLane() == $lane) {
-                    $inUse = true;
-                    break;
-                }
-            }
-            if (!$inUse) {
-                $result = $lane;
-                break;
-            }
-        }
-
-        if (-1 == $result) {
-            throw new \InvalidArgumentException(sprintf('Abteilung %d hat keine freie Bahn mehr...', $section->getNumber()));
-        }
-
-        return $result;
     }
 
     /**

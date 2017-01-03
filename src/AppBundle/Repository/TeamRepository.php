@@ -44,7 +44,7 @@ class TeamRepository extends \Doctrine\ORM\EntityRepository
                 /** @var \AppBundle\Repository\RaceRepository $raceRepo */
                 $raceRepo = $this->getEntityManager()->getRepository('AppBundle:Race');
                 // create initial section
-                $raceRepo->createSection($race, 1, $logger);
+                $raceRepo->createNewSection($race, $logger);
             }
             /** @var \AppBundle\Entity\RaceSection $raceSection */
             $raceSection = $race->getSections()->last();

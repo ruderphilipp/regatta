@@ -10,6 +10,7 @@ use AppBundle\Entity\RaceSectionStatus;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\TeamPosition;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -241,8 +242,24 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function createSection(Race $race, $number, LoggerInterface $logger = null)
+    public function createNewSection(Race $race, LoggerInterface $logger = null)
     {
+        $max = 0;
+        $query = $this->createQueryBuilder('r')
+            ->select('MAX(section.number) AS m')
+            ->innerJoin('r.sections', 'section')
+            ->where('r.id = :rId')
+            ->setParameter('rId', $race->getId())
+            ->getQuery();
+        try {
+            $max = $query->getSingleScalarResult();
+        } catch (NoResultException $e) {
+            if (!is_null($logger)) {
+                $logger->warning("Could not query max section number for race {$race->getId()}");
+            }
+        }
+        $number = $max + 1;
+
         $em = $this->getEntityManager();
 
         $section = new RaceSection();

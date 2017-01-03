@@ -41,11 +41,16 @@ class RegistrationRepository extends \Doctrine\ORM\EntityRepository
 
         /** @var EntityManager $em */
         $em = $this->getEntityManager();
-        /** @var \AppBundle\Repository\RaceRepository $raceRepo */
-        $raceRepo = $em->getRepository('AppBundle:Race');
 
-        /** @var RaceSection $section */
-        $section = $raceRepo->getNextAvailableSection($toRace);
+        try {
+            /** @var RaceSection $section */
+            $section = $toRace->tryToGetNextFreeSection();
+        } catch (\Exception $e) {
+            /** @var \AppBundle\Repository\RaceRepository $raceRepo */
+            $raceRepo = $em->getRepository('AppBundle:Race');
+            // create another section
+            $raceRepo->createNewSection($toRace);
+        }
 
         // mark current team registration as changed and save the new race id
         $registration->setChangedTo($toRace);

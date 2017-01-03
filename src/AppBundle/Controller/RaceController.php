@@ -204,19 +204,10 @@ class RaceController extends Controller
      */
     public function addSectionAction(Race $race)
     {
-        $max = 0;
-        /** @var RaceSection $section */
-        foreach ($race->getSections() as $section) {
-            if ($section->getNumber() > $max) {
-                $max = $section->getNumber();
-            }
-        }
-        $nextNumber = $max + 1;
-
         $em = $this->getDoctrine()->getManager();
         /** @var RaceRepository $raceRepo */
         $raceRepo = $em->getRepository('AppBundle:Race');
-        $raceRepo->createSection($race, $nextNumber, $this->get('logger'));
+        $raceRepo->createNewSection($race, $this->get('logger'));
 
         $this->addFlash(
             'notice',

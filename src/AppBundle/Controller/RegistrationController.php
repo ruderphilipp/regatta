@@ -174,7 +174,7 @@ class RegistrationController extends Controller
             $section = $race->tryToGetNextFreeSection();
         } catch (\Exception $e) {
             $raceRepo = $em->getRepository('AppBundle:Race');
-            $section = $raceRepo->createSection($race, 1);
+            $section = $raceRepo->createNewSection($race);
         }
         return $section;
     }

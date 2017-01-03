@@ -441,13 +441,61 @@ class RegistrationController extends Controller
 
                 $this->addFlash(
                     'notice',
-                    'Mannschaft abgemeldet!'
+                    'Mannschaft abgemeldet in Rennen ' . $race->getNumberInEvent()
                 );
+
+                // automatically de-register there as well if no other race points to it
+                $this->deleteFromRunRaceIfPossible($team, $race);
             }
         }
         return $this->redirectToRoute('race_show', array(
             'event' => $race->getEvent()->getId(),
             'race' => $race->getId()));
+    }
+
+    /**
+     * De-register team also from consecutive race if no other race points to it.
+     *
+     * @param Team $team The team to de-register.
+     * @param Race $race The original race whose consecutive race should be inspected.
+     * @see RegistrationController::deleteAction()
+     */
+    private function deleteFromRunRaceIfPossible(Team $team, Race $race)
+    {
+        if (!is_null($race->getRunRace())) {
+            $runRace = $race->getRunRace();
+            $inRunRace = false;
+            foreach ($team->getRegistrations() as $registration) {
+                if ($registration->getSection()->getRace() == $runRace) {
+                    $inRunRace = true;
+                    break;
+                }
+            }
+            if ($inRunRace) {
+                // check if the team does start in another related race in this event
+                $rowRaces = $runRace->getRowRaces();
+
+                $count = 0;
+                /** @var Registration $registration */
+                foreach ($team->getRegistrations() as $registration) {
+                    /** @var Race $r */
+                    $r = $registration->getSection()->getRace();
+                    /** @var Race $rowRace */
+                    foreach ($rowRaces as $rowRace) {
+                        if ($r->getId() == $rowRace->getId() && $r->getId() != $race->getId()) {
+                            $count++;
+                        }
+                    }
+                }
+                if (0 == $count) {
+                    // only the run-race is left, so de-register
+                    $this->forward('AppBundle:Registration:delete', array(
+                        'team' => $team,
+                        'race' => $runRace,
+                    ));
+                }
+            }
+        }
     }
 
     /**

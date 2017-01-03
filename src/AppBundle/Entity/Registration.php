@@ -55,6 +55,13 @@ class Registration
     private $changedRace;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="change_status", type="string", nullable=true)
+     */
+    private $changeStatus;
+
+    /**
      * @var Team
      *
      * @ORM\ManyToOne(targetEntity="Team", inversedBy="sections")
@@ -75,10 +82,13 @@ class Registration
      */
     private $timings;
 
+    // no attendance
     const NOT_AT_START = 'not_at_start';
     const DE_REGISTERED = 'de-registered';
+    // from/to another race
     const CHANGED_TO = 'changed_to';
     const CHANGED_FROM = 'changed_from';
+    // during race
     const STARTED = 'started';
     const FINISHED = 'finished';
     const ABORTED = 'aborted';
@@ -305,7 +315,7 @@ class Registration
 
     public function hasChangedToNewRace()
     {
-        return (self::CHANGED_TO == $this->registrationStatus);
+        return (self::CHANGED_TO == $this->changeStatus);
     }
 
     public function setChangedFrom(Race $race)
@@ -315,13 +325,13 @@ class Registration
 
     public function isFromOtherRace()
     {
-        return (self::CHANGED_FROM == $this->registrationStatus);
+        return (self::CHANGED_FROM == $this->changeStatus);
     }
 
-    private function setChangedRace(Race $race, $regStatus)
+    private function setChangedRace(Race $race, $status)
     {
         $this->changedRace = $race;
-        $this->registrationStatus = $regStatus;
+        $this->changeStatus = $status;
         return $this;
     }
 

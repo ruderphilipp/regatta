@@ -20,12 +20,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @Route("/team")
+ */
 class TeamController extends Controller
 {
     /**
      * Creates a new Team entity.
      *
-     * @Route("/team/new", name="team_new")
+     * @Route("/new", name="team_new")
      * @Method({"GET", "POST"})
      */
     public function newAction(Request $request)

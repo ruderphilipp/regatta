@@ -162,7 +162,7 @@ class StartController extends Controller
     public function notAtStartAction(Request $request, Registration $registration)
     {
         $em = $this->getDoctrine()->getManager();
-        $registration->setCancelled();
+        $registration->setNotAtStart();
         $em->persist($registration);
         $em->flush();
 
@@ -181,7 +181,7 @@ class StartController extends Controller
     public function resetNotAtStart(Request $request, Registration $registration)
     {
         $em = $this->getDoctrine()->getManager();
-        $registration->undoCancelled();
+        $registration->undoNotAtStart();
         $em->persist($registration);
         $em->flush();
 

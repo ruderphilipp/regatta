@@ -189,7 +189,7 @@ class RaceSection
         foreach($this->getValidRegistrations() as $g) {
             if ($g->isCheckedIn()) {
                 $counter += 1;
-            } elseif ($g->isCancelled()) {
+            } elseif ($g->isNotAtStart()) {
                 $counter += 1;
                 $cancelled += 1;
             }

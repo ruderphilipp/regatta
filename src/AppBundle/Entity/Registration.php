@@ -181,7 +181,7 @@ class Registration
      */
     public function isCheckedIn()
     {
-        return ((!is_null($this->token) && !$this->isCancelled() && !$this->isDeregistered()) || $this->isFinished());
+        return ((!is_null($this->token) && !$this->isNotAtStart() && !$this->isDeregistered()) || $this->isFinished());
     }
 
     /**
@@ -214,7 +214,7 @@ class Registration
      *
      * @return bool
      */
-    public function isCancelled()
+    public function isNotAtStart()
     {
         return (!is_null($this->token) && self::NOT_AT_START == $this->token);
     }
@@ -224,7 +224,7 @@ class Registration
      *
      * @return Registration
      */
-    public function setCancelled()
+    public function setNotAtStart()
     {
         $this->setCheckedIn(self::NOT_AT_START);
         return $this;
@@ -235,9 +235,9 @@ class Registration
      *
      * @return Registration
      */
-    public function undoCancelled()
+    public function undoNotAtStart()
     {
-        if (!$this->isCancelled()) {
+        if (!$this->isNotAtStart()) {
             throw new \InvalidArgumentException('Cannot undo a non-cancelled registration!');
         }
 
@@ -375,7 +375,7 @@ class Registration
 
     public function isDone()
     {
-        return $this->isFinished() || $this->isAborted() || ($this->isDeregistered() || $this->isCancelled());
+        return $this->isFinished() || $this->isAborted() || ($this->isDeregistered() || $this->isNotAtStart());
     }
 
     public function isValidForRace()

@@ -2,13 +2,11 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Registration;
-use AppBundle\Repository\RaceRepository;
-
 use AppBundle\Entity\Race;
+use AppBundle\Entity\Registration;
 use AppBundle\Entity\Event;
+use AppBundle\Repository\RaceRepository;
 use AppBundle\Repository\TeamRepository;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

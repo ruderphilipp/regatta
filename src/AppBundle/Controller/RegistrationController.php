@@ -87,21 +87,20 @@ class RegistrationController extends Controller
             if ($t->getMembers()->count() == $race->getTeamsize()) {
                 if (!in_array($t, $alreadyRegistered)) {
                     $teams[] = $t;
+                    // TODO some names appear more than once!
+                    // If a team appears more than once (e.g. due to different DRV-IDs),
+                    // try to find the one team that was already registered in the current
+                    // event. If so, remove the "duplicates".
+                    // See:
+                    //      SELECT `c`.`drv_id` as "Competitor-ID", `teams`.`drvId` AS "Team-DRV-ID", `teams`.*, `team_positions`.*, `c`.*
+                    //      FROM `teams`
+                    //      INNER JOIN `team_positions` on (`team_positions`.`team_id` = `teams`.`id`)
+                    //      INNER JOIN `memberships` on (`team_positions`.`membership_id` = `memberships`.`id`)
+                    //      INNER JOIN `competitors` as `c` on (`memberships`.`competitor_id` = `c`.`id`)
+                    //      ORDER by `c`.`last_name`, `c`.`first_name`
                 }
             }
         }
-
-        // TODO some names appear more than once!
-        // If a team appears more than once (e.g. due to different DRV-IDs),
-        // try to find the one team that was already registered in the current
-        // event. If so, remove the "duplicates".
-        // See:
-        //      SELECT `c`.`drv_id` as "Competitor-ID", `teams`.`drvId` AS "Team-DRV-ID", `teams`.*, `team_positions`.*, `c`.*
-        //      FROM `teams`
-        //      INNER JOIN `team_positions` on (`team_positions`.`team_id` = `teams`.`id`)
-        //      INNER JOIN `memberships` on (`team_positions`.`membership_id` = `memberships`.`id`)
-        //      INNER JOIN `competitors` as `c` on (`memberships`.`competitor_id` = `c`.`id`)
-        //      ORDER by `c`.`last_name`, `c`.`first_name`
 
         if (0 == count($teams)) {
             $this->addFlash(

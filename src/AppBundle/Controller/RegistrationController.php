@@ -126,6 +126,18 @@ class RegistrationController extends Controller
                 $registration->setLane(1 + $this->getHighestLane($registration->getSection()));
             }
             $em->persist($registration);
+
+            // does this race has a connected consecutive race?
+            if (!is_null($race->getRunRace())) {
+                // automatically register for this race as well
+                /** @var Registration $reg2 */
+                $reg2 = new Registration();
+                $reg2->setTeam($registration->getTeam());
+                $reg2->setSection($this->getOrCreateSection($race->getRunRace(), $em));
+                $reg2->setLane(1 + $this->getHighestLane($reg2->getSection()));
+                $em->persist($reg2);
+            }
+
             $em->flush();
 
             $this->addFlash(

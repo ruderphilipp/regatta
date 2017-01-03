@@ -19,7 +19,7 @@
             <span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span><span class="sr-only">gestartet</span> <a href="{{ path('race_abort', { 'registration' : registration.id }) }}" class="btn btn-danger">abbrechen (wegen Aufgabe/Verletzung)</a>
         {% elseif registration.isAborted %}
             abgebrochen
-        {% elseif registration.isCancelled %}
+        {% elseif registration.isNotAtStart %}
             <abbr title="nicht am Start erschienen">n.a.S.e.</abbr>
             {% if lanesChangeable is defined and lanesChangeable == true %}
                 {{ render(controller('AppBundle:RaceSectionMove:getPageContent', { 'registration': registration })) }}

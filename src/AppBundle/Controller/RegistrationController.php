@@ -9,6 +9,7 @@ use AppBundle\Entity\RaceSection;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -117,25 +118,12 @@ class RegistrationController extends Controller
 
                 return $this->redirectToRoute('race_show', array('event' => $event->getId(), 'race' => $race->getId()));
             }
+
             if (is_null($registration->getSection())) {
-                if ($race->getSections()->count() > 0) {
-                    $registration->setSection($race->getSections()->last());
-                } else {
-                    $raceRepo = $em->getRepository('AppBundle:Race');
-                    $section = $raceRepo->createSection($race, 1);
-                    $registration->setSection($section);
-                }
+                $registration->setSection($this->getOrCreateSection($race, $em));
             }
             if (is_null($registration->getLane())) {
-                // find highest existing lane
-                $highestLane = 0;
-                /** @var Registration $r */
-                foreach ($registration->getSection()->getRegistrations() as $r) {
-                    if ($r->getLane() > $highestLane) {
-                        $highestLane = $r->getLane();
-                    }
-                }
-                $registration->setLane(1 + $highestLane);
+                $registration->setLane(1 + $this->getHighestLane($registration->getSection()));
             }
             $em->persist($registration);
             $em->flush();
@@ -155,6 +143,37 @@ class RegistrationController extends Controller
                 'form' => $form->createView(),
             )
         );
+    }
+
+    private function getOrCreateSection(Race $race, ObjectManager $em)
+    {
+        if ($race->getSections()->count() > 0) {
+            $section = $race->getSections()->last();
+        } else {
+            $raceRepo = $em->getRepository('AppBundle:Race');
+            $section = $raceRepo->createSection($race, 1);
+        }
+
+        return $section;
+    }
+
+    /**
+     * Find highest existing lane number in the given section.
+     *
+     * @param RaceSection $section Section to inspect.
+     * @return int The number of the last used lane
+     */
+    private function getHighestLane(RaceSection $section)
+    {
+        $highestLane = 0;
+        /** @var Registration $r */
+        foreach ($section->getRegistrations() as $r) {
+            if ($r->getLane() > $highestLane) {
+                $highestLane = $r->getLane();
+            }
+        }
+
+        return $highestLane;
     }
 
     /**

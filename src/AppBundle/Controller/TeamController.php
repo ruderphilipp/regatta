@@ -6,18 +6,24 @@ use AppBundle\Entity\Club;
 use AppBundle\Entity\Competitor;
 use AppBundle\Entity\Membership;
 use AppBundle\Entity\Race;
+use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
 use AppBundle\Entity\TeamPosition;
-
 use AppBundle\Repository\ClubRepository;
 use AppBundle\Repository\MembershipRepository;
 use AppBundle\Repository\RaceRepository;
+use AppBundle\Repository\TeamRepository;
 
 use Doctrine\ORM\EntityManager;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -251,6 +257,71 @@ class TeamController extends Controller
                 )
             );
         }
+    }
+
+    /**
+     * Check-in a team for this specific race.
+     *
+     * @Route("/{team}/checkIn", name="team_checkin")
+     * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_REGISTRATION')")
+     */
+    public function checkInAction(Request $request, Team $team)
+    {
+        if ($team->isCheckedIn()) {
+            $this->addFlash(
+                'error',
+                'Mannschaft ist bereits eingecheckt!'
+            );
+            if (!is_null($request->headers->get('referer'))) {
+                return $this->redirect($request->headers->get('referer'));
+            } else {
+                return $this->redirectToRoute('homepage');
+            }
+        }
+
+        $data = array();
+        $form = $this->createFormBuilder($data)
+            ->add('token', TextType::class, array(
+                'label' => 'Token',
+            ))
+            ->add('ref', HiddenType::class, array(
+                'data' => $request->headers->get('referer'),
+            ))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            // $data is a simply array with your form fields
+            // like "query" and "category" as defined above.
+            $data = $form->getData();
+
+            // check if the token exists for another competitor
+            $em = $this->getDoctrine()->getManager();
+            /** @var TeamRepository $repo */
+            $repo = $em->getRepository('AppBundle:Team');
+            if ($repo->isTokenExistent($data["token"])) {
+                $this->addFlash(
+                    'error',
+                    'Token ist bereits eingecheckt!'
+                );
+            } else {
+                // if unique, then save
+                $team->setToken($data["token"]);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($team);
+                $em->flush();
+            }
+
+            return $this->redirect($data['ref']);
+        }
+
+        return $this->render('team/checkin.html.twig', array(
+            'team' => $team,
+            'form' => $form->createView(),
+            'previousUrl' => $request->headers->get('referer'),
+        ));
     }
 
     public function checkOutAction()

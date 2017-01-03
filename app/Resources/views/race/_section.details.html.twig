@@ -26,6 +26,11 @@
             {% endif %}
         {% elseif not registration.hasChangedToNewRace and not registration.isDeregistered %}
             {% if is_granted('ROLE_REGISTRATION') %}
+                {% if not registration.isCheckedIn -%}
+                    <a class="btn btn-success" href="{{ path('team_checkin', { 'team': team.id }) }}"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Einchecken</a>
+                {% else %}
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
+                {% endif -%}
                 {{ render(controller('AppBundle:Registration:getEditContent', { 'race': registration.section.race, 'team': team })) }}
                 {% if lanesChangeable is defined and lanesChangeable == true %}
                     {{ render(controller('AppBundle:RaceSectionMove:getPageContent', { 'registration': registration })) }}

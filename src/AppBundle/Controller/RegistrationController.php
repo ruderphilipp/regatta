@@ -9,7 +9,7 @@ use AppBundle\Entity\RaceSection;
 use AppBundle\Entity\Registration;
 use AppBundle\Entity\Team;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -168,7 +168,7 @@ class RegistrationController extends Controller
         );
     }
 
-    private function getOrCreateSection(Race $race, ObjectManager $em)
+    private function getOrCreateSection(Race $race, EntityManager $em)
     {
         try {
             $section = $race->tryToGetNextFreeSection();

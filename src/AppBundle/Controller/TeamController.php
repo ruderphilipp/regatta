@@ -249,4 +249,9 @@ class TeamController extends Controller
             );
         }
     }
+
+    public function checkOutAction()
+    {
+        // FIXME implementation missing
+    }
 }

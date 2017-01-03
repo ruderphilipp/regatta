@@ -36,13 +36,6 @@ class Registration
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", nullable=true)
-     */
-    private $token;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="status", type="string", nullable=true)
      */
     private $registrationStatus;
@@ -191,32 +184,10 @@ class Registration
      */
     public function isCheckedIn()
     {
-        return ((!is_null($this->token) && !$this->isNotAtStart() && !$this->isDeregistered()) || $this->isFinished());
-    }
-
-    /**
-     * Assign the token to a team registration when they are at the start (or before),
-     * so that it can be uniquely identified when passing the finish line.
-     *
-     * @param $token string e.g. RFID token or starting number
-     * @return Registration
-     */
-    public function setCheckedIn($token)
-    {
-        if (is_null($token)) {
-            throw new \InvalidArgumentException('Token must not be null!');
-        } elseif('' == trim($token)) {
-            throw new \InvalidArgumentException('Token must not be empty!');
+        if (is_null($this->team)) {
+            throw new \RuntimeException("No team found!");
         }
-        if ($this->isDeregistered()) {
-            throw new \InvalidArgumentException('Team is already de-registered!');
-        } elseif ($this->isCancelled()) {
-            throw new \InvalidArgumentException('Team did not show up on start');
-        }
-
-        $this->token = $token;
-
-        return $this;
+        return (($this->team->isCheckedIn() && !$this->isNotAtStart() && !$this->isDeregistered()) || $this->isFinished());
     }
 
     /**
@@ -226,7 +197,7 @@ class Registration
      */
     public function isNotAtStart()
     {
-        return (!is_null($this->token) && self::NOT_AT_START == $this->token);
+        return (self::NOT_AT_START == $this->registrationStatus);
     }
 
     /**
@@ -236,7 +207,7 @@ class Registration
      */
     public function setNotAtStart()
     {
-        $this->setCheckedIn(self::NOT_AT_START);
+        $this->registrationStatus = self::NOT_AT_START;
         return $this;
     }
 
@@ -251,7 +222,7 @@ class Registration
             throw new \InvalidArgumentException('Cannot undo a non-cancelled registration!');
         }
 
-        $this->token = null;
+        $this->registrationStatus = null;
         return $this;
     }
 
@@ -298,7 +269,6 @@ class Registration
             throw new \InvalidArgumentException('Given lane number must be positive integer');
         }
 
-        $this->token = null;
         $this->registrationStatus = null;
         $this->lane = $laneNumber;
         $this->section = $section;
@@ -355,11 +325,10 @@ class Registration
         // is named *is* and not *has* because of naming convention of the other status methods
         return (self::STARTED == $this->registrationStatus);
     }
+
     public function setFinished()
     {
         $this->registrationStatus = self::FINISHED;
-        // remove the token when the team passes the finishing line
-        $this->token = null;
 
         return $this;
     }
@@ -372,8 +341,6 @@ class Registration
     public function setAborted()
     {
         $this->registrationStatus = self::ABORTED;
-        // remove the token when the team passes the finishing line
-        $this->token = null;
 
         return $this;
     }

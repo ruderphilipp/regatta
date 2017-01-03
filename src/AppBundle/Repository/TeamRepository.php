@@ -81,4 +81,12 @@ class TeamRepository extends \Doctrine\ORM\EntityRepository
 
         return $dbItem;
     }
+
+    public function isTokenExistent($token)
+    {
+        // TODO use DQL to not load the data but only the count
+        // find all entries with the given token
+        $result = $this->findBy(array('token' => $token));
+        return (count($result) > 0);
+    }
 }

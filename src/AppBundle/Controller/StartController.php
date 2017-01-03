@@ -7,6 +7,7 @@ use AppBundle\Repository\RaceRepository;
 
 use AppBundle\Entity\Race;
 use AppBundle\Entity\Event;
+use AppBundle\Repository\TeamRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -86,6 +87,7 @@ class StartController extends Controller
         ));
     }
 
+    // TODO move to TeamController
     /**
      * Check-in a team for this specific race.
      *
@@ -127,8 +129,8 @@ class StartController extends Controller
 
             // check if the token exists for another competitor
             $em = $this->getDoctrine()->getManager();
-            /** @var RegistrationRepository $repo */
-            $repo = $em->getRepository('AppBundle:Registration');
+            /** @var TeamRepository $repo */
+            $repo = $em->getRepository('AppBundle:Team');
             if ($repo->isTokenExistent($data["token"])) {
                 $this->addFlash(
                     'error',
@@ -136,9 +138,10 @@ class StartController extends Controller
                 );
             } else {
                 // if unique, then save
-                $registration->setCheckedIn($data["token"]);
+                $team = $registration->getTeam();
+                $team->setToken($data["token"]);
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($registration);
+                $em->persist($team);
                 $em->flush();
             }
 

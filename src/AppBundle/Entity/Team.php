@@ -35,6 +35,13 @@ class Team
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", nullable=true)
+     */
+    private $token;
+
+    /**
      * @var Club
      *
      * @ORM\ManyToOne(targetEntity="Club", inversedBy="teams")
@@ -146,6 +153,31 @@ class Team
     public function getRegistrations()
     {
         return $this->registrations;
+    }
+
+    /**
+     * Assign the token to a team when they are at the start (or before),
+     * so that it can be uniquely identified when passing the finish line.
+     *
+     * @param $token string e.g. RFID token or starting number
+     * @return Team
+     */
+    public function setToken($token)
+    {
+        if (is_null($token)) {
+            throw new \InvalidArgumentException('Token must not be null!');
+        } elseif('' == trim($token)) {
+            throw new \InvalidArgumentException('Token must not be empty!');
+        }
+
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function isCheckedIn()
+    {
+        return !is_null($this->token);
     }
 }
 

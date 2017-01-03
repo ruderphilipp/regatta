@@ -7,8 +7,10 @@ use AppBundle\Entity\RaceSection;
 
 use AppBundle\Entity\RaceSectionStatus;
 use AppBundle\Entity\Registration;
+use AppBundle\Entity\Team;
 use AppBundle\Entity\Timing;
 use AppBundle\Repository\RegistrationRepository;
+use AppBundle\Repository\TeamRepository;
 use AppBundle\Twig\AppExtension;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -201,23 +203,42 @@ class TimingController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        /** @var RegistrationRepository $repo */
-        $repo = $em->getRepository('AppBundle:Registration');
-        /** @var Registration $registration */
-        $registration = $repo->findOneBy(array('token' => $token));
-        if (is_null($registration)) {
+        /** @var TeamRepository $teamRepo */
+        $teamRepo = $em->getRepository('AppBundle:Team');
+        /** @var Team $team */
+        $team = $teamRepo->findOneBy(array('token' => $token));
+        if (is_null($team)) {
             return new Response('Invalid token!', Response::HTTP_NOT_FOUND);
         }
 
-        try {
-            $repo->setTime($registration, $time, $checkpoint, $this->get('logger'));
-
-            if ($checkpoint == Registration::CHECKPOINT_FINISH) {
-                $this->finishSectionIfAllTeamsAreDone($registration->getSection());
+        /** @var RegistrationRepository $repo */
+        $repo = $em->getRepository('AppBundle:Registration');
+        /** @var array[Registration] $registrations */
+        $registrations = $repo->findBy(array('team' => $team));
+        $startedRegistrations = array();
+        /** @var Registration $r */
+        foreach ($registrations as $r) {
+            if ($r->isStarted() && !$r->isDone()) {
+                array_push($startedRegistrations, $r);
             }
-        } catch (\InvalidArgumentException $e) {
-            $this->get('logger')->debug('TimingController::setCheckpointTimeAction - ' . $e->getMessage());
-            return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+        if (0 == count($startedRegistrations)) {
+            return new Response('No active race with this token!', Response::HTTP_NOT_FOUND);
+        }
+
+        /** @var Registration $registration */
+        foreach ($startedRegistrations as $registration) {
+            try {
+                $repo->setTime($registration, $time, $checkpoint, $this->get('logger'));
+
+                if ($checkpoint == Registration::CHECKPOINT_FINISH) {
+                    $this->finishSectionIfAllTeamsAreDone($registration->getSection());
+                }
+            } catch (\InvalidArgumentException $e) {
+                $this->get('logger')->debug('TimingController::setCheckpointTimeAction - '.$e->getMessage());
+
+                return new Response($e->getMessage(), Response::HTTP_FORBIDDEN);
+            }
         }
 
         return new Response('', Response::HTTP_OK);

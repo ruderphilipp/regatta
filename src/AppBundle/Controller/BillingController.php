@@ -82,17 +82,23 @@ class BillingController extends Controller
                     $myClub = $registration->getTeam()->getClub();
                     if ($club->getId() == $myClub->getId()) {
                         // TODO handle de-registered and those from other races
-                        if (array_key_exists($race->getId(), $billingPositions)) {
-                            $billingPositions[$race->getId()]['teams'] += 1;
-                            $billingPositions[$race->getId()]['amount'] += $price;
+                        if (array_key_exists($race->getNumberInEvent(), $billingPositions)) {
+                            $billingPositions[$race->getNumberInEvent()]['teams'] += 1;
+                            $billingPositions[$race->getNumberInEvent()]['amount'] += $price;
                         } else {
-                            $billingPositions[$race->getId()] = array('teams' => 1, 'amount' => $price, 'race' => $race);
+                            $billingPositions[$race->getNumberInEvent()] = array(
+                                'teams' => 1,
+                                'amount' => $price,
+                                'race' => $race
+                            );
                         }
                         $total += $price;
                     }
                 }
             }
         }
+        // order by race number
+        ksort($billingPositions);
 
         return $this->render('billing/show.html.twig', array(
             'club' => $club,

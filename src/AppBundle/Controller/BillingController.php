@@ -8,6 +8,7 @@ use AppBundle\Entity\Race;
 use AppBundle\Entity\RaceSection;
 use AppBundle\Entity\Registration;
 use AppBundle\Repository\BillingRepository;
+use AppBundle\Repository\RaceRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -68,9 +69,11 @@ class BillingController extends Controller
         $races = $raceRepo->getAllRacesThatHaveRegistrations($event->getId());
         $billingPositions = array();
         $total = 0.0;
+
         /** @var Race $race */
         foreach ($races as $race) {
-            $price = $race->getPricePerStarter();
+            $priceString = $race->getPricePerStarter();
+            $price = floatval(preg_replace("/[^0-9.]/", "", preg_replace("/,/", ".", $priceString)));
             /** @var RaceSection $section */
             foreach($race->getSections() as $section) {
                 /** @var Registration $registration */

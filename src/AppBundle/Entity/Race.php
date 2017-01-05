@@ -624,9 +624,10 @@ class Race
     public function tryToGetNextFreeSection()
     {
         $result = null;
+        /** @var RaceSection $section */
         foreach ($this->getSections() as $section) {
             try {
-                $section->tryToFindNextFreeLaneInSection();
+                $section->tryToGetFirstFreeLane();
                 // this will only be reached if there is a free lane
                 $result = $section;
                 break; // found one --> leave iteration

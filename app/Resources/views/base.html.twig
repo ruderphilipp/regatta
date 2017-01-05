@@ -50,7 +50,7 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ path('event_index') }}">Veranstaltungen</a></li>
+                    <li><a href="{{ path('event_index') }}">alle Veranstaltungen</a></li>
 {% if event is defined and event.id is not empty %}
     {% if is_granted('ROLE_EVENT_ORGANIZER') %}
                     <li><a href="{{ path('drv_import_index', { 'id': event.id }) }}">Import DRV-Meldungen</a></li>

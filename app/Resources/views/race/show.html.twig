@@ -13,9 +13,14 @@
 {% endblock %}
 
 {% block body %}
-    <h1>#{{ race.numberInEvent }}: {{ rr.getOfficialName(race) }}<br>
-        {%- if race.extraText != "" %}<small>{{ race.extraText }}</small>{% endif -%}
-        {%- if race.runRace is not empty %}<small>Laufrennen: #{{ race.runRace.numberInEvent }} - {{ race.runRace.extraText }}</small>{% endif -%}
+    <h1>#{{ race.numberInEvent }}: {{ rr.getOfficialName(race) }}
+        {%- if race.extraText != "" or race.distance is not empty or race.runRace is not empty -%}
+        <br><small>
+        {%- if race.extraText != "" %}{{ race.extraText }}{% endif -%}
+        {%- if race.distance is not empty %}{%- if race.extraText != "" %}<br>{% endif %}Distanz: {{ race.distance }} m{% endif -%}
+        {%- if race.runRace is not empty %}{%- if race.extraText != "" or race.distance is not empty %}<br>{% endif %}Laufrennen: #{{ race.runRace.numberInEvent }}{% if race.runRace.distance is not null %} ({{ race.runRace.distance }} m){% endif %}{% endif -%}
+        </small>
+        {%- endif -%}
     </h1>
 
 {% if is_granted('IS_AUTHENTICATED_FULLY')  %}
@@ -48,6 +53,12 @@
                         <tr>
                             <th>Maximalgewicht</th>
                             <td>{{ race.weightMax|number_format(1, ',', '') }} kg</td>
+                        </tr>
+{% endif %}
+{% if race.distance is not null %}
+                        <tr>
+                            <th>Distanz</th>
+                            <td>{{ race.distance|number_format(0, ',', '') }} m</td>
                         </tr>
 {% endif %}
                         <tr>

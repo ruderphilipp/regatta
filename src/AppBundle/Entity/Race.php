@@ -139,6 +139,20 @@ class Race
     const TYPE_RUN = "run";
 
     /**
+     * Race distance in meters
+     *
+     * Usually a race is a single competition over fixed distance. Exceptions
+     * are races that consist of multiple sections (e.g. a triathlon).
+     *
+     * @see Race::raceType
+     *
+     * @var int
+     *
+     * @ORM\Column(name="distance", type="integer", nullable=true)
+     */
+    private $distance;
+
+    /**
      * In a Row&Run event, first all indoor rowing events will take place.
      * Later there are 1..n running races. The results/timings of them will
      * be added to the result/timing of a competitor in the rowing race to
@@ -539,6 +553,34 @@ class Race
     public function getEvent()
     {
         return $this->event;
+    }
+
+    /**
+     * Set race distance
+     *
+     * @param int $distance
+     *
+     * @return Race
+     */
+    public function setDistance($distance)
+    {
+        if (is_null($distance) || (is_int($distance) && $distance > 0)) {
+            $this->distance = $distance;
+        } else {
+            throw new \InvalidArgumentException("Distance must be a positive integer or null!");
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get race distance in meters
+     *
+     * @return int
+     */
+        public function getDistance()
+    {
+        return $this->distance;
     }
 
     /**

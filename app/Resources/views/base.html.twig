@@ -51,12 +51,12 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ path('event_index') }}">Veranstaltungen</a></li>
-                    <li><a href="{{ path('club_index') }}">Vereine</a></li>
-                    <li><a href="{{ path('competitor_index') }}">Personen</a></li>
 {% if event is defined and event.id is not empty %}
     {% if is_granted('ROLE_EVENT_ORGANIZER') %}
                     <li><a href="{{ path('drv_import_index', { 'id': event.id }) }}">Import DRV-Meldungen</a></li>
     {% elseif is_granted('ROLE_REGISTRATION') %}
+                    <li><a href="{{ path('club_index') }}">Vereine</a></li>
+                    <li><a href="{{ path('competitor_index') }}">Personen</a></li>
                     <li><a href="{{ path('billing_index', { 'event': event.id }) }}">Rechnungen</a></li>
                     <li><a href="{{ path('team_checkout', { 'event': event.id }) }}">Rückgabe</a></li>
     {% endif %}

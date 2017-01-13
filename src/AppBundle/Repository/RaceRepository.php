@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
 class RaceRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findAllForEvent($id) {
-        return $this->findBy(array('event' => $id));
+        return $this->findBy(array('event' => $id), array('numberInEvent' => 'ASC'));
     }
 
     public function findAllByEventForChanges(Race $race)

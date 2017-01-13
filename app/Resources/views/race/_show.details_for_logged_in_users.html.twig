@@ -1,0 +1,139 @@
+{# race of type Race #}
+{# finishedSections of type int #}
+{# delete_form of type form - optional #}
+
+{% if is_granted('IS_AUTHENTICATED_FULLY')  %}
+    <div class="row hidden-print">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Info zum Rennen</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tbody>
+                        <tr>
+                            <th>Geschlecht</th>
+                            <td>{{ race.gender }}</td>
+                        </tr>
+                        <tr>
+                            <th>Alter (min.)</th>
+                            <td>{{ race.ageMin }}</td>
+                        </tr>
+                        <tr>
+                            <th>Alter (max.)</th>
+                            <td>{{ race.ageMax }}</td>
+                        </tr>
+                        <tr>
+                            <th>Leistungsklasse</th>
+                            <td>{{ race.level }}</td>
+                        </tr>
+                        {% if race.hasWeightLimit %}
+                            <tr>
+                                <th>Maximalgewicht</th>
+                                <td>{{ race.weightMax|number_format(1, ',', '') }} kg</td>
+                            </tr>
+                        {% endif %}
+                        {% if race.distance is not null %}
+                            <tr>
+                                <th>Distanz</th>
+                                <td>{{ race.distance|number_format(0, ',', '') }} m</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Starter (min.)</th>
+                            <td>{{ race.starterMin }}</td>
+                        </tr>
+                        <tr>
+                            <th>Starter (max.)</th>
+                            <td>{{ race.starterMax }}</td>
+                        </tr>
+                        <tr>
+                            <th>max. Teams pro Abteilung</th>
+                            <td>{{ race.maxStarterPerSection }}</td>
+                        </tr>
+                        <tr>
+                            <th>Preis pro Team</th>
+                            <td>{{ race.pricePerStarter|number_format(2, ',', '') }} Euro</td>
+                        </tr>
+                        <tr>
+                            <th>Sportler pro Team</th>
+                            <td>{{ race.teamsize }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            {% if is_granted('ROLE_EVENT_ORGANIZER') %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Rennen anpassen</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a href="{{ path('race_edit', { 'race': race.id, 'event': race.event.id }) }}" class="btn btn-warning">Rennen ändern</a>
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_start(delete_form) }}
+                                <input type="submit" value="Rennen löschen" class="btn btn-danger">
+                                {{ form_end(delete_form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if (race.sections.count == 0 or finishedSections != race.sections.count) and
+            is_granted('ROLE_EVENT_ORGANIZER') or is_granted('ROLE_REGISTRATION') %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Starter anpassen</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <form method="post" action="{{ path('race_add_section', {'race': race.id }) }}">
+                                    <button type="submit" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> neue Abteilung erstellen
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <form method="post" action="{{ path('race_clean_sections', {'race': race.id }) }}">
+                                    <button type="submit" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> alle leeren Abteilungen entfernen
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% if is_granted('ROLE_REGISTRATION') %}
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="{{ path('registration_new', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-default">Team hinzufügen</a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="{{ path('team_new', { 'race': race.id }) }}" class="btn btn-default">Neue Mannschaft anlegen</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% if is_granted('ROLE_REFEREE') %}
+    {#{% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}#}
+    {# only show start button if there are enough competitors and the sections are not finished yet #}
+    <hr class="hidden-print">
+    <div class="row hidden-print">
+        <div class="col-md-4 col-md-offset-4">
+            <a href="{{ path('race_start', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-lg btn-primary">Rennen starten</a>
+        </div>
+    </div>
+    {#{% endif %}#}
+{% endif %}

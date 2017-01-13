@@ -41,7 +41,7 @@ class MembershipController extends Controller
         $clubs = $clubQ->getResult();
 
         $form = $this->createForm('AppBundle\Form\MembershipType', $membership, array(
-            'competitors' => array($competitor),
+            'competitor' => $competitor,
             'clubs' => $clubs));
         $form->handleRequest($request);
 

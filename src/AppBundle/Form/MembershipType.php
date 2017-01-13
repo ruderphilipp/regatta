@@ -7,6 +7,7 @@ use AppBundle\Entity\Competitor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,7 +19,8 @@ class MembershipType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $competitors = $options['competitors'];
+        /** @var Competitor $competitor */
+        $competitor = $options['competitor'];
 
         $clubs = $options['clubs'];
         usort($clubs, function($a, $b)
@@ -31,15 +33,8 @@ class MembershipType extends AbstractType
         });
 
         $builder
-            ->add('person', ChoiceType::class, array(
-                'label' => 'Sportler',
-                'expanded' => false,
-                'multiple' => false,
-                'choices' => $competitors,
-                'choice_label' => function($competitor, $key, $index) {
-                    /** @var Competitor $competitor */
-                    return $competitor->getLastName() . ", " . $competitor->getFirstName();
-                },
+            ->add('person', HiddenType::class, array(
+                'data' => $competitor->getId(),
             ))
             ->add('club', ChoiceType::class, array(
                 'label' => 'Club',
@@ -80,7 +75,7 @@ class MembershipType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\Membership',
-            'competitors' => null,
+            'competitor' => null,
             'clubs' => null,
         ));
     }

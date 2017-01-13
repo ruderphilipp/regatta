@@ -248,7 +248,7 @@ class TimingController extends Controller
      * Check if all participants are cancelled or finished and if so, finish the race
      * @param RaceSection $section
      */
-    public function finishSectionIfAllTeamsAreDone(RaceSection $section)
+    private function finishSectionIfAllTeamsAreDone(RaceSection $section)
     {
         $done = 0;
         /** @var Registration $reg */

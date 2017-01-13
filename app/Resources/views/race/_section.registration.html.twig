@@ -20,7 +20,6 @@
                             {% endfor %}</em></p>
 
                     {# show form with dropdown of all possible races (except this one) #}
-                    {# TODO if no races then show warning message and do not allow OK button #}
                     <div id="form">
                         <div class="form-group">
                             <label class="col-sm-2 control-label required" for="form_race">Rennen</label>
@@ -47,7 +46,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Abbruch</button>
+{% if 0 < count(all_races) %}
                     <button type="submit" class="btn btn-primary">Ummelden</button>
+{% endif %}
                 </div>
             </form>
         </div>

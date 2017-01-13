@@ -62,7 +62,12 @@
     {% endif %}
 {% endif %}
                 </ul>
-            </div><!--/.nav-collapse -->
+{% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ path('event_edit', {'id': 1}) }}">Login</a></li>
+                </ul>
+{% endif %}
+            </div><!--/.nav-container -->
         </div>
     </nav>
 

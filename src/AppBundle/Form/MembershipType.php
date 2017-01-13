@@ -21,6 +21,8 @@ class MembershipType extends AbstractType
     {
         /** @var Competitor $competitor */
         $competitor = $options['competitor'];
+        $min_year = $competitor->getYearOfBirth();
+        $max_year = getdate()['year'];
 
         $clubs = $options['clubs'];
         usort($clubs, function($a, $b)
@@ -56,6 +58,7 @@ class MembershipType extends AbstractType
                 'placeholder' => array(
                     'year' => 'Jahr', 'month' => 'Monat', 'day' => 'Tag',
                 ),
+                'years' => range($min_year, $max_year),
             ))
             ->add('until', BirthdayType::class, array(
                 'label' => 'Austrittsdatum',
@@ -63,6 +66,7 @@ class MembershipType extends AbstractType
                 'placeholder' => array(
                     'year' => 'Jahr', 'month' => 'Monat', 'day' => 'Tag',
                 ),
+                'years' => range($min_year, $max_year),
                 'required' => false,
             ))
         ;

@@ -1,11 +1,12 @@
 {% extends 'form.new.base.html.twig' %}
 
 {% block title %}
-    Mitgliedschaft anlegen
+    Mitgliedschaft anlegen - {{ person.lastName | upper }}, {{ person.firstName }}
 {% endblock %}
 
 {% block body %}
-    <h1>Mitgliedschaft anlegen</h1>
+    <h1>Mitgliedschaft anlegen<br>
+        <small>{{ person.lastName | upper }}, {{ person.firstName }} {{ person.getGenderSymbol }}</small></h1>
 
     {{ form_start(form) }}
         {{ form_widget(form) }}

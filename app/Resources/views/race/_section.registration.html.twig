@@ -28,13 +28,13 @@
                                     {% if recommended is defined %}
                                     <optgroup label="Empfehlung">
                                     {% for r in recommended %}
-                                        <option value="{{ r.getId }}" >{{ r.getId }}: {{ rr.getOfficialName(r) }}</option>
+                                        <option value="{{ r.getId }}" >{{ r.numberInEvent }}: {{ rr.getOfficialName(r) }}</option>
                                     {% endfor %}
                                     </optgroup>
                                     {% endif %}
                                     <optgroup label="Alle">
                                     {% for r in all_races %}
-                                        <option value="{{ r.getId }}" >{{ r.getId }}: {{ rr.getOfficialName(r) }}</option>
+                                        <option value="{{ r.getId }}" >{{ r.numberInEvent }}: {{ rr.getOfficialName(r) }}</option>
                                     {% endfor %}
                                     </optgroup>
                                 </select>

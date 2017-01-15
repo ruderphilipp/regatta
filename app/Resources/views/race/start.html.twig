@@ -19,9 +19,13 @@
         {% elseif section.isReadyToStart %}
         <div class="row">
             <div class="col" align="center">
+                {% if 'row' == race.raceType %}
+                <a href="{{ path('concept2_export_single', { 'section': section.id }) }}" class="btn btn-lg btn-default" target="_blank">Starten</a>
+                {% else %}
                 <form method="post" action="{{ path('timing_start', { 'section': section.id }) }}">
                     <input type="submit" class="btn btn-lg btn-default" value="Starten">
                 </form>
+                {% endif %}
             </div>
         </div>
         {% endif %}

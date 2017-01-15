@@ -1,0 +1,32 @@
+{# Race file for the Concept 2 Venue Racing Application
+
+This file contains all information needed to perform a race
+- with the given ergometers
+- over the given racing distance
+- in single "boats" (1x), meaning that each team sits on a single ergo
+  (instead of multiple competitors of one team racing in parallel on multiple ergos at the same time)
+- with split timing every 500 meters
+#}
+{# raceName of type string #}
+{# distance of type int #}
+{# ergometers of type array[C2ErgoInfo] #}
+{% set maxLanes = max(ergometers|keys) %}
+RACE
+108
+0
+{{ raceName }}
+{{ distance }}
+0
+0
+1
+500
+120
+{{ maxLanes }}
+{% for i in range(1, maxLanes) -%}{% set erg = ergometers[i] %}
+{{ erg.name }}
+{{ erg.id }}
+{{ erg.class }}
+GER
+
+{% endfor %}
+0

@@ -35,7 +35,7 @@
 {% else %}
 {% set first = false %}
 {% endif %}
-    <h2>
+    <h2 id="section-{{ section.number }}">
         Abteilung {{ section.getNumber() }}
 {% if section.isFinished %}<br><small>{{ section.getStartTime | date('H:i:s') }} - {{ section.getLatestFinishingTime | date('H:i:s') }}</small>
 {% elseif section.isStarted and not section.isFinished %}<br><small>gestartet um {{ section.getStartTime|date('H:i:s') }}</small>

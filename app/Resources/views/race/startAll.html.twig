@@ -43,7 +43,9 @@
                         {% else %}
                         <span class="label label-success">{{ section.validRegistrations.count + counter }}</span>
                         {% endif %}
+                        {% if 0 > counter %}<a href="{{ path('race_show', { 'event': event.id, 'race': race.id}) }}#section-{{ section.number }}" target="_blank">{% endif -%}
                         {{ rr.getOfficialName(race) }} - Abteilung {{ section.number }}
+                        {%- if 0 > counter %}</a>{% endif %}
                         {%- if race.extraText != "" -%}<br /><em>{{ race.extraText }}</em>{%- endif -%}
                     </td>
                 </tr>                    {% endif %}

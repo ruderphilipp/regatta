@@ -52,11 +52,11 @@
                             </td>
                             <td>
                             {% if group.isCheckedIn %}
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
+                                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
                             {% elseif group.isAborted %}
                                 abgebrochen
                             {% elseif group.isDeregistered %}
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="sr-only">abgemeldet</span>
+                                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span><span class="sr-only">abgemeldet</span>
                             {% elseif group.hasChangedToNewRace %}
                                 <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span><span class="sr-only">umgemeldet zu Rennen {{ group.getChangedRace.getNumberInEvent }}</span>
                             {% elseif group.isNotAtStart %}

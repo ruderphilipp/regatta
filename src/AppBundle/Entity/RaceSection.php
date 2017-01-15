@@ -190,20 +190,20 @@ class RaceSection
      */
     public function isReadyToStart()
     {
+        if ($this->isFinished()) {
+            return false;
+        }
+
         $counter = 0;
-        $cancelled = 0;
         /** @var \AppBundle\Entity\Registration $g */
         foreach($this->getValidRegistrations() as $g) {
-            if ($g->isCheckedIn()) {
+            if ($g->isCheckedIn() || $g->isNotAtStart()) {
                 $counter += 1;
-            } elseif ($g->isNotAtStart()) {
-                $counter += 1;
-                $cancelled += 1;
             }
         }
 
-        return (0 < $this->getValidRegistrations()->count()) &&
-               ($this->getRegistrations()->count() == $counter && $cancelled != $counter);
+        return ((0 < $this->getValidRegistrations()->count())
+            && ($this->getValidRegistrations()->count() == $counter));
     }
 
     public function isStarted()

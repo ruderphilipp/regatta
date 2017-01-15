@@ -68,15 +68,7 @@
                                     </a>
                                 {% endif %}
                             {% else %}
-                                <!-- TODO: maybe as (modal) popup? -->
-                                <a href="{{ path('race_start_checkin', { 'registration': group.id }) }}" class="btn btn-success">
-                                    <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
-                                    Einchecken
-                                </a>
-
-                                <a href="{{ path('race_start_nas', { 'registration': group.id }) }}" class="btn btn-danger" aria-label="Left Align">
-                                    <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Nicht am Start
-                                </a>
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">kein Status</span>
                             {% endif %}
                             </td>
                         </tr>

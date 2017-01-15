@@ -52,23 +52,23 @@
                             </td>
                             <td>
                             {% if group.isCheckedIn %}
-                                <span style="font-size: 2.5em" class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
+                                <span style="font-size: 2.5em" class="glyphicon glyphicon-ok-sign text-success" aria-hidden="true"></span><span class="sr-only">eingeloggt</span>
                             {% elseif group.isAborted %}
                                 abgebrochen
                             {% elseif group.isDeregistered %}
-                                <span style="font-size: 2.5em" class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span><span class="sr-only">abgemeldet</span>
+                                <span style="font-size: 2.5em" class="glyphicon glyphicon-remove-sign text-success" aria-hidden="true"></span><span class="sr-only">abgemeldet</span>
                             {% elseif group.hasChangedToNewRace %}
-                                <span style="font-size: 2.5em" class="glyphicon glyphicon-share-alt" aria-hidden="true"></span><span class="sr-only">umgemeldet zu Rennen {{ group.getChangedRace.getNumberInEvent }}</span>
+                                <span style="font-size: 2.5em" class="glyphicon glyphicon-share-alt text-success" aria-hidden="true"></span><span class="sr-only">umgemeldet zu Rennen {{ group.getChangedRace.getNumberInEvent }}</span>
                             {% elseif group.isNotAtStart %}
                                 <!-- not at start -->
-                                <span style="font-size: 2.5em" class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span><span class="sr-only">nicht am Start erschienen</span>
+                                <span style="font-size: 2.5em" class="glyphicon glyphicon-minus-sign text-success" aria-hidden="true"></span><span class="sr-only">nicht am Start erschienen</span>
                                 {% if not group.isDeregistered %}
                                     <a href="{{ path('race_start_reset', { 'registration': group.id }) }}">
                                         zurücksetzen
                                     </a>
                                 {% endif %}
                             {% else %}
-                                <span style="font-size: 2.5em" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span><span class="sr-only">kein Status</span>
+                                <span style="font-size: 2.5em" class="glyphicon glyphicon-question-sign text-danger" aria-hidden="true"></span><span class="sr-only">kein Status</span>
                             {% endif %}
                             </td>
                         </tr>

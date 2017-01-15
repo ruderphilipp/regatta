@@ -166,12 +166,19 @@ class RaceSection
      */
     public function getValidRegistrations()
     {
-        $result = new ArrayCollection();
+        $validRegistrations = array();
         /** @var Registration $registration */
         foreach($this->registrations as $registration) {
             if ($registration->isValidForRace()) {
-                $result->add($registration);
+                $validRegistrations[$registration->getLane()] = $registration;
             }
+        }
+        // sort by lane
+        ksort($validRegistrations);
+
+        $result = new ArrayCollection();
+        foreach ($validRegistrations as $registration) {
+            $result->add($registration);
         }
         return $result;
     }

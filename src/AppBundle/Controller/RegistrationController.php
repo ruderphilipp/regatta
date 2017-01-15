@@ -427,6 +427,7 @@ class RegistrationController extends Controller
             foreach ($team->getRegistrations() as $registration) {
                 if ($registration->getSection()->getRace() == $race) {
                     $myRegistrationForThisRace = $registration;
+                    break;
                 }
             }
             if (is_null($myRegistrationForThisRace)) {

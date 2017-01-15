@@ -10,7 +10,7 @@
     </h1>
 
     {% for section in race.getSections() %}
-        <h2>Abteilung {{ section.getNumber() }}</h2>
+        <h2 id="section-{{ section.number }}">Abteilung {{ section.number }}</h2>
 
         {% if section.isStarted %}
             gestartet

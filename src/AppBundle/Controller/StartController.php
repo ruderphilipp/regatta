@@ -76,8 +76,40 @@ class StartController extends Controller
             $this->redirect($request->headers->get('referer'));
         }
 
+        $r = null;
+        if ($event->isRowAndRun()) {
+            $myRaces = array();
+            foreach ($races as $race) {
+                if (Race::TYPE_ROW === $race->getRaceType()) {
+                    $key = 'row';
+                } elseif (Race::TYPE_RUN === $race->getRaceType()) {
+                    $key = 'run';
+                } else {
+                    $key = 'undefined';
+                }
+                $myRaces[$key][] = $race;
+            }
+
+            foreach ($myRaces as $key => $value) {
+                usort($myRaces[$key], function($race1, $race2) {
+                    /** @var Race $race1 */
+                    /** @var Race $race2 */
+                   if ($race1->getNumberInEvent() > $race2->getNumberInEvent()) {
+                       return 1;
+                   } elseif ($race1->getNumberInEvent() < $race2->getNumberInEvent()) {
+                       return -1;
+                   } else {
+                       return 0;
+                   }
+                });
+            }
+            $r = $myRaces;
+        } else {
+            $r['undefined'] = $races;
+        }
+
         return $this->render('race/startAll.html.twig', array(
-            'races' => $races,
+            'races' => $r,
             'event' => $event,
             'rr' => $repo,
         ));

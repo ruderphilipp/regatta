@@ -11,55 +11,63 @@
 {% block body %}
     <h1>{{ event.getName }} - Rennen starten</h1>
 
-    <form method="post" action="{{ path('timing_start_all', { 'event': event.id }) }}">
-        <table class="table table-striped sortable">
-            <thead>
-            <th data-defaultsign="_19" data-defaultsort="asc">Nr.</th>
-            <th data-defaultsort='disabled'>Starten?</th>
-            <th data-defaultsign="az">Name</th>
-            </thead>
-            <tbody>
-            {% for race in races %}
-                {% for section in race.getSections() %}
-                    {% if not section.isStarted and not section.isFinished %}
-                <tr>
-                    <td data-value="{{ '%03d'|format(race.numberInEvent) }}_{{ '%03d'|format(section.number) }}">
-                        {{ race.numberInEvent }}.{{ section.number }}
-                    </td>
-                    <td align="center">
-                        {% if section.isReadyToStart %}
-                            <input type="checkbox" name="sections[]" value="{{ section.id }}">
+    {% for k,r in races %}
+        {% if k != 'undefined' -%}
+            <h2>{% if k == 'row' %}Ergometerrudern{% elseif k == 'run' %}Laufrennen{% endif %}</h2>
+        {%- endif %}
+
+        <form method="post" action="{% if k == 'row' %}{{ path('concept2_export_multiple') }}{% else %}{{ path('timing_start_all', { 'event': event.id }) }}{% endif %}">
+            <input type="hidden" name="type" value="{{ k }}">
+            <table class="table table-striped sortable">
+                <thead>
+                <th data-defaultsign="_19" data-defaultsort="asc">Nr.</th>
+                <th data-defaultsort='disabled'>Starten?</th>
+                <th data-defaultsign="az">Name</th>
+                </thead>
+                <tbody>
+                {% for race in r %}
+                    {% for section in race.getSections() %}
+                        {% if not section.isStarted and not section.isFinished %}
+                            <tr>
+                                <td data-value="{{ '%03d'|format(race.numberInEvent) }}_{{ '%03d'|format(section.number) }}">
+                                    {{ race.numberInEvent }}.{{ section.number }}
+                                </td>
+                                <td align="center">
+                                    {% if section.isReadyToStart %}
+                                        <input type="checkbox" name="sections[]" value="{{ section.id }}">
+                                    {% endif %}
+                                </td>
+                                <td data-value="{{ rr.getOfficialName(race) }} - {{ section.number }}">
+                                    {%- set counter = -1 * section.validRegistrations.count -%}
+                                    {%- for r in section.getValidRegistrations() -%}
+                                        {%- if r.isCheckedIn or r.isNotAtStart -%}{%- set counter = counter + 1 -%}{%- endif -%}
+                                    {%- endfor -%}
+                                    {% if 0 > counter %}
+                                    <span class="label label-danger">{{ counter }}</span>
+                                    {% elseif section.validRegistrations.count > race.getMaxStarterPerSection %}
+                                    <span class="label label-danger">&infin;</span>
+                                    {% else %}
+                                    <span class="label label-success">{{ section.validRegistrations.count + counter }}</span>
+                                    {% endif %}
+                                    {% if 0 > counter %}<a href="{{ path('race_show', { 'event': event.id, 'race': race.id}) }}#section-{{ section.number }}" target="_blank">{% endif -%}
+                                        {{ rr.getOfficialName(race) }} - Abteilung {{ section.number }}
+                                    {%- if 0 > counter %}</a>{% endif %}
+                                    {%- if race.extraText != "" -%}<br /><em>{{ race.extraText }}</em>{%- endif -%}
+                                </td>
+                            </tr>
                         {% endif %}
-                    </td>
-                    <td data-value="{{ rr.getOfficialName(race) }} - {{ section.number }}">
-                        {%- set counter = -1 * section.validRegistrations.count -%}
-                        {%- for r in section.getValidRegistrations() -%}
-                        {%- if r.isCheckedIn or r.isNotAtStart -%}{%- set counter = counter + 1 -%}{%- endif -%}
-                        {%- endfor -%}
-                        {% if 0 > counter %}
-                        <span class="label label-danger">{{ counter }}</span>
-                        {% elseif section.validRegistrations.count > race.getMaxStarterPerSection %}
-                        <span class="label label-danger">&infin;</span>
-                        {% else %}
-                        <span class="label label-success">{{ section.validRegistrations.count + counter }}</span>
-                        {% endif %}
-                        {% if 0 > counter %}<a href="{{ path('race_show', { 'event': event.id, 'race': race.id}) }}#section-{{ section.number }}" target="_blank">{% endif -%}
-                        {{ rr.getOfficialName(race) }} - Abteilung {{ section.number }}
-                        {%- if 0 > counter %}</a>{% endif %}
-                        {%- if race.extraText != "" -%}<br /><em>{{ race.extraText }}</em>{%- endif -%}
-                    </td>
-                </tr>                    {% endif %}
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <hr>
+            <hr>
 
-        <div class="row">
-            <div class="col" align="center">
-                <input type="submit" class="btn btn-lg btn-success" value="Starten">
+            <div class="row">
+                <div class="col" align="center">
+                    <input type="submit" class="btn btn-lg btn-success" value="Starten">
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    {% endfor %}
 {% endblock %}

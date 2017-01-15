@@ -43,6 +43,29 @@ class Concept2Controller extends Controller
     }
 
     /**
+     * Creates a new Race export file (starting multiple sections in one race).
+     *
+     * @Route("/concept2/export/", name="concept2_export_multiple")
+     * @Method("POST")
+     * @Security("has_role('ROLE_REFEREE')")
+     * @return RedirectResponse|Response
+     */
+    public function multiExportAction(Request $request)
+    {
+        $sectionIDs = $request->get('sections', null);
+        try {
+            $result = $this->getExport($sectionIDs);
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash(
+                'warning',
+                $e->getMessage()
+            );
+            $result = $this->redirect($request->headers->get('referer'));
+        }
+        return $result;
+    }
+
+    /**
      * Create one race export file <i>for download</i> with the given section IDs
      *
      * @param array $sectionIDs 1..n section IDs

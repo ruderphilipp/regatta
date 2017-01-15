@@ -32,16 +32,21 @@
                         {% endif %}
                     </td>
                     <td data-value="{{ rr.getOfficialName(race) }} - {{ section.number }}">
-                        {%- set counter = 0 -%}
+                        {%- set counter = -1 * section.validRegistrations.count -%}
                         {%- for r in section.getValidRegistrations() -%}
-                        {%- if r.isCheckedIn -%}{%- set counter = counter + 1 -%}{%- endif -%}
+                        {%- if r.isCheckedIn or r.isNotAtStart -%}{%- set counter = counter + 1 -%}{%- endif -%}
                         {%- endfor -%}
-                        <span class="label {% if 0 == counter or counter > race.getMaxStarterPerSection %}label-danger{% else %}label-success{% endif %}">{{ counter }}</span>
+                        {% if 0 > counter %}
+                        <span class="label label-danger">{{ counter }}</span>
+                        {% elseif section.validRegistrations.count > race.getMaxStarterPerSection %}
+                        <span class="label label-danger">&infin;</span>
+                        {% else %}
+                        <span class="label label-success">{{ section.validRegistrations.count + counter }}</span>
+                        {% endif %}
                         {{ rr.getOfficialName(race) }} - Abteilung {{ section.number }}
                         {%- if race.extraText != "" -%}<br /><em>{{ race.extraText }}</em>{%- endif -%}
                     </td>
-                </tr>
-                    {% endif %}
+                </tr>                    {% endif %}
                 {% endfor %}
             {% endfor %}
             </tbody>

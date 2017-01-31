@@ -30,6 +30,10 @@
                             <li><a href="{{ path('token_all', { 'event': event.id }) }}">Ausleihen</a></li>
                             <li><a href="{{ path('team_checkout', { 'event': event.id }) }}">Rückgabe</a></li>
                         {% endif %}
+                    {% elseif is_granted('ROLE_REFEREE') %}
+                        {% if event is defined and event.id is not empty -%}
+                            <li><a href="{{ path('race_start_all', { 'event': event.id }) }}">Multistart</a></li>
+                        {% endif %}
                     {% endif %}
             </ul>
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}

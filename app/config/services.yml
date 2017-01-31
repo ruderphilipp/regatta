@@ -9,3 +9,7 @@ services:
         public: false
         tags:
             - { name: twig.extension }
+    app.token_controller:
+        class: AppBundle\Controller\TokenController
+        calls:
+            - [setContainer, ["@service_container"]]

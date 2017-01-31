@@ -27,6 +27,15 @@
             <td align="right">{{ p.amount |number_format(2, ',', '') }} €</td>
         </tr>
     {% endfor %}
+    {% if tokens > 0 %}
+        <tr>
+            <td>---</td>
+            <td>Tokens</td>
+            <td align="right">{{ tokens }}</td>
+            <td align="right">{{ tokenPrice |number_format(2, ',', '') }} €</td>
+            <td align="right">{{ (tokens * tokenPrice) |number_format(2, ',', '') }} €</td>
+        </tr>
+    {% endif %}
     </tbody>
     <tfoot>
         <th colspan="4">Total</th>

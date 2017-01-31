@@ -70,6 +70,9 @@ class BillingController extends Controller
         $billingPositions = array();
         $total = 0.0;
 
+        // FIXME make this configurable per event!
+        $tokenPrice = 5.0;
+
         /** @var Race $race */
         foreach ($races as $race) {
             $priceString = $race->getPricePerStarter();
@@ -100,11 +103,18 @@ class BillingController extends Controller
         // order by race number
         ksort($billingPositions);
 
+        // has the club still tokens?
+        $tokController = $this->get('app.token_controller');
+        $tokens = $tokController->getNumberOfTokensForClub($club, $event);
+        $total += ($tokens * $tokenPrice);
+
         return $this->render('billing/show.html.twig', array(
             'club' => $club,
             'event' => $event,
             'positions' => $billingPositions,
             'rr' => $raceRepo,
+            'tokens' => $tokens,
+            'tokenPrice' => $tokenPrice,
             'total' => $total,
         ));
     }

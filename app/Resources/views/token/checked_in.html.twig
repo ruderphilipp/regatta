@@ -1,0 +1,80 @@
+{# clubs of type Iterable[Club] #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Vereinsübersicht
+{% endblock %}
+
+{% block body %}
+<h1>Eingecheckte Sportler pro Verein</h1>
+
+{#{{ dump(clubs) }}#}
+
+{% if count(clubs|keys) > 0 %}
+<div class="container">
+    <ul class="nav nav-tabs">
+{%- set first = true -%}
+{%- set myLetters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+                     "u", "v", "w", "x", "y", "z", "ä", "ö", "ü"] -%}
+{% for ch in myLetters %}
+    {%- set yes = (ch|upper in clubs|keys) -%}
+    {%- set active = (yes and first) -%}
+    {#
+            <li{% if active %} class="active"{% endif %}{% if not yes %} class="disabled"{% endif %}>
+                <a href="#{% if yes %}{{ ch }}{% endif %}" data-toggle="tab">{{ ch|upper }}</a>
+            </li>
+
+        {%- if active  -%}
+            {%- set first = false -%}
+        {%- endif -%}#}
+    {% if yes %}
+
+        <li{% if active %} class="active"{% endif %}><a href="#{{ ch }}" data-toggle="tab">{{ ch|upper }}</a></li>
+
+    {% endif %}
+{% endfor %}
+    </ul>
+
+    <div class="tab-content ">
+{%- set first = true -%}
+{% for ch in myLetters %}
+    {%- set yes = (ch|upper in clubs|keys) -%}
+    {%- set active = (yes and first) -%}
+{% if yes %}
+        <div class="tab-pane{% if active %} active{% endif %}" id="{{ ch }}">
+            {%- set myCheckins = clubs[ch|upper] -%}
+            {% for cI in myCheckins %}
+                <h3>{{ cI.club.name }}</h3>
+                <table class="table table-striped sortable">
+                    <thead>
+                    <tr>
+                        <th data-defaultsign="az" data-defaultsort="asc">Nachname</th>
+                        <th data-defaultsign="az">Vorname</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reg in cI.registrations %}
+                        {% for pos in reg.team.members %}
+                            {% set p = pos.membership.person %}
+                            <tr>
+                                <td>{{ p.lastName }}</td>
+                                <td>{{ p.firstName }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+{% endif %}
+    {%- if active  -%}
+        {%- set first = false -%}
+    {%- endif -%}
+{% endfor %}
+    </div>
+</div>
+{% else %}
+    nichts gefunden
+{% endif %}
+{% endblock %}

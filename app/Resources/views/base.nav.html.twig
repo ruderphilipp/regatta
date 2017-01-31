@@ -27,6 +27,7 @@
                         <li><a href="{{ path('competitor_index') }}">Personen</a></li>
                         {% if event is defined and event.id is not empty -%}
                             <li><a href="{{ path('billing_index', { 'event': event.id }) }}">Rechnungen</a></li>
+                            <li><a href="{{ path('token_all', { 'event': event.id }) }}">Ausleihen</a></li>
                             <li><a href="{{ path('team_checkout', { 'event': event.id }) }}">Rückgabe</a></li>
                         {% endif %}
                     {% endif %}

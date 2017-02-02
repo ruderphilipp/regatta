@@ -46,6 +46,7 @@ class MembershipController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $membership->setPerson($competitor);
             $em->persist($membership);
             $em->flush();
 

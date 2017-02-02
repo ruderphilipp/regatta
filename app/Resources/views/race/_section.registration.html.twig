@@ -4,6 +4,7 @@
 {# registration of type Registration #}
 {# token of type string #}
 {# rr of type RaceRepository #}
+{% if race.raceType != "run" %}
 <div id="changeModal-{{ team.getId }}" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -57,6 +58,7 @@
 <button type="button" class="btn btn-default hidden-print" data-toggle="modal" data-target="#changeModal-{{ team.getId }}">
     <span class="glyphicon glyphicon-random" aria-hidden="true"></span> <span class="hidden-xs">ummelden</span>
 </button>
+{% endif %}
 
 <div id="cancelModal-{{ team.getId }}" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog">

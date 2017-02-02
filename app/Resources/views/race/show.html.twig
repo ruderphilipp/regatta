@@ -54,8 +54,10 @@
             <th data-defaultsort='disabled'></th>
         </thead>
         <tbody>
+{# in a running race with multiple parallel starters it is not necessary to change the lane #}
+{% set laneChangeAllowed = (race.raceType != "run") %}
             {% for group in section.getValidRegistrations() %}
-                {{ include('race/_section.details.html.twig', { 'registration': group, 'lanesChangeable': true }, with_context = false) }}
+                {{ include('race/_section.details.html.twig', { 'registration': group, 'lanesChangeable': laneChangeAllowed }, with_context = false) }}
             {% endfor %}
         </tbody>
     </table>

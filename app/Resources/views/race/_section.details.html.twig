@@ -30,7 +30,7 @@
             {% endif %}
 
             {% if is_granted('ROLE_REGISTRATION') %}
-                {% if not registration.isCheckedIn -%}
+                {% if not registration.isCheckedIn and registration.section.race.raceType != "run" -%}
                     <a class="btn btn-success" href="{{ path('team_checkin', { 'team': team.id }) }}"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Einchecken</a>
                 {% endif -%}
                 {{ render(controller('AppBundle:Registration:getEditContent', { 'race': registration.section.race, 'team': team })) }}

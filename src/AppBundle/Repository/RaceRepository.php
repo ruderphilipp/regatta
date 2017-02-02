@@ -113,13 +113,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 } else {
                     $name = 'JuM';
                 }
-                $name .= ' (';
-                if ($race->getAgeMin() == $race->getAgeMax()) {
-                    $name .= $race->getAgeMin();
-                } else {
-                    $name .= $race->getAgeMin().' bis '.$race->getAgeMax();
-                }
-                $name .= ' Jahre)';
+                $name .= self::getAgeClassSuffix($race->getAgeMin(), $race->getAgeMax());
                 break;
             case 'Junior':
                 if ($race->getGender() == Competitor::GENDER_FEMALE) {
@@ -148,7 +142,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 } elseif ($race->getAgeMin() > 22 && $race->getAgeMax() < 27) {
                     $name .= ' A';
                 } else {
-                    $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
+                    $name .= self::getAgeClassSuffix($race->getAgeMin(), $race->getAgeMax());
                 }
             break;
             case 'Master':
@@ -159,11 +153,11 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 } else {
                     $name = 'Masters';
                 }
-                $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
+                $name .= self::getAgeClassSuffix($race->getAgeMin(), $race->getAgeMax());
             break;
             case 'Offen':
                 $name = 'Offen';
-                $name .= ' ('.$race->getAgeMin().' bis '.$race->getAgeMax().' Jahre)';
+                $name .= self::getAgeClassSuffix($race->getAgeMin(), $race->getAgeMax());
             break;
         }
 
@@ -217,9 +211,32 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
         return $result;
     }
 
-    // FIXME not used
+    /**
+     * Create a suffix for an age interval (x to y years)
+     *
+     * @param $min int minimal age
+     * @param $max int maximal age
+     * @return string best matching age interval string
+     */
     private function getAgeClassSuffix($min, $max) {
-        return "(".$min." - ".$max.")";
+        if ($min > 1) {
+            $suff = 'e';
+        } else {
+            $suff = '';
+        }
+        if ($min == $max) {
+            $result = " ({$min} Jahr{$suff})";
+        } else if (99 == $max) {
+            $result = " ({$min} Jahr{$suff} u.ä.)";
+        } else {
+            if ($max > 1) {
+                $suff = 'e';
+            } else {
+                $suff = '';
+            }
+            $result = " ({$min} bis {$max} Jahr{$suff})";
+        }
+        return $result;
     }
 
     public function getNumberOfRegistrations(Race $race) {

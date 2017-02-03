@@ -33,7 +33,7 @@
                                     {{ race.numberInEvent }}.{{ section.number }}
                                 </td>
                                 <td align="center">
-                                    {% if section.isReadyToStart %}
+                                    {% if section.isReadyToStart or k == 'row' %}
                                         <input type="checkbox" name="sections[]" value="{{ section.id }}">
                                     {% endif %}
                                 </td>

@@ -127,14 +127,14 @@ class Concept2Controller extends Controller
                     $firstP = $members->first()->getMembership()->getPerson();
                     $name = sprintf(
                         '%s %s (%s)',
-                        $firstP->getFirstName(),
-                        $firstP->getLastName(),
-                        $registration->getTeam()->getClub()->getCity()
+                        $this->toAscii($firstP->getFirstName()),
+                        $this->toAscii($firstP->getLastName()),
+                        $this->toAscii($registration->getTeam()->getClub()->getCity())
                     );
                 } else {
-                    $name = $registration->getTeam()->getClub()->getShortname();
+                    $name = $this->toAscii($registration->getTeam()->getClub()->getShortname());
                     if (0 == strlen(trim($name))) {
-                        $name = $registration->getTeam()->getClub()->getName();
+                        $name = $this->toAscii($registration->getTeam()->getClub()->getName());
                     }
                 }
                 $lane = $lastLane + $registration->getLane();
@@ -161,5 +161,22 @@ class Concept2Controller extends Controller
         $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);
 
         return $response;
+    }
+
+    /**
+     * Replace all character that are not part of standard ascii
+     *
+     * @param $in string raw string
+     * @return string sanitized string
+     */
+    private function toAscii($in)
+    {
+        $result = $in;
+        $result = str_replace('ä', 'ae', $result);
+        $result = str_replace('ö', 'oe', $result);
+        $result = str_replace('ü', 'ue', $result);
+        $result = str_replace('ß', 'ss', $result);
+
+        return $result;
     }
 }

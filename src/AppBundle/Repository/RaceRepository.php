@@ -218,7 +218,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
      * @param $max int maximal age
      * @return string best matching age interval string
      */
-    private function getAgeClassSuffix($min, $max) {
+    private static function getAgeClassSuffix($min, $max) {
         if ($min > 1) {
             $suff = 'e';
         } else {

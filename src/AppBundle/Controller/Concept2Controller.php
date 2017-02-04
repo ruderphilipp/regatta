@@ -88,7 +88,7 @@ class Concept2Controller extends Controller
         $distance = null;
         /** @var RaceSection $section */
         foreach ($sections as $section) {
-            $myRaceName = sprintf('R%03d-%02d', $section->getRace()->getNumberInEvent(), $section->getNumber());
+            $myRaceName = $this->getRaceName($section);
             $myDistance = $section->getRace()->getDistance();
             if (is_null($myDistance)) {
                 throw new \InvalidArgumentException(
@@ -109,7 +109,7 @@ class Concept2Controller extends Controller
         // build race name
         $raceNameParts = array();
         foreach ($sections as $section) {
-            $raceNameParts[] = sprintf('R%03d-%02d', $section->getRace()->getNumberInEvent(), $section->getNumber());
+            $raceNameParts[] = $this->getRaceName($section);
         }
         $raceName = implode(' ', $raceNameParts);
         unset($raceNameParts);
@@ -161,6 +161,17 @@ class Concept2Controller extends Controller
         $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename);
 
         return $response;
+    }
+
+    /**
+     * Create a standardized race name for each given section.
+     *
+     * @param RaceSection $section The section to start.
+     * @return string Race name.
+     */
+    private function getRaceName(RaceSection $section)
+    {
+        return sprintf('R%03d-%02d', $section->getRace()->getNumberInEvent(), $section->getNumber());
     }
 
     /**

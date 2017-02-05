@@ -47,6 +47,9 @@
     </div>
 {% endif %}
 
+{% if section.isFinished %}
+    {{ include('race/_section.result.html.twig', {'section': section}, with_context = false) }}
+{% else %}
     <table class="table table-striped sortable">
         <thead>
             <th data-defaultsign="_19" data-defaultsort="asc">Bahn</th>
@@ -61,6 +64,7 @@
             {% endfor %}
         </tbody>
     </table>
+{% endif %}
 {% endfor %}
 
 {% if invalidRegistrations is not null %}

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Twig;
 
+use AppBundle\Entity\Registration;
+
 class AppExtension extends \Twig_Extension
 {
     /**
@@ -12,6 +14,7 @@ class AppExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFilter('count', array($this, 'countFilter')),
             new \Twig_SimpleFilter('timeString', array($this, 'timeString')),
+            new \Twig_SimpleFilter('sortByPlace', array($this, 'sortByPlace')),
         );
     }
 
@@ -72,6 +75,25 @@ class AppExtension extends \Twig_Extension
     public function isSameDay(\DateTime $x, \DateTime $y) {
         $days = $x->diff($y, true)->days;
         return (0 == $days);
+    }
+
+    public function sortByPlace($registrations)
+    {
+        $result = array();
+        // get all timings
+        $timings = array();
+        /** @var Registration $registration */
+        foreach ($registrations as $registration) {
+            $timings[$registration->getFinalTime()] = $registration;
+        }
+        ksort($timings);
+        // replace key by place
+        $i = 1;
+        foreach ($timings as $x => $v) {
+            $result[$i] = $v;
+            $i++;
+        }
+        return $result;
     }
 
     /**

@@ -8,8 +8,3 @@
 </em>
 {% if registration.isDeregistered or registration.hasChangedToNewRace %}</s>{% endif %}
 {% if registration.isFromOtherRace %}<br>(aus Rennen <a href="{{ path('race_show', { 'event': registration.getChangedRace.event.id, 'race': registration.getChangedRace.id }) }}">#{{ registration.getChangedRace.getNumberInEvent }}</a>){% endif %}
-{% if registration.isFinished %}
-       {% if registration.timings.count > 2 %}{# start+finish plus at least one checkpoint #}
-              <br><small>{{ render(controller('AppBundle:Timing:singlePeriods', { 'registration': registration })) }}</small>
-       {% endif %}
-{% endif %}

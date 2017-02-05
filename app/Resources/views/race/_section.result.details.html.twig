@@ -1,0 +1,30 @@
+{# registration of type Registration #}
+{# rank as integer #}
+{# isRowRace as boolean #}
+{# distance as integer|null #}
+{% set team = registration.getTeam() %}
+<tr>
+    <td>
+        {{ rank }}
+    </td>
+    <td>
+        {{ include('race/_registration.title.html.twig', { 'registration': registration }, with_context = false) }}
+{% if isRowRace %}
+    {% if distance >= 500 %}
+        <table class="table">
+            <tbody>
+                <td width="25%">{{ render(controller('AppBundle:Timing:singleCheckpointTimeString', { 'registration': registration, 'checkpointName': '500m' })) }}</td>
+                <td width="25%">{% if distance >= 1000 %}{{ render(controller('AppBundle:Timing:singleCheckpointTimeString', { 'registration': registration, 'checkpointName': '1000m' })) }}{% else %}&nbsp;{% endif %}</td>
+                <td width="25%">{% if distance >= 1500 %}{{ render(controller('AppBundle:Timing:singleCheckpointTimeString', { 'registration': registration, 'checkpointName': '1500m' })) }}{% else %}&nbsp;{% endif %}</td>
+                <td width="25%">{% if distance >= 2000 %}{{ render(controller('AppBundle:Timing:singleCheckpointTimeString', { 'registration': registration, 'checkpointName': '2000m' })) }}{% else %}&nbsp;{% endif %}</td>
+            </tbody>
+        </table>
+    {% endif %}
+{% else %}
+        {% if registration.timings.count > 2 %}{# start+finish plus at least one checkpoint #}
+            <br><small>{{ render(controller('AppBundle:Timing:singlePeriods', { 'registration': registration })) }}</small>
+        {% endif %}
+{% endif %}
+    </td>
+    <td data-value="{{ registration.getFinalTime }} "><strong>{{ registration.getFinalTime | timeString }}</strong></td>
+</tr>

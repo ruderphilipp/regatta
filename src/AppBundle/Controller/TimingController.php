@@ -308,4 +308,59 @@ class TimingController extends Controller
             implode('<br>', $myTimings)
         );
     }
+
+    public function singleCheckpointTimeStringAction(Registration $registration, $checkpointName)
+    {
+        // sort timings by time
+        $sortedTimings = array();
+        /** @var Timing $timing */
+        foreach ($registration->getTimings() as $timing) {
+            $key = $timing->getTime()->getTimestamp();
+            if (array_key_exists($key, $sortedTimings)) {
+                if ($timing->getCheckpoint() == Registration::CHECKPOINT_FINISH) {
+                    $key = $key + 1;
+                } else {
+                    $key = $key - 1;
+                }
+            }
+            $sortedTimings[$key] = $timing;
+        }
+        ksort($sortedTimings);
+
+        // find checkpoint
+        $i = 0;
+        $found = false;
+        /** @var Timing $timing */
+        foreach ($sortedTimings as $timing) {
+            if ($timing->getCheckpoint() == $checkpointName) {
+                $found = true;
+                break;
+            } else {
+                $i++;
+            }
+        }
+        if ($found) {
+            $j = 0;
+            $checkpoint = null;
+            $start = null;
+            foreach ($sortedTimings as $timing) {
+                if ($j == $i) {
+                    $checkpoint = $timing;
+                } elseif ($timing->getCheckpoint() == Registration::CHECKPOINT_START) {
+                    $start = $timing;
+                }
+                $j++;
+            }
+            if (!is_null($checkpoint) && !is_null($start)) {
+                // calculate delta
+                $myTimeD = doubleval($start->getTime()->format('U.u'));
+                $startTimeD = doubleval($checkpoint->getTime()->format('U.u'));
+                $delta = abs($myTimeD - $startTimeD);
+                $app = new AppExtension();
+                $deltaString = $app->timeString($delta);
+                return new Response($deltaString);
+            }
+        }
+        return new Response("---");
+    }
 }

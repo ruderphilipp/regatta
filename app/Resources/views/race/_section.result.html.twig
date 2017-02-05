@@ -1,0 +1,21 @@
+{# section of type RaceSection #}
+{% set isRowRace = (section.race.raceType == "row") %}
+{% set distance = section.race.distance %}
+<table class="table table-striped">
+    <thead>
+    <th data-defaultsign="_19" data-defaultsort="asc">Platz</th>
+    <th data-defaultsign="az">Name<br>
+    <table class="table"><tr>
+                <td width="25%">500</td>
+                <td width="25%">{% if distance >= 1000 %}1000{% else %}&nbsp;{% endif %}</td>
+                <td width="25%">{% if distance >= 1500 %}1500{% else %}&nbsp;{% endif %}</td>
+                <td width="25%">{% if distance >= 2000 %}2000{% else %}&nbsp;{% endif %}</td>
+</tr></table> </th>
+    <th data-defaultsort='disabled'>Zielzeit</th>
+    </thead>
+    <tbody>
+    {% for rank,registration in section.getValidRegistrations() | sortByPlace %}
+        {{ include('race/_section.result.details.html.twig', { 'registration': registration, 'rank': rank, 'isRowRace': isRowRace, 'distance': distance }, with_context = false) }}
+    {% endfor %}
+    </tbody>
+</table>

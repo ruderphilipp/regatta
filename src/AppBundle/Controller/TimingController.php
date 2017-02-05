@@ -12,6 +12,7 @@ use AppBundle\Entity\Timing;
 use AppBundle\Repository\RegistrationRepository;
 use AppBundle\Repository\TeamRepository;
 use AppBundle\Twig\AppExtension;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -121,10 +122,10 @@ class TimingController extends Controller
      *
      * @param RaceSection $section The section to start.
      * @param int $sID Id of the section to start.
-     * @param EntityManager $em For handling the DB requests
+     * @param ObjectManager $em For handling the DB requests
      * @param float|string $time Unix timestamp (optional) with fractional seconds
      */
-    public function markAsStarted(RaceSection $section, $sID, EntityManager $em, $time)
+    public function markAsStarted(RaceSection $section, $sID, ObjectManager $em, $time)
     {
         // sanity checks
         if (is_null($section)) {

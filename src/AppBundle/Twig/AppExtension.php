@@ -55,15 +55,15 @@ class AppExtension extends \Twig_Extension
         }
 
         if ($t > 0.0) {
-            $fracSecs = intval($t * 100.0);
+            $fracSecs = intval(round($t * 10.0));
         } else {
             $fracSecs = 0;
         }
 
         if ($hours > 0) {
-            $result = sprintf('%2d:%02d:%02d.%03d', $hours, $minutes, $seconds, $fracSecs);
+            $result = sprintf('%2d:%02d:%02d.%d', $hours, $minutes, $seconds, $fracSecs);
         } else {
-            $result = sprintf('%2d:%02d.%03d', $minutes, $seconds, $fracSecs);
+            $result = sprintf('%2d:%02d.%d', $minutes, $seconds, $fracSecs);
         }
 
         return $result;

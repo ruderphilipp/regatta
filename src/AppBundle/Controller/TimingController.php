@@ -124,7 +124,7 @@ class TimingController extends Controller
      * @param EntityManager $em For handling the DB requests
      * @param float|string $time Unix timestamp (optional) with fractional seconds
      */
-    private function markAsStarted(RaceSection $section, $sID, EntityManager $em, $time)
+    public function markAsStarted(RaceSection $section, $sID, EntityManager $em, $time)
     {
         // sanity checks
         if (is_null($section)) {

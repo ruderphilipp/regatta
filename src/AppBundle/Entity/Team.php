@@ -140,6 +140,13 @@ class Team
     }
 
     /**
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+    /**
      * @return ArrayCollection[TeamPosition]
      */
     public function getMembers()

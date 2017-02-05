@@ -13,3 +13,7 @@ services:
         class: AppBundle\Controller\TokenController
         calls:
             - [setContainer, ["@service_container"]]
+    app.timing_controller:
+        class: AppBundle\Controller\TimingController
+        calls:
+            - [setContainer, ["@service_container"]]

@@ -80,6 +80,9 @@ class RegistrationRepository extends \Doctrine\ORM\EntityRepository
 
         $checkpoint = trim($checkpoint);
 
+        if (strpos($timestamp, '.') === false) {
+            $timestamp .= ".0";
+        }
         // expected format of the timestamp is unix timestamp plus microseconds
         $dtime = \DateTime::createFromFormat("U.u", $timestamp);
         // check validity of the given timestamp

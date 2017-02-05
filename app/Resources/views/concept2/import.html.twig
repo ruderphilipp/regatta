@@ -1,0 +1,30 @@
+{% extends 'form.new.base.html.twig' %}
+
+{% block body %}
+    <h1>Importiere Ergebnis-Daten aus Concept2 VRA</h1>
+    <p>
+        Diese Seite dient dazu, die aufbereiteten Ergebnisdaten nach der Renndurchführung mit der Software <strong>
+        Concept2 Venue Racing Application</strong> zu importieren. Hierzu muss man auf dem Rechner mit der Applikation
+        zusätzlich das Tool <tt>vra_parser.py</tt> laufen lassen.
+    </p>
+
+    <div>
+        {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+        {# render any "global" errors #}
+        {{ form_errors(form) }}
+
+        {{ form_widget(form) }}
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10"> <button type="submit" class="btn btn-default">Importieren</button> </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    <ul>
+        <li>
+            <a href="{{ path('race_index', { 'event': event.id }) }}">Zurück zur Rennübersicht</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -127,7 +127,7 @@
     </div>
 {% endif %}
 {% if is_granted('ROLE_REFEREE') %}
-    {#{% if race.getNumberOfRegistrations() >= race.getStarterMin and finishedSections != race.sections.count %}#}
+    {% if race.getNumberOfRegistrations() >= race.getStarterMin and finishedSections != race.sections.count %}
     {# only show start button if there are enough competitors and the sections are not finished yet #}
     <hr class="hidden-print">
     <div class="row hidden-print">
@@ -135,5 +135,5 @@
             <a href="{{ path('race_start', { 'event': race.event.id, 'race': race.id }) }}" class="btn btn-lg btn-primary">Rennen starten</a>
         </div>
     </div>
-    {#{% endif %}#}
+    {% endif %}
 {% endif %}

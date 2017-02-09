@@ -7,7 +7,7 @@
 {% set spacer = "&mdash;" %}
 <tr>
     <td>
-        {{ rank }}
+        {% if registration.isAborted or registration.isNotAtStart %}&mdash;{% else %}{{ rank }}{% endif %}
     </td>
     <td>
         {{ include('race/_registration.title.html.twig', { 'registration': registration }, with_context = false) }}
@@ -28,7 +28,11 @@
         {% endif %}
 {% endif %}
     </td>
-{% if isRowRace and (registration.section.race.runRace is not null and rr.isFinished(registration.section.race.runRace)) %}
+{% if registration.isAborted %}
+    <td>abgebrochen</td>
+{% elseif registration.isNotAtStart %}
+    <td><abbr title="nicht am Start erschienen">n.a.S.e.</abbr></td>
+{% elseif isRowRace and (registration.section.race.runRace is not null and rr.isFinished(registration.section.race.runRace)) %}
     {% set runReg = registration.tryToGetCorrespondingRunRegistration() %}
     {% if runReg is not null and runReg.isFinished %}{% set totalTime = registration.getFinalTime + runReg.getFinalTime %}{% else %}{% set totalTime = -1 %}{% endif %}
     <td data-value="{{ totalTime }}">

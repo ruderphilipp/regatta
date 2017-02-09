@@ -361,6 +361,6 @@ class TimingController extends Controller
                 return new Response($deltaString);
             }
         }
-        return new Response("---");
+        return new Response("&mdash;");
     }
 }

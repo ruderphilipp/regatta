@@ -1,4 +1,5 @@
 {# section of type RaceSection #}
+{# raceRepo of type RaceRepository #}
 {% set isRowRace = (section.race.raceType == "row") %}
 {% set distance = section.race.distance %}
 <table class="table table-striped">
@@ -15,7 +16,7 @@
     </thead>
     <tbody>
     {% for rank,registration in section.getValidRegistrations() | sortByPlace %}
-        {{ include('race/_section.result.details.html.twig', { 'registration': registration, 'rank': rank, 'isRowRace': isRowRace, 'distance': distance }, with_context = false) }}
+        {{ include('race/_section.result.details.html.twig', { 'rr': raceRepo }, with_context = true) }}
     {% endfor %}
     </tbody>
 </table>

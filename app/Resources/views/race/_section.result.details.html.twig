@@ -1,8 +1,10 @@
 {# registration of type Registration #}
-{# rank as integer #}
-{# isRowRace as boolean #}
-{# distance as integer|null #}
+{# rank of type integer #}
+{# isRowRace of type boolean #}
+{# distance of type integer|null #}
+{# rr of type RaceRepository #}
 {% set team = registration.getTeam() %}
+{% set spacer = "&mdash;" %}
 <tr>
     <td>
         {{ rank }}
@@ -26,5 +28,21 @@
         {% endif %}
 {% endif %}
     </td>
+{% if isRowRace and (registration.section.race.runRace is not null and rr.isFinished(registration.section.race.runRace)) %}
+    {% set runReg = registration.tryToGetCorrespondingRunRegistration() %}
+    {% if runReg is not null and runReg.isFinished %}{% set totalTime = registration.getFinalTime + runReg.getFinalTime %}{% else %}{% set totalTime = -1 %}{% endif %}
+    <td data-value="{{ totalTime }}">
+        <table class="table">
+            <tr style="border-top: hidden">
+                <td colspan="2" style="text-align: center"><strong>{% if totalTime > 0 %}{{ totalTime | timeString }}{% else %}{{ spacer | raw }}{% endif %}</strong></td>
+            </tr>
+            <tr>
+                <td width="50%">{{ registration.getFinalTime | timeString }}</td>
+                <td width="50%">{% if runReg is not null and runReg.getFinalTime > 0 %}{{ runReg.getFinalTime | timeString }}{% else %}{{ spacer | raw }}{% endif %}</td>
+            </tr>
+        </table>
+    </td>
+{% else %}
     <td data-value="{{ registration.getFinalTime }} "><strong>{{ registration.getFinalTime | timeString }}</strong></td>
+{%- endif -%}
 </tr>

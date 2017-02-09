@@ -377,8 +377,41 @@ class Registration
             $delta = doubleval($finishTime->getTime()->format('U.u')) - doubleval($startTime->getTime()->format('U.u'));
             return $delta;
         } else {
-            throw new \InvalidArgumentException("Not finished!");
+            //throw new \InvalidArgumentException("Not finished!");
+            return null;
         }
+    }
+
+    public function tryToGetCorrespondingRunRegistration()
+    {
+        $myRace = $this->getSection()->getRace();
+        if (Race::TYPE_ROW != $myRace->getRaceType()) {
+            return null;
+        }
+
+        /** @var Race $runRace */
+        $runRace = $myRace->getRunRace();
+        if (is_null($runRace)) {
+            return null;
+        }
+
+        $team = $this->getTeam();
+
+        $result = null;
+        /** @var RaceSection $section */
+        foreach ($runRace->getSections() as $section) {
+            /** @var Registration $registration */
+            foreach ($section->getValidRegistrations() as $registration) {
+                if ($team->getId() == $registration->getTeam()->getId()) {
+                    $result = $registration;
+                    break;
+                }
+            }
+            if (!is_null($result)) {
+                break;
+            }
+        }
+        return $result;
     }
 }
 

@@ -48,7 +48,7 @@
 {% endif %}
 
 {% if section.isFinished %}
-    {{ include('race/_section.result.html.twig', {'section': section}, with_context = false) }}
+    {{ include('race/_section.result.html.twig', {'section': section, 'raceRepo': rr}, with_context = false) }}
 {% else %}
     <table class="table table-striped sortable">
         <thead>

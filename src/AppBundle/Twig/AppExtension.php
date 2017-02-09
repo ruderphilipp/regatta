@@ -77,14 +77,14 @@ class AppExtension extends \Twig_Extension
         return (0 == $days);
     }
 
-    public function sortByPlace($registrations)
+    public function sortByPlace($registrations, $considerRunRace = false)
     {
         $result = array();
         // get all timings
         $timings = array();
         /** @var Registration $registration */
         foreach ($registrations as $registration) {
-            $timings[$registration->getFinalTime()][] = $registration;
+            $timings[$registration->getFinalTime($considerRunRace)][] = $registration;
         }
         ksort($timings);
 

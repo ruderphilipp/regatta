@@ -360,7 +360,7 @@ class Registration
         return !($this->isDeregistered() || $this->hasChangedToNewRace());
     }
 
-    public function getFinalTime()
+    public function getFinalTime($addRunTimings = false)
     {
         if ($this->isFinished()) {
             $startTime = null;
@@ -375,6 +375,25 @@ class Registration
             }
 
             $delta = doubleval($finishTime->getTime()->format('U.u')) - doubleval($startTime->getTime()->format('U.u'));
+
+            $hasRunRace = false;
+            if ($addRunTimings) {
+                if (!is_null($this->getSection()->getRace()->getRunRace())) {
+                    $hasRunRace = true;
+                }
+            }
+            if ($addRunTimings && $hasRunRace) {
+                /** @var Registration $runReg */
+                $runReg = $this->tryToGetCorrespondingRunRegistration();
+                if (is_null($runReg)) {
+                    $delta = null;
+                } elseif (is_null($runReg->getFinalTime())) {
+                    $delta = null;
+                } else {
+                    $delta = $delta + $runReg->getFinalTime();
+                }
+            }
+
             return $delta;
         } else {
             //throw new \InvalidArgumentException("Not finished!");

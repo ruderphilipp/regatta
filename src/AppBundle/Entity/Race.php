@@ -628,12 +628,16 @@ class Race
         if ($this->hasWinnerPerSection()) {
             throw new \InvalidArgumentException("Only allowed if mode 'winner per total race'!");
         }
+        $conciderRunRace = false;
+        if ($this->getEvent()->isRowAndRun() && !is_null($this->getRunRace())) {
+            $conciderRunRace = true;
+        }
 
         /** @var Registration $result */
         $result = null;
         foreach ($this->getSections() as $section) {
             /** @var Registration $secWinner */
-            $secWinner = $section->getWinner();
+            $secWinner = $section->getWinner($conciderRunRace);
             if (is_null($result)) {
                 $result = $secWinner;
             } else {

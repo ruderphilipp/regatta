@@ -312,13 +312,14 @@ class RaceSection
         return $result;
     }
 
-    public function getWinner()
+    public function getWinner($conciderRunRace = false)
     {
         if (!$this->isFinished()) {
             throw new \InvalidArgumentException("Section not finished, yet! So not possible to return winning team!");
         }
+
         $ae = new AppExtension();
-        $sorted = $ae->sortByPlace($this->getValidRegistrations());
+        $sorted = $ae->sortByPlace($this->getValidRegistrations(), $conciderRunRace);
         if (!key_exists("1", $sorted)) {
             throw new \InvalidArgumentException("Could not find any winning team in section {$this->getNumber()}!");
         } else {

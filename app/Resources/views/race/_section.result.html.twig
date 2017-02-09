@@ -19,7 +19,9 @@
     </thead>
     <tbody>
     {% for rank,registration in section.getValidRegistrations() | sortByPlace %}
-        {{ include('race/_section.result.details.html.twig', { 'rr': raceRepo }, with_context = true) }}
+        {% if registration.isFinished or registration.isAborted %}
+            {{ include('race/_section.result.details.html.twig', { 'rr': raceRepo }, with_context = true) }}
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>

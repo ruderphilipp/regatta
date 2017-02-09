@@ -24,6 +24,29 @@
     </h1>
 
     {{ include('race/_show.details_for_logged_in_users.html.twig', { 'race': race, 'finishedSections': finishedSections, 'delete_form': delete_form }, with_context = false) }}
+
+    {% if not race.hasWinnerPerSection and finishedSections == race.sections.count %}
+        <hr>
+        <h2>Gesamtsieger</h2>
+        {%- set winner = race.winner -%}
+        {%- if count(winner) > 1 or race.sections.count > 1 %}
+        <table class="table">
+            <tr>
+                <th>Name</th>
+                <th>Abteilung</th>
+            </tr>
+            {% for w in winner %}
+            <tr>
+                <td>{{ include('race/_registration.title.html.twig', { 'registration': w }, with_context = false) }}</td>
+                <td>{{ w.section.number }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            {{ include('race/_registration.title.html.twig', { 'registration': winner[0] }, with_context = false) }}
+        {% endif %}
+    {% endif %}
+
     <hr>
 {% set first = true %}
 {% for section in race.getSections() %}

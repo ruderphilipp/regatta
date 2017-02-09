@@ -153,6 +153,16 @@ class Race
     private $distance;
 
     /**
+     * Sometimes it is necessary to *not* have only one winning team for the
+     * complete race but each per section (e.g. in junior races).
+     *
+     * @var boolean
+     *
+     * @ORM\Column(name="winner_per_section", type="boolean", options={"default" : false})
+     */
+    private $winnerPerSection;
+
+    /**
      * In a Row&Run event, first all indoor rowing events will take place.
      * Later there are 1..n running races. The results/timings of them will
      * be added to the result/timing of a competitor in the rowing race to
@@ -581,6 +591,58 @@ class Race
         public function getDistance()
     {
         return $this->distance;
+    }
+
+    /**
+     * Set if each result should have a winner (or only the race in total, if false).
+     *
+     * @param boolean $bool The new value
+     *
+     * @return Race
+     */
+    public function setWinnerPerSection($bool)
+    {
+        if (is_bool($bool)) {
+            $this->winnerPerSection = $bool;
+        } else {
+            throw new \InvalidArgumentException("ResultPerSection must be a boolean value!");
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasWinnerPerSection()
+    {
+        return $this->winnerPerSection;
+    }
+
+    /**
+     * @return null|array[Registration] The overall winner of this particular race.
+     * @throws \InvalidArgumentException if mode is not 'winner per total race'
+     */
+    public function getWinner()
+    {
+        if ($this->hasWinnerPerSection()) {
+            throw new \InvalidArgumentException("Only allowed if mode 'winner per total race'!");
+        }
+
+        /** @var Registration $result */
+        $result = null;
+        foreach ($this->getSections() as $section) {
+            /** @var Registration $secWinner */
+            $secWinner = $section->getWinner();
+            if (is_null($result)) {
+                $result = $secWinner;
+            } else {
+                if ($secWinner->getFinalTime() < $result->getFinalTime()) {
+                    $result = $secWinner;
+                }
+            }
+        }
+        return $result;
     }
 
     /**

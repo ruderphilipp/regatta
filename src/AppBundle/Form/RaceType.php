@@ -147,6 +147,15 @@ class RaceType extends AbstractType
                     'min' => -1,
                 ),
             ))
+            ->add('winnerPerSection', ChoiceType::class, array(
+                'label' => 'Sieger',
+                'choices' => array(
+                    'für gesamtes Rennen' => false,
+                    'pro Abteilung' => true,
+                ),
+                'expanded' => true,
+                'multiple' => false,
+            ))
             ->add('starterMin', IntegerType::class, array(
                 'label' => 'Mindestanzahl an Startern',
                 'attr' => array(

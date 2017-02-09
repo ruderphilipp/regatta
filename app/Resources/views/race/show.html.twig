@@ -29,22 +29,24 @@
         <hr>
         <h2>Gesamtsieger</h2>
         {%- set winner = race.winner -%}
-        {%- if count(winner) > 1 or race.sections.count > 1 %}
-        <table class="table">
-            <tr>
+        {%- set more = (count(winner) > 1 or race.sections.count > 1) -%}
+
+        <table class="table{% if more %} table-striped{% endif %}">
+            {%- if more %}
+            <thead>
+                <th>Gesamtzeit</th>
                 <th>Name</th>
                 <th>Abteilung</th>
-            </tr>
+            <thead>
+            {% endif %}
             {% for w in winner %}
             <tr>
+                <td>{{ w.finalTime(race.runRace is not empty) | timeString }}</td>
                 <td>{{ include('race/_registration.title.html.twig', { 'registration': w }, with_context = false) }}</td>
-                <td>{{ w.section.number }}</td>
+                {%- if more %}<td>{{ w.section.number }}</td>{% endif %}
             </tr>
             {% endfor %}
         </table>
-        {% else %}
-            {{ include('race/_registration.title.html.twig', { 'registration': winner[0] }, with_context = false) }}
-        {% endif %}
     {% endif %}
 
     <hr>

@@ -588,7 +588,7 @@ class Race
      *
      * @return int
      */
-        public function getDistance()
+    public function getDistance()
     {
         return $this->distance;
     }

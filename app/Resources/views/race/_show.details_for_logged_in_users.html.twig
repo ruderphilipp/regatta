@@ -127,7 +127,7 @@
     </div>
 {% endif %}
 {% if is_granted('ROLE_REFEREE') %}
-    {#{% if rr.getNumberOfRegistrations(race) >= race.getStarterMin and finishedSections != race.sections.count %}#}
+    {#{% if race.getNumberOfRegistrations() >= race.getStarterMin and finishedSections != race.sections.count %}#}
     {# only show start button if there are enough competitors and the sections are not finished yet #}
     <hr class="hidden-print">
     <div class="row hidden-print">

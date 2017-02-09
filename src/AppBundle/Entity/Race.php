@@ -685,6 +685,15 @@ class Race
         return $result;
     }
 
+    public function getNumberOfRegistrations() {
+        $result = 0;
+        /** @var RaceSection $section */
+        foreach($this->getSections() as $section) {
+            $result += $section->getValidRegistrations()->count();
+        }
+        return $result;
+    }
+
     public function __toString() {
         return "#" . $this->numberInEvent . ": " . RaceRepository::getOfficialName($this);
     }

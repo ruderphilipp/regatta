@@ -33,7 +33,7 @@ class StartController extends Controller
         $repo = $em->getRepository('AppBundle:Race');
 
         // check if enough competitors (do not trust GUI logic to not call the method/link)
-        if ($repo->getNumberOfRegistrations($race) < $race->getStarterMin()) {
+        if ($race->getNumberOfRegistrations() < $race->getStarterMin()) {
             $this->addFlash(
                 'error',
                 'Mindestteilnehmeranzahl nicht erreicht!'

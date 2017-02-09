@@ -26,8 +26,8 @@
                     {{ race.numberInEvent }}{% if rr.isStarted(race) %}*{% elseif rr.isFinished(race) %}!{% endif %}
                 </td>
                 <td data-value="{{ rr.getOfficialName(race) }}">
-                    {% set counter = rr.getNumberOfRegistrations(race) %}
-                    {% if counter > 0 %} <span class="label {% if counter < race.getStarterMin or counter > race.getStarterMax %}label-danger{% else %}label-success{% endif %}">{{ rr.getNumberOfRegistrations(race) }}</span>{% endif %}
+                    {% set counter = race.getNumberOfRegistrations() %}
+                    {% if counter > 0 %} <span class="label {% if counter < race.getStarterMin or counter > race.getStarterMax %}label-danger{% else %}label-success{% endif %}">{{ race.getNumberOfRegistrations() }}</span>{% endif %}
                     <a href="{{ path('race_show', { 'race': race.id, 'event': race.event.id }) }}">{{ rr.getOfficialName(race) }}</a>
                     {% if race.extraText != "" %}<br /><em>{{ race.extraText }}</em>{% endif %}
                 </td>

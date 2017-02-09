@@ -182,7 +182,7 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
     {
         $races = array();
         foreach($this->findAllForEvent($eventId) as $r) {
-            if (0 < $this->getNumberOfRegistrations($r)) {
+            if (0 < $r->getNumberOfRegistrations()) {
                 $races[] = $r;
             }
         }
@@ -235,15 +235,6 @@ class RaceRepository extends \Doctrine\ORM\EntityRepository
                 $suff = '';
             }
             $result = " ({$min} bis {$max} Jahr{$suff})";
-        }
-        return $result;
-    }
-
-    public function getNumberOfRegistrations(Race $race) {
-        $result = 0;
-        /** @var RaceSection $section */
-        foreach($race->getSections() as $section) {
-            $result += $section->getValidRegistrations()->count();
         }
         return $result;
     }

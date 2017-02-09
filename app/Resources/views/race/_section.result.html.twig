@@ -18,10 +18,12 @@
     <th>Zielzeit</th>
     </thead>
     <tbody>
-    {% for rank,registration in section.getValidRegistrations() | sortByPlace %}
-        {% if registration.isFinished or registration.isAborted %}
-            {{ include('race/_section.result.details.html.twig', { 'rr': raceRepo }, with_context = true) }}
-        {% endif %}
+    {% for rank,registrations in section.getValidRegistrations() | sortByPlace %}
+        {% for registration in registrations %}
+            {% if registration.isFinished or registration.isAborted %}
+                {{ include('race/_section.result.details.html.twig', { 'rr': raceRepo }, with_context = true) }}
+            {% endif %}
+        {% endfor %}
     {% endfor %}
     </tbody>
 </table>

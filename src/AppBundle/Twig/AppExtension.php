@@ -84,14 +84,31 @@ class AppExtension extends \Twig_Extension
         $timings = array();
         /** @var Registration $registration */
         foreach ($registrations as $registration) {
-            $timings[$registration->getFinalTime()] = $registration;
+            $timings[$registration->getFinalTime()][] = $registration;
         }
         ksort($timings);
+
         // replace key by place
         $i = 1;
-        foreach ($timings as $x => $v) {
-            $result[$i] = $v;
-            $i++;
+        foreach ($timings as $x => $vs) {
+            if (empty($x)) {
+                // skip all those without a finishing time
+            } else {
+                // all these have the same total time, so also the same rank
+                foreach ($vs as $v) {
+                    $result[$i][] = $v;
+                }
+                $i++;
+            }
+        }
+        // put all registrations without finishing time afterwards
+        foreach ($timings as $x => $vs) {
+            if (empty($x)) {
+                foreach ($vs as $v) {
+                    $result[$i][] = $v;
+                    $i++;
+                }
+            }
         }
         return $result;
     }

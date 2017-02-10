@@ -27,7 +27,7 @@
                         <li><a href="{{ path('competitor_index') }}">Personen</a></li>
                         {% if event is defined and event.id is not empty -%}
                             <li><a href="{{ path('billing_index', { 'event': event.id }) }}">Rechnungen</a></li>
-                            <li><a href="{{ path('token_all', { 'event': event.id }) }}">Ausleihen</a></li>
+                            <li><a href="{{ path('token_all', { 'event': event.id }) }}"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> Ausleihen</a></li>
                             <li><a href="{{ path('team_checkout', { 'event': event.id }) }}">Rückgabe</a></li>
                         {% endif %}
                     {% elseif is_granted('ROLE_REFEREE') %}
@@ -36,7 +36,7 @@
                         {% endif %}
                     {% endif %}
                 {% if is_granted('IS_AUTHENTICATED_FULLY') and event is defined and event.id is not empty %}
-                    <li><a href="{{ path('fastest_index', { 'event': event.id }) }}">Gesamtschnellste</a></li>
+                    <li><a href="{{ path('fastest_index', { 'event': event.id }) }}"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> Gesamtschnellste</a></li>
                 {% endif %}
             </ul>
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}

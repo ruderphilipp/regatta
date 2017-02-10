@@ -35,6 +35,9 @@
                             <li><a href="{{ path('race_start_all', { 'event': event.id }) }}">Multistart</a></li>
                         {% endif %}
                     {% endif %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') and event is defined and event.id is not empty %}
+                    <li><a href="{{ path('fastest_index', { 'event': event.id }) }}">Gesamtschnellste</a></li>
+                {% endif %}
             </ul>
             {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <ul class="nav navbar-nav navbar-right">

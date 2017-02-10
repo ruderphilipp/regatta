@@ -586,7 +586,7 @@ class Race
     /**
      * Get race distance in meters
      *
-     * @return int
+     * @return int|null
      */
     public function getDistance()
     {
